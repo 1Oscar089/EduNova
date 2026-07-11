@@ -113,6 +113,11 @@ const Notas = {
   async get(grado, materia, tipo, nie, activityId) { return api('getNota', { grado, materia, tipo, nie, activityId }); }
 };
 
+// ===== Juegos (reporte de puntos desde el HTML del juego) =====
+const JuegosAPI = {
+  async registrarPuntos(nie, puntos) { return api('registrarPuntosJuego', { nie, puntos }); }
+};
+
 // ===== Utilidades =====
 function normalizeNombre(v) {
   return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-ZÑ\s]/g, '').replace(/\s+/g, ' ').trim();

@@ -71,45 +71,21 @@ function initEstudiante() {
       const tree = {};
       res.clases.forEach(c => { if (!tree[c.unidad]) tree[c.unidad] = {}; if (!tree[c.unidad][c.leccion]) tree[c.unidad][c.leccion] = []; tree[c.unidad][c.leccion].push(c); });
       html += '<div class="tree-unit"><div class="tree-unit-head"><span style="font-size:20px">' + materiaEmoji(m) + '</span><h3>' + m + '</h3></div><div class="tree-unit-body">';
-      Object.keys(tree).sort((a, b) => Number(a) - Number(b)).forEach(un => {
-        html += '<div class="tree-leccion" style="border-left-color:#d1fae5"><div style="margin-bottom:8px"><span class="badge badge-emerald">Unidad ' + un + '</span></div>';
-        Object.keys(tree[un]).sort((a, b) => Number(a) - Number(b)).forEach(le => {
-          html += '<div style="margin-bottom:12px"><span class="badge badge-gray" style="font-size:10px">Leccion ' + le + '</span><div class="items-grid" style="margin-top:6px">';
-          tree[un][le].forEach(async c => {
+      Object.keys(tree).forEach(un => {
+        html += '<div style="border-left:3px solid #d1fae5;padding-left:12px;margin-bottom:12px"><span class="badge badge-emerald">Unidad: ' + escapeHtml(un) + '</span>';
+        Object.keys(tree[un]).forEach(le => {
+          html += '<div style="margin-top:8px"><span class="badge badge-gray" style="font-size:10px">Leccion: ' + escapeHtml(le) + '</span><div class="items-grid" style="margin-top:6px">';
+          tree[un][le].forEach(c => {
             let nota = null;
-            if (c.evaluada) { const nr = await Notas.get(u.grado, m, 'clase', u.nie, c.id); if (nr.ok) nota = nr.nota; }
-          });
-          });
-        });
-      });
-      // The async-in-map above is tricky; do it simpler:
-      html = ''; // reset and rebuild properly below
-      break;
-    }
-    // Proper rebuild (sequential awaits)
-    html = '';
-    for (const m of materias) {
-      const res = await Clases.list(u.grado, m);
-      if (!res.ok || !res.clases.length) continue;
-      allEmpty = false;
-      const tree = {};
-      res.clases.forEach(c => { if (!tree[c.unidad]) tree[c.unidad] = {}; if (!tree[c.unidad][c.leccion]) tree[c.unidad][c.leccion] = []; tree[c.unidad][c.leccion].push(c); });
-      html += '<div class="tree-unit"><div class="tree-unit-head"><span style="font-size:20px">' + materiaEmoji(m) + '</span><h3>' + m + '</h3></div><div class="tree-unit-body">';
-      for (const un of Object.keys(tree).sort((a, b) => Number(a) - Number(b))) {
-        html += '<div style="border-left:3px solid #d1fae5;padding-left:12px;margin-bottom:12px"><span class="badge badge-emerald">Unidad ' + un + '</span>';
-        for (const le of Object.keys(tree[un]).sort((a, b) => Number(a) - Number(b))) {
-          html += '<div style="margin-top:8px"><span class="badge badge-gray" style="font-size:10px">Leccion ' + le + '</span><div class="items-grid" style="margin-top:6px">';
-          for (const c of tree[un][le]) {
-            let nota = null;
-            if (c.evaluada) { const nr = await Notas.get(u.grado, m, 'clase', u.nie, c.id); if (nr.ok) nota = nr.nota; }
+            if (c.evaluada) { const nr = Notas.get(u.grado, m, 'clase', u.nie, c.id); if (nr.ok) nota = nr.nota; }
             html += '<div class="item-card"><div style="display:flex;justify-content:space-between;gap:4px"><div><div class="meta">' + c.id + '</div><h4 style="font-size:14px">' + escapeHtml(c.tema) + '</h4></div>' +
               (nota !== null ? '<span class="nota-pill ' + (nota >= 6 ? 'nota-aprob' : 'nota-reprob') + '">' + Number(nota).toFixed(1) + '</span>' : (c.evaluada ? '<span class="badge badge-gray">Sin nota</span>' : '')) + '</div>' +
               '<a class="btn btn-outline btn-sm" href="' + htmlRoute(u.grado, 'clase', c.id) + '" target="_blank">📄 Abrir</a></div>';
-          }
+          });
           html += '</div></div>';
-        }
+        });
         html += '</div>';
-      }
+      });
       html += '</div></div>';
     }
     if (allEmpty) { lst.innerHTML = '<div class="empty"><div class="ico">📚</div><h3>Aun no hay clases</h3><p>Cuando tu docente cree clases, apareceran aqui.</p></div>'; return; }
@@ -271,25 +247,34 @@ function initEstudiante() {
           '<div class="badge badge-amber">⭐ ' + j.puntosPorNivel + '</div>' +
           (j.tiempo ? '<div class="badge badge-violet">⏱️ ' + j.tiempo + ' min</div>' : '<div class="badge badge-gray">Sin limite</div>') +
         '</div>' +
-        (bloqueado ? '<button class="btn btn-block" style="background:#e5e7eb;color:#9ca3af" disabled>🔒 Bloqueado</button>' :
-          (j.url ? '<a class="btn btn-sky btn-block" href="' + escapeHtml(j.url) + '" target="_blank" onclick="window._jugar(\'' + j.id + '\',' + j.vidasNecesarias + ',' + j.puntosPorNivel + ',' + j.niveles + ',event)">▶️ Jugar</a>' :
-          '<button class="btn btn-sky btn-block" onclick="window._jugar(\'' + j.id + '\',' + j.vidasNecesarias + ',' + j.puntosPorNivel + ',' + j.niveles + ')">▶️ Jugar</button>')) +
+        (bloqueado ? '<button class="btn btn-block" style="background:#e5e7eb;color:#9ca3af" disabled>🔒 Bloqueado (necesitas ' + j.vidasNecesarias + ' ❤️)</button>' :
+          '<button class="btn btn-sky btn-block" onclick="window._jugar(\'' + j.id + '\',' + j.vidasNecesarias + ')">▶️ Jugar</button>') +
       '</div>';
     }).join('') + '</div>';
+    window._juegosCache = res.juegos;
   }
-  window._jugar = async function(id, vidas, ptsNivel, niveles, ev) {
+  window._jugar = async function(id, vidas) {
     if (u.vidas < vidas) { toast('Vidas insuficientes', 'Necesitas ' + vidas + ' ❤️', 'error'); return; }
-    if (!confirm('Jugar? Se consumiran ' + vidas + ' ❤️ vidas.')) { if (ev) ev.preventDefault(); return; }
-    // descontar vidas
+    // Buscamos el juego para obtener su URL
+    const juegos = window._juegosCache || [];
+    const j = juegos.find(x => x.id === id);
+    if (!j) { toast('Juego no encontrado', null, 'error'); return; }
+    // Las vidas se restan SI Y SOLO SI el HTML del juego se abre.
+    // Abrimos el HTML del juego en una nueva pestana.
+    const url = j.url || ('juego.html?id=' + encodeURIComponent(id));
+    const win = window.open(url, '_blank');
+    if (!win) {
+      // El navegador bloqueo el popup -> no se abrio el HTML -> no se restan vidas.
+      toast('No se pudo abrir el juego', 'Permite ventanas emergentes para este sitio e intenta de nuevo.', 'error');
+      return;
+    }
+    // El HTML se abrio: restamos las vidas en Sheets.
     const rv = await Auth.ajustarVidas(u.nie, -vidas);
     if (rv.ok) { u.vidas = rv.vidas; Auth.setCurrent(u); updateUserBarStats(); }
-    // simular puntos ganados (en produccion el juego HTML reportaria el score real)
-    const nivelesCompletados = Math.floor(Math.random() * niveles) + 1;
-    const ganados = nivelesCompletados * ptsNivel;
-    const rp = await Auth.ajustarPuntos(u.nie, ganados);
-    if (rp.ok) { u.puntos = rp.puntos; Auth.setCurrent(u); updateUserBarStats(); }
-    toast('¡Buen juego!', 'Completaste ' + nivelesCompletados + '/' + niveles + ' niveles. Ganaste ' + ganados + ' ⭐.');
-    if (!ev) renderJuegos();
+    toast('¡A jugar! 🎮', 'Se consumieron ' + vidas + ' ❤️ vidas. Gana puntos completando niveles.');
+    // Si el juego es un HTML externo, este reportara los puntos via la API.
+    // Si no tiene URL, abrimos juego.html (plantilla) que reporta el score al final.
+    renderJuegos();
   };
 
   // ===== PERFIL =====

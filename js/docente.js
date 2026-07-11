@@ -105,10 +105,10 @@ function initDocente() {
       return;
     }
     let html = '';
-    Object.keys(tree).sort((a, b) => Number(a) - Number(b)).forEach(u => {
-      html += '<div class="tree-unit"><div class="tree-unit-head"><span class="num">' + u + '</span><h3>Unidad ' + u + '</h3></div><div class="tree-unit-body">';
-      Object.keys(tree[u]).sort((a, b) => Number(a) - Number(b)).forEach(l => {
-        html += '<div class="tree-leccion"><span class="lbl">Leccion ' + l + '</span><div class="items-grid">';
+    Object.keys(tree).forEach(u => {
+      html += '<div class="tree-unit"><div class="tree-unit-head"><span class="num">📖</span><h3>Unidad: ' + escapeHtml(u) + '</h3></div><div class="tree-unit-body">';
+      Object.keys(tree[u]).forEach(l => {
+        html += '<div class="tree-leccion"><span class="lbl">Leccion: ' + escapeHtml(l) + '</span><div class="items-grid">';
         tree[u][l].forEach(c => {
           html += '<div class="item-card">' +
             '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px"><div><div class="meta">' + c.id + '</div><h4>' + escapeHtml(c.tema) + '</h4></div>' +
@@ -147,11 +147,12 @@ function initDocente() {
 
   function claseDialog(c) {
     const edit = !!c;
-    const unidades = edit ? [] : (window._clasesCache || []).map(x => x.unidad);
     const body =
+      '<div class="field"><label>ID de la clase</label><input id="d-id" type="text" value="' + (c ? escapeHtml(c.id) : '') + '" placeholder="Ej. 7matu1l1c1" style="font-family:monospace"' + (edit ? ' readonly' : '') + '>' +
+      (edit ? '<div class="hint">El ID no se puede cambiar</div>' : '<div class="hint">Lo defines tu. Debe ser unico. Se usara como nombre del archivo HTML.</div>') + '</div>' +
       '<div class="row">' +
-        '<div class="field"><label>Unidad</label><input id="d-unidad" type="number" min="1" value="' + (c ? c.unidad : (unidades[0] || 1)) + '"></div>' +
-        '<div class="field"><label>Leccion</label><input id="d-leccion" type="number" min="1" value="' + (c ? c.leccion : 1) + '"></div>' +
+        '<div class="field"><label>Nombre de la unidad</label><input id="d-unidad" type="text" value="' + (c ? escapeHtml(c.unidad) : '') + '" placeholder="Ej. Algebra básica"></div>' +
+        '<div class="field"><label>Nombre de la leccion</label><input id="d-leccion" type="text" value="' + (c ? escapeHtml(c.leccion) : '') + '" placeholder="Ej. Ecuaciones simples"></div>' +
       '</div>' +
       '<div class="field"><label>Tema de la clase</label><input id="d-tema" type="text" value="' + (c ? escapeHtml(c.tema) : '') + '" placeholder="Ej. Ecuaciones de primer grado"></div>' +
       '<label class="check-row"><input id="d-eval" type="checkbox" ' + (c && c.evaluada ? 'checked' : '') + ' onchange="document.getElementById(\'d-fechas\').classList.toggle(\'hidden\',!this.checked)"><div><div class="t">Esta clase tendra actividades evaluadas</div><div class="s">Se creara una columna en la tabla de notas</div></div></label>' +
@@ -159,23 +160,27 @@ function initDocente() {
         '<div class="field"><label>Fecha y hora de inicio</label><input id="d-fi" type="datetime-local" value="' + (c && c.fechaInicio ? c.fechaInicio.slice(0, 16) : '') + '"></div>' +
         '<div class="field"><label>Fecha y hora de fin</label><input id="d-ff" type="datetime-local" value="' + (c && c.fechaFin ? c.fechaFin.slice(0, 16) : '') + '"></div>' +
       '</div>' +
-      '<div class="alert alert-info" style="font-size:12px"><b>Ruta del HTML:</b><br><code style="font-family:monospace">' + htmlRoute(cGrado, 'clase', edit ? c.id : '(auto)') + '</code></div>';
-    const { overlay, close } = openModal(body, { title: edit ? 'Editar Clase' : 'Nueva Clase', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-primary" onclick="window._claseSave(' + (edit ? '\'' + c.id + '\'' : 'null') + ')">Guardar</button>' });
+      '<div class="alert alert-info" style="font-size:12px"><b>Ruta del HTML:</b><br><code style="font-family:monospace">' + htmlRoute(cGrado, 'clase', edit ? c.id : '(el ID que escribas') + '.html</code></div>';
+    const { close } = openModal(body, { title: edit ? 'Editar Clase' : 'Nueva Clase', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-primary" onclick="window._claseSave()">Guardar</button>' });
     window._claseClose = close;
   }
-  window._claseSave = async function(id) {
+  window._claseSave = async function() {
+    const idInput = document.getElementById('d-id');
+    const id = idInput.value.trim();
+    const isEdit = idInput.hasAttribute('readonly');
     const data = {
       id: id, grado: cGrado, materia: cMateria,
-      unidad: document.getElementById('d-unidad').value || '1',
-      leccion: document.getElementById('d-leccion').value || '1',
+      unidad: document.getElementById('d-unidad').value.trim() || 'General',
+      leccion: document.getElementById('d-leccion').value.trim() || 'General',
       tema: document.getElementById('d-tema').value.trim(),
       evaluada: document.getElementById('d-eval').checked,
       fechaInicio: document.getElementById('d-eval').checked ? document.getElementById('d-fi').value : '',
       fechaFin: document.getElementById('d-eval').checked ? document.getElementById('d-ff').value : ''
     };
+    if (!id) { toast('Falta el ID', 'Define un ID unico para la clase.', 'error'); return; }
     if (!data.tema) { toast('Falta el tema', null, 'error'); return; }
-    const res = id ? await Clases.editar(data) : await Clases.crear(data);
-    if (res.ok) { toast(id ? 'Clase actualizada' : 'Clase creada', res.clase ? 'ID: ' + res.clase.id : ''); window._claseClose(); window._claseReload(); }
+    const res = isEdit ? await Clases.editar(data) : await Clases.crear(data);
+    if (res.ok) { toast(isEdit ? 'Clase actualizada' : 'Clase creada', 'ID: ' + id); window._claseClose(); window._claseReload(); }
     else toast('Error', res.error, 'error');
   };
 
@@ -219,20 +224,26 @@ function initDocente() {
   function tareaDialog(t) {
     const edit = !!t;
     const body =
+      '<div class="field"><label>ID de la tarea</label><input id="d-id" type="text" value="' + (t ? escapeHtml(t.id) : '') + '" placeholder="Ej. 7matt1" style="font-family:monospace"' + (edit ? ' readonly' : '') + '>' +
+      (edit ? '<div class="hint">El ID no se puede cambiar</div>' : '<div class="hint">Lo defines tu. Debe ser unico.</div>') + '</div>' +
       '<div class="field"><label>Titulo</label><input id="d-titulo" type="text" value="' + (t ? escapeHtml(t.titulo) : '') + '" placeholder="Ej. Ejercicios de fracciones"></div>' +
       '<div class="field"><label>Indicaciones</label><textarea id="d-ind" rows="4">' + (t ? escapeHtml(t.indicaciones) : '') + '</textarea></div>' +
       '<div class="row"><div class="field"><label>Disponible desde</label><input id="d-fi" type="date" value="' + (t ? t.fechaInicio.slice(0, 10) : '') + '"></div>' +
       '<div class="field"><label>Cierra el</label><input id="d-ff" type="date" value="' + (t ? t.fechaFin.slice(0, 10) : '') + '"></div></div>' +
-      '<div class="alert alert-info" style="font-size:12px"><b>Ruta:</b> <code>' + htmlRoute(tGrado, 'tarea', edit ? t.id : '(auto)') + '</code></div>';
-    const { close } = openModal(body, { title: edit ? 'Editar Tarea' : 'Nueva Tarea', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-teal" onclick="window._tareaSave(' + (edit ? '\'' + t.id + '\'' : 'null') + ')">Guardar</button>' });
+      '<div class="alert alert-info" style="font-size:12px"><b>Ruta:</b> <code>' + htmlRoute(tGrado, 'tarea', edit ? t.id : '(el ID que escribas)') + '</code></div>';
+    const { close } = openModal(body, { title: edit ? 'Editar Tarea' : 'Nueva Tarea', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-teal" onclick="window._tareaSave()">Guardar</button>' });
     window._tareaClose = close;
   }
-  window._tareaSave = async function(id) {
+  window._tareaSave = async function() {
+    const idInput = document.getElementById('d-id');
+    const id = idInput.value.trim();
+    const isEdit = idInput.hasAttribute('readonly');
     const data = { id, grado: tGrado, materia: tMateria, titulo: document.getElementById('d-titulo').value.trim(), indicaciones: document.getElementById('d-ind').value.trim(), fechaInicio: document.getElementById('d-fi').value, fechaFin: document.getElementById('d-ff').value };
+    if (!id) { toast('Falta el ID', null, 'error'); return; }
     if (!data.titulo) { toast('Falta el titulo', null, 'error'); return; }
     if (!data.fechaInicio || !data.fechaFin) { toast('Falta el rango de fechas', null, 'error'); return; }
-    const res = id ? await Tareas.editar(data) : await Tareas.crear(data);
-    if (res.ok) { toast(id ? 'Actualizada' : 'Creada'); window._tareaClose(); window._tareaReload(); }
+    const res = isEdit ? await Tareas.editar(data) : await Tareas.crear(data);
+    if (res.ok) { toast(isEdit ? 'Actualizada' : 'Creada'); window._tareaClose(); window._tareaReload(); }
     else toast('Error', res.error, 'error');
   };
 
@@ -276,20 +287,26 @@ function initDocente() {
   function exaDialog(t) {
     const edit = !!t;
     const body =
+      '<div class="field"><label>ID del examen</label><input id="d-id" type="text" value="' + (t ? escapeHtml(t.id) : '') + '" placeholder="Ej. 7matex1" style="font-family:monospace"' + (edit ? ' readonly' : '') + '>' +
+      (edit ? '<div class="hint">El ID no se puede cambiar</div>' : '<div class="hint">Lo defines tu. Debe ser unico.</div>') + '</div>' +
       '<div class="field"><label>Titulo</label><input id="d-titulo" type="text" value="' + (t ? escapeHtml(t.titulo) : '') + '"></div>' +
       '<div class="field"><label>Indicaciones</label><textarea id="d-ind" rows="4">' + (t ? escapeHtml(t.indicaciones) : '') + '</textarea></div>' +
       '<div class="row"><div class="field"><label>Disponible desde</label><input id="d-fi" type="date" value="' + (t ? t.fechaInicio.slice(0, 10) : '') + '"></div>' +
       '<div class="field"><label>Cierra el</label><input id="d-ff" type="date" value="' + (t ? t.fechaFin.slice(0, 10) : '') + '"></div></div>' +
-      '<div class="alert alert-info" style="font-size:12px"><b>Ruta:</b> <code>' + htmlRoute(eGrado, 'examen', edit ? t.id : '(auto)') + '</code></div>';
-    const { close } = openModal(body, { title: edit ? 'Editar Examen' : 'Nuevo Examen', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-amber" onclick="window._exaSave(' + (edit ? '\'' + t.id + '\'' : 'null') + ')">Guardar</button>' });
+      '<div class="alert alert-info" style="font-size:12px"><b>Ruta:</b> <code>' + htmlRoute(eGrado, 'examen', edit ? t.id : '(el ID que escribas)') + '</code></div>';
+    const { close } = openModal(body, { title: edit ? 'Editar Examen' : 'Nuevo Examen', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-amber" onclick="window._exaSave()">Guardar</button>' });
     window._exaClose = close;
   }
-  window._exaSave = async function(id) {
+  window._exaSave = async function() {
+    const idInput = document.getElementById('d-id');
+    const id = idInput.value.trim();
+    const isEdit = idInput.hasAttribute('readonly');
     const data = { id, grado: eGrado, materia: eMateria, titulo: document.getElementById('d-titulo').value.trim(), indicaciones: document.getElementById('d-ind').value.trim(), fechaInicio: document.getElementById('d-fi').value, fechaFin: document.getElementById('d-ff').value };
+    if (!id) { toast('Falta el ID', null, 'error'); return; }
     if (!data.titulo) { toast('Falta el titulo', null, 'error'); return; }
     if (!data.fechaInicio || !data.fechaFin) { toast('Falta el rango', null, 'error'); return; }
-    const res = id ? await Examenes.editar(data) : await Examenes.crear(data);
-    if (res.ok) { toast(id ? 'Actualizado' : 'Creado'); window._exaClose(); window._exaReload(); }
+    const res = isEdit ? await Examenes.editar(data) : await Examenes.crear(data);
+    if (res.ok) { toast(isEdit ? 'Actualizado' : 'Creado'); window._exaClose(); window._exaReload(); }
     else toast('Error', res.error, 'error');
   };
 
@@ -359,35 +376,27 @@ function initDocente() {
     ).join('') + '</div>';
     window._artsCache = res.articulos;
   }
-  window._artNew = function() { artDialog(null); };
-  window._artEdit = function(id) { artDialog(window._artsCache.find(x => x.id === id)); };
+  window._artNew = function() { window._artEditId = null; artDialog(null); };
+  window._artEdit = function(id) { window._artEditId = id; artDialog(window._artsCache.find(x => x.id === id)); };
   window._artDel = async function(id) { if (confirm('Eliminar?')) { const r = await Tienda.eliminarArt(id); if (r.ok) { toast('Eliminado'); renderArticulos(); } } };
   function artDialog(a) {
     const edit = !!a;
-    const emojis = ['🎁','🍪','🍬','⚽','🎨','📚','✏️','🧸','🎮','🥤','🍫','🎈'];
     const body =
-      '<div class="field"><label>Emoji</label><div id="emoji-pick" style="display:flex;flex-wrap:wrap;gap:6px">' + emojis.map(e => '<button type="button" onclick="window._emojiPick(this,\'' + e + '\')" style="width:36px;height:36px;border:2px solid #f3f4f6;background:#ecfdf5;border-radius:8px;cursor:pointer;font-size:18px" data-e="' + e + '">' + e + '</button>').join('') + '</div></div>' +
+      '<div class="field"><label>Emoji</label><input id="d-emoji" type="text" value="' + (a ? escapeHtml(a.emoji) : '🎁') + '" placeholder="Pega aqui el emoji que quieras" style="font-size:24px;text-align:center" maxlength="4"><div class="hint">Copia y pega cualquier emoji (ej. 🎁 🍪 🎮)</div></div>' +
       '<div class="field"><label>Nombre</label><input id="d-nombre" type="text" value="' + (a ? escapeHtml(a.nombre) : '') + '"></div>' +
       '<div class="field"><label>Descripcion</label><textarea id="d-desc" rows="2">' + (a ? escapeHtml(a.descripcion) : '') + '</textarea></div>' +
       '<div class="row"><div class="field"><label>Precio (⭐)</label><input id="d-precio" type="number" min="0" value="' + (a ? a.precio : 0) + '"></div>' +
-      '<div class="field"><label>Stock</label><input id="d-stock" type="number" min="0" value="' + (a ? a.stock : 0) + '"></div></div>' +
-      '<input type="hidden" id="d-emoji" value="' + (a ? a.emoji : '🎁') + '">';
-    const { close } = openModal(body, { title: edit ? 'Editar Articulo' : 'Nuevo Articulo', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-rose" onclick="window._artSave(' + (edit ? '\'' + a.id + '\'' : 'null') + ')">Guardar</button>' });
+      '<div class="field"><label>Stock</label><input id="d-stock" type="number" min="0" value="' + (a ? a.stock : 0) + '"></div></div>';
+    const { close } = openModal(body, { title: edit ? 'Editar Articulo' : 'Nuevo Articulo', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-rose" onclick="window._artSave()">Guardar</button>' });
     window._artClose = close;
-    // pre-select emoji
-    const cur = document.getElementById('d-emoji').value;
-    document.querySelectorAll('#emoji-pick button').forEach(b => { if (b.dataset.e === cur) b.style.borderColor = '#e11d48'; });
   }
-  window._emojiPick = function(btn, e) {
-    document.getElementById('d-emoji').value = e;
-    document.querySelectorAll('#emoji-pick button').forEach(b => b.style.borderColor = '#f3f4f6');
-    btn.style.borderColor = '#e11d48';
-  };
-  window._artSave = async function(id) {
-    const data = { id, nombre: document.getElementById('d-nombre').value.trim(), descripcion: document.getElementById('d-desc').value.trim(), precio: Number(document.getElementById('d-precio').value), stock: Number(document.getElementById('d-stock').value), emoji: document.getElementById('d-emoji').value };
+  window._artSave = async function() {
+    const emoji = document.getElementById('d-emoji').value.trim() || '🎁';
+    const data = { nombre: document.getElementById('d-nombre').value.trim(), descripcion: document.getElementById('d-desc').value.trim(), precio: Number(document.getElementById('d-precio').value), stock: Number(document.getElementById('d-stock').value), emoji };
     if (!data.nombre) { toast('Falta el nombre', null, 'error'); return; }
-    const res = id ? await Tienda.editarArt(data) : await Tienda.crearArt(data);
-    if (res.ok) { toast(id ? 'Actualizado' : 'Creado'); window._artClose(); renderArticulos(); }
+    const editId = window._artEditId;
+    const res = editId ? await Tienda.editarArt({ id: editId, ...data }) : await Tienda.crearArt(data);
+    if (res.ok) { toast(editId ? 'Actualizado' : 'Creado'); window._artClose(); renderArticulos(); }
     else toast('Error', res.error, 'error');
   };
 
@@ -511,32 +520,30 @@ function initDocente() {
     ).join('') + '</div>';
     window._juegosCache = res.juegos;
   }
-  window._juegoNew = function() { juegoDialog(null); };
-  window._juegoEdit = function(id) { juegoDialog(window._juegosCache.find(x => x.id === id)); };
+  window._juegoNew = function() { window._juegoEditId = null; juegoDialog(null); };
+  window._juegoEdit = function(id) { window._juegoEditId = id; juegoDialog(window._juegosCache.find(x => x.id === id)); };
   window._juegoDel = async function(id) { if (confirm('Eliminar?')) { const r = await Juegos.eliminar(id); if (r.ok) { toast('Eliminado'); renderJuegosList(); } } };
   function juegoDialog(j) {
     const edit = !!j;
-    const emojis = ['🎯','🧩','♟️','🚀','🌈','🧠','⚔️','🏆','🎲','🔮','🪐'];
     const body =
-      '<div class="field"><label>Emoji</label><div id="emoji-pick" style="display:flex;flex-wrap:wrap;gap:6px">' + emojis.map(e => '<button type="button" onclick="window._emojiPick(this,\'' + e + '\')" style="width:36px;height:36px;border:2px solid #f3f4f6;background:#e0f2fe;border-radius:8px;cursor:pointer;font-size:18px" data-e="' + e + '">' + e + '</button>').join('') + '</div></div>' +
+      '<div class="field"><label>Emoji</label><input id="d-emoji" type="text" value="' + (j ? escapeHtml(j.emoji) : '🎯') + '" placeholder="Pega aqui el emoji que quieras" style="font-size:24px;text-align:center" maxlength="4"><div class="hint">Copia y pega cualquier emoji (ej. 🎯 🧩 🚀)</div></div>' +
       '<div class="field"><label>Titulo</label><input id="d-titulo" type="text" value="' + (j ? escapeHtml(j.titulo) : '') + '"></div>' +
       '<div class="field"><label>Descripcion</label><textarea id="d-desc" rows="2">' + (j ? escapeHtml(j.descripcion) : '') + '</textarea></div>' +
       '<div class="row"><div class="field"><label>Vidas necesarias</label><input id="d-vid" type="number" min="0" value="' + (j ? j.vidasNecesarias : 1) + '"></div>' +
       '<div class="field"><label>Niveles</label><input id="d-niv" type="number" min="1" value="' + (j ? j.niveles : 5) + '"></div></div>' +
       '<div class="row"><div class="field"><label>Puntos por nivel</label><input id="d-pts" type="number" min="0" value="' + (j ? j.puntosPorNivel : 10) + '"></div>' +
       '<div class="field"><label>Tiempo (min, opcional)</label><input id="d-tiempo" type="number" min="0" value="' + (j && j.tiempo ? j.tiempo : '') + '"></div></div>' +
-      '<div class="field"><label>URL del juego</label><input id="d-url" type="text" value="' + (j ? escapeHtml(j.url) : '') + '" placeholder="https://..."></div>' +
-      '<input type="hidden" id="d-emoji" value="' + (j ? j.emoji : '🎯') + '">';
-    const { close } = openModal(body, { title: edit ? 'Editar Juego' : 'Nuevo Juego', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-sky" onclick="window._juegoSave(' + (edit ? '\'' + j.id + '\'' : 'null') + ')">Guardar</button>' });
+      '<div class="field"><label>URL del juego</label><input id="d-url" type="text" value="' + (j ? escapeHtml(j.url) : '') + '" placeholder="https://..."></div>';
+    const { close } = openModal(body, { title: edit ? 'Editar Juego' : 'Nuevo Juego', foot: '<button class="btn btn-outline" onclick="this.closest(\'.modal-overlay\').remove()">Cancelar</button><button class="btn btn-sky" onclick="window._juegoSave()">Guardar</button>' });
     window._juegoClose = close;
-    const cur = document.getElementById('d-emoji').value;
-    document.querySelectorAll('#emoji-pick button').forEach(b => { if (b.dataset.e === cur) b.style.borderColor = '#0284c7'; });
   }
-  window._juegoSave = async function(id) {
-    const data = { id, titulo: document.getElementById('d-titulo').value.trim(), descripcion: document.getElementById('d-desc').value.trim(), vidasNecesarias: Number(document.getElementById('d-vid').value), niveles: Number(document.getElementById('d-niv').value), puntosPorNivel: Number(document.getElementById('d-pts').value), tiempo: document.getElementById('d-tiempo').value ? Number(document.getElementById('d-tiempo').value) : '', url: document.getElementById('d-url').value.trim(), emoji: document.getElementById('d-emoji').value };
+  window._juegoSave = async function() {
+    const emoji = document.getElementById('d-emoji').value.trim() || '🎯';
+    const data = { titulo: document.getElementById('d-titulo').value.trim(), descripcion: document.getElementById('d-desc').value.trim(), vidasNecesarias: Number(document.getElementById('d-vid').value), niveles: Number(document.getElementById('d-niv').value), puntosPorNivel: Number(document.getElementById('d-pts').value), tiempo: document.getElementById('d-tiempo').value ? Number(document.getElementById('d-tiempo').value) : '', url: document.getElementById('d-url').value.trim(), emoji };
     if (!data.titulo) { toast('Falta el titulo', null, 'error'); return; }
-    const res = id ? await Juegos.editar(data) : await Juegos.crear(data);
-    if (res.ok) { toast(id ? 'Actualizado' : 'Creado'); window._juegoClose(); renderJuegosList(); }
+    const editId = window._juegoEditId;
+    const res = editId ? await Juegos.editar({ id: editId, ...data }) : await Juegos.crear(data);
+    if (res.ok) { toast(editId ? 'Actualizado' : 'Creado'); window._juegoClose(); renderJuegosList(); }
     else toast('Error', res.error, 'error');
   };
 

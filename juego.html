@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juego · EduNova</title>
+  <link rel="stylesheet" href="css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main" style="max-width:680px">
+      <div id="game-area" class="item-card">
+        <h1 style="text-align:center;margin-bottom:8px" id="game-title">Cargando juego...</h1>
+        <p style="text-align:center;color:#6b7280" id="game-desc"></p>
+        <div id="game-body" style="margin-top:20px;text-align:center"></div>
+      </div>
+    </main>
+  </div>
+  <footer class="footer">EduNova · Juego</footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/userbar.js"></script>
+  <script>
+    // ============================================================
+    // PLANTILLA DE JUEGO — EduNova
+    // ============================================================
+    // Este HTML es una plantilla base. El docente puede:
+    //   1. Usarla tal cual (juego de preguntas aleatorias).
+    //   2. Copiarla y modificar la logica del juego en jugar().
+    //
+    // El juego recibe el ID por la URL: juego.html?id=juego1
+    // Lee la info del juego desde Sheets, muestra al estudiante,
+    // y al final reporta los puntos ganados via la API.
+    // ============================================================
+
+    const u = requireLogin();
+    if (!u) throw new Error('No login');
+
+    const params = new URLSearchParams(window.location.search);
+    const juegoId = params.get('id');
+
+    renderUserBar(document.getElementById('userbar'));
+
+    let juegoData = null;
+    let nivelActual = 1;
+    let puntosGanados = 0;
+    let preguntasRespondidas = 0;
+
+    async function init() {
+      if (!juegoId) {
+        document.getElementById('game-title').textContent = 'Error';
+        document.getElementById('game-body').innerHTML = '<div class="alert alert-error">Falta el ID del juego en la URL.</div>';
+        return;
+      }
+      // Cargar info del juego
+      const res = await Juegos.list();
+      if (!res.ok) { document.getElementById('game-body').innerHTML = '<div class="alert alert-error">' + res.error + '</div>'; return; }
+      juegoData = res.juegos.find(j => j.id === juegoId);
+      if (!juegoData) { document.getElementById('game-body').innerHTML = '<div class="alert alert-error">Juego no encontrado.</div>'; return; }
+
+      document.getElementById('game-title').textContent = (juegoData.emoji || '🎯') + ' ' + juegoData.titulo;
+      document.getElementById('game-desc').textContent = juegoData.descripcion || ('Completa ' + juegoData.niveles + ' niveles para ganar puntos.');
+
+      // Verificar vidas (ya se restaron al abrir, pero mostramos info)
+      if (u.vidas < 0) u.vidas = 0;
+
+      mostrarInicio();
+    }
+
+    function mostrarInicio() {
+      document.getElementById('game-body').innerHTML =
+        '<div class="alert alert-info"><b>🎮 Listo para jugar</b><br>Niveles: ' + juegoData.niveles + ' · Puntos por nivel: ' + juegoData.puntosPorNivel +
+        (juegoData.tiempo ? ' · Tiempo: ' + juegoData.tiempo + ' min' : '') + '</div>' +
+        '<button class="btn btn-sky btn-lg" onclick="iniciarJuego()">▶️ Comenzar</button>';
+    }
+
+    // ===== Juego de ejemplo: trivia de matematica =====
+    // El docente puede reemplazar esta logica por la de su juego real.
+    let operaciones = [];
+    function generarOperacion() {
+      const a = Math.floor(Math.random() * 10) + 1;
+      const b = Math.floor(Math.random() * 10) + 1;
+      const tipo = ['+', '-', '×'][Math.floor(Math.random() * 3)];
+      let resp;
+      if (tipo === '+') resp = a + b;
+      else if (tipo === '-') resp = a - b;
+      else resp = a * b;
+      return { preg: a + ' ' + tipo + ' ' + b + ' = ?', resp: resp };
+    }
+
+    window.iniciarJuego = function() {
+      nivelActual = 1;
+      puntosGanados = 0;
+      preguntasRespondidas = 0;
+      siguientePregunta();
+    };
+
+    function siguientePregunta() {
+      if (nivelActual > juegoData.niveles) { finalizar(); return; }
+      const op = generarOperacion();
+      const opciones = [op.resp];
+      while (opciones.length < 4) {
+        const distractor = op.resp + (Math.floor(Math.random() * 10) - 5);
+        if (distractor !== op.resp && opciones.indexOf(distractor) === -1 && distractor >= 0) opciones.push(distractor);
+      }
+      opciones.sort(() => Math.random() - 0.5);
+
+      document.getElementById('game-body').innerHTML =
+        '<div style="display:flex;justify-content:space-between;margin-bottom:12px"><span class="badge badge-sky">Nivel ' + nivelActual + '/' + juegoData.niveles + '</span><span class="badge badge-amber">⭐ ' + puntosGanados + '</span></div>' +
+        '<h2 style="font-size:36px;margin:20px 0">' + op.preg + '</h2>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:300px;margin:0 auto">' +
+        opciones.map(o => '<button class="btn btn-outline" style="font-size:20px;padding:14px" onclick="responder(' + o + ',' + op.resp + ')">' + o + '</button>').join('') +
+        '</div>';
+    }
+
+    window.responder = async function(elegida, correcta) {
+      preguntasRespondidas++;
+      if (elegida === correcta) {
+        puntosGanados += juegoData.puntosPorNivel;
+        nivelActual++;
+        toast('✓ Correcto', '+' + juegoData.puntosPorNivel + ' ⭐');
+        setTimeout(siguientePregunta, 600);
+      } else {
+        toast('✗ Incorrecto', 'La respuesta era ' + correcta, 'error');
+        nivelActual++; // igual avanza de nivel
+        setTimeout(siguientePregunta, 1000);
+      }
+    };
+
+    async function finalizar() {
+      // Reportar puntos al backend
+      if (puntosGanados > 0) {
+        const res = await JuegosAPI.registrarPuntos(u.nie, puntosGanados);
+        if (res.ok) { u.puntos = res.puntos; Auth.setCurrent(u); updateUserBarStats(); }
+      }
+      document.getElementById('game-body').innerHTML =
+        '<div class="alert alert-success" style="text-align:center"><div style="font-size:48px">🏆</div><h2>¡Juego terminado!</h2>' +
+        '<p style="margin-top:8px">Respondiste ' + preguntasRespondidas + ' preguntas.</p>' +
+        '<p style="font-size:24px;font-weight:900;color:#92400e;margin-top:8px">⭐ ' + puntosGanados + ' puntos ganados</p></div>' +
+        '<a class="btn btn-primary btn-lg" href="estudiante.html">← Volver</a>';
+    }
+
+    init();
+  </script>
+</body>
+</html>
