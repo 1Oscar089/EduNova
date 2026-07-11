@@ -163,3 +163,33 @@ function requireLogin() {
   if (!u) { window.location.href = 'index.html'; return null; }
   return u;
 }
+
+// ===== Loading helpers =====
+// Pone un boton en estado "cargando": lo deshabilita y le pone un spinner.
+// Devuelve una funcion para restaurar el boton al estado original.
+function btnLoading(btn, loadingText) {
+  if (!btn) return () => {};
+  const original = btn.innerHTML;
+  const originalDisabled = btn.disabled;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> ' + (loadingText || 'Cargando...');
+  btn.style.opacity = '0.75';
+  return function restore() {
+    btn.disabled = originalDisabled;
+    btn.innerHTML = original;
+    btn.style.opacity = '';
+  };
+}
+
+// Muestra un overlay de carga global (para cuando se navega entre vistas)
+let _globalLoader = null;
+function showLoader(text) {
+  hideLoader();
+  _globalLoader = document.createElement('div');
+  _globalLoader.className = 'global-loader';
+  _globalLoader.innerHTML = '<div class="gl-box"><div class="gl-spinner"></div><p>' + escapeHtml(text || 'Cargando...') + '</p></div>';
+  document.body.appendChild(_globalLoader);
+}
+function hideLoader() {
+  if (_globalLoader) { _globalLoader.remove(); _globalLoader = null; }
+}

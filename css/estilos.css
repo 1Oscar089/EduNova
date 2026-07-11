@@ -262,3 +262,20 @@ td input[type=number]:focus { outline: none; border-color: var(--emerald); }
 .filtros-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .filtros-chips button { padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: #fff; color: var(--orange); cursor: pointer; }
 .filtros-chips button.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+/* ===== Spinner & loaders ===== */
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn:disabled { cursor: wait; }
+.btn .spinner { width: 14px; height: 14px; }
+
+/* Loader global (overlay) */
+.global-loader { position: fixed; inset: 0; background: rgba(255,255,255,.75); backdrop-filter: blur(2px); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.global-loader .gl-box { text-align: center; }
+.global-loader .gl-spinner { width: 40px; height: 40px; border: 4px solid var(--emerald-light); border-top-color: var(--emerald); border-radius: 50%; margin: 0 auto 12px; animation: spin 0.7s linear infinite; }
+.global-loader p { color: var(--emerald-dark); font-weight: 700; font-size: 14px; }
+
+/* Skeleton loading para vistas */
+.skeleton { background: linear-gradient(90deg, #f0fdf4 25%, #dcfce7 50%, #f0fdf4 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skel-card { height: 120px; border-radius: 16px; margin-bottom: 12px; }

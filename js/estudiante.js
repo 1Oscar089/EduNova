@@ -40,7 +40,13 @@ function initEstudiante() {
           '<h2>' + c.t + '</h2><p>' + c.d + '</p><div class="open">Abrir →</div></button>'
       ).join('') + '</div>';
   }
-  window._go = function(v) { view = v; render(); };
+  window._go = function(v) {
+    if (v === 'home') { view = v; render(); return; }
+    showLoader();
+    view = v;
+    render();
+    hideLoader();
+  };
 
   function header(icon, title, subtitle) {
     return '<div class="page-header"><div class="page-header-left"><button class="back-btn" onclick="window._go(\'home\')">←</button>' +
@@ -199,6 +205,8 @@ function initEstudiante() {
     if (!totalItems) { toast('Carrito vacio', null, 'error'); return; }
     const total = Object.entries(carrito).reduce((s, [id, cant]) => { const a = window._artsCache.find(x => x.id === id); return s + (a ? a.precio * cant : 0); }, 0);
     if (total > u.puntos) { toast('Puntos insuficientes', 'Necesitas ' + total + ' ⭐, tienes ' + u.puntos + '.', 'error'); return; }
+    const btn = event.target;
+    const restore = btnLoading(btn, 'Procesando...');
     const items = Object.entries(carrito).map(([articuloId, cantidad]) => ({ articuloId, cantidad }));
     const res = await Tienda.crearPedido({ estudianteNie: u.nie, estudianteNombre: u.nombre, items });
     if (res.ok) {
@@ -209,7 +217,7 @@ function initEstudiante() {
       updateUserBarStats();
       toast('Pedido realizado', 'Canjeaste ' + total + ' ⭐. Espera al docente.');
       renderShop();
-    } else toast('Error', res.error, 'error');
+    } else { restore(); toast('Error', res.error, 'error'); }
   };
   async function renderMisPedidos() {
     const res = await Tienda.pedidos();
@@ -259,12 +267,15 @@ function initEstudiante() {
     const juegos = window._juegosCache || [];
     const j = juegos.find(x => x.id === id);
     if (!j) { toast('Juego no encontrado', null, 'error'); return; }
+    const btn = event.target;
+    const restore = btnLoading(btn, 'Abriendo...');
     // Las vidas se restan SI Y SOLO SI el HTML del juego se abre.
     // Abrimos el HTML del juego en una nueva pestana.
     const url = j.url || ('juego.html?id=' + encodeURIComponent(id));
     const win = window.open(url, '_blank');
     if (!win) {
       // El navegador bloqueo el popup -> no se abrio el HTML -> no se restan vidas.
+      restore();
       toast('No se pudo abrir el juego', 'Permite ventanas emergentes para este sitio e intenta de nuevo.', 'error');
       return;
     }

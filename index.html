@@ -141,9 +141,12 @@
       const nie = document.getElementById('l-nie').value.trim();
       const pass = document.getElementById('l-pass').value;
       if (!nie || !pass) { toast('Completa todos los campos', null, 'error'); return false; }
+      const btn = e.target.querySelector('button[type=submit]');
+      const restore = btnLoading(btn, 'Entrando...');
       const res = await Auth.login(nie, pass);
-      if (!res.ok) { toast('No se pudo iniciar sesion', res.error, 'error'); return false; }
+      if (!res.ok) { restore(); toast('No se pudo iniciar sesion', res.error, 'error'); return false; }
       Auth.setCurrent(res.usuario);
+      btn.innerHTML = '<span class="spinner"></span> Redirigiendo...';
       toast('Bienvenido', res.usuario.nombre);
       setTimeout(() => {
         window.location.href = res.usuario.rol === 'admin' ? 'docente.html' : 'estudiante.html';
@@ -160,9 +163,12 @@
       if (!isValidNombre(nombre)) { toast('Nombre invalido', 'Solo MAYÚSCULAS, sin tildes, Ñ permitida. Mínimo 2 palabras.', 'error'); return false; }
       if (!isValidNie(nie)) { toast('NIE invalido', 'Debe contener solo numeros (minimo 6).', 'error'); return false; }
       if (pass.length < 4) { toast('Contraseña muy corta', 'Minimo 4 caracteres.', 'error'); return false; }
+      const btn = e.target.querySelector('button[type=submit]');
+      const restore = btnLoading(btn, 'Creando cuenta...');
       const res = await Auth.crearEstudiante(nie, nombre, pass, grado);
-      if (!res.ok) { toast('No se pudo registrar', res.error, 'error'); return false; }
+      if (!res.ok) { restore(); toast('No se pudo registrar', res.error, 'error'); return false; }
       Auth.setCurrent(res.usuario);
+      btn.innerHTML = '<span class="spinner"></span> Redirigiendo...';
       toast('Cuenta creada', 'Bienvenido a EduNova');
       setTimeout(() => { window.location.href = 'estudiante.html'; }, 700);
       return false;
@@ -194,9 +200,12 @@
       const url = document.getElementById('apps-url').value.trim();
       if (!url) { toast('Pega el enlace', null, 'error'); return; }
       if (!/^https?:\/\//.test(url)) { toast('Enlace invalido', 'Debe comenzar con http(s)://', 'error'); return; }
+      const btn = event.target;
+      const restore = btnLoading(btn, 'Conectando...');
       setApiUrl(url);
       const res = await Auth.setupAdmin();
       if (!res.ok) {
+        restore();
         toast('Error', res.error, 'error');
         return;
       }
@@ -214,9 +223,12 @@
     }
 
     async function entrarAdmin(nie, password) {
+      const btn = event.target;
+      const restore = btnLoading(btn, 'Entrando...');
       const res = await Auth.login(nie, password);
-      if (!res.ok) { toast('Error', res.error, 'error'); return; }
+      if (!res.ok) { restore(); toast('Error', res.error, 'error'); return; }
       Auth.setCurrent(res.usuario);
+      btn.innerHTML = '<span class="spinner"></span> Redirigiendo...';
       toast('Bienvenido, docente');
       setTimeout(() => { window.location.href = 'docente.html'; }, 600);
     }
@@ -233,9 +245,11 @@
 
     async function reconfigAdmin() {
       if (!confirm('Esto eliminara el administrador actual y generara credenciales nuevas. Los estudiantes NO se borran. Continuar?')) return;
+      const btn = event.target;
+      const restore = btnLoading(btn, 'Reconfigurando...');
       const res = await Auth.reconfigurarAdmin();
       if (res.ok) { toast('Listo', 'Pega el enlace de Apps Script para reconfigurar'); renderAdminForm(); }
-      else toast('Error', res.error, 'error');
+      else { restore(); toast('Error', res.error, 'error'); }
     }
 
     function copyTxt(t) {

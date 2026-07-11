@@ -47,7 +47,14 @@ function initDocente() {
     return '<span style="font-size:24px">' + (map[t] || '📁') + '</span>';
   }
 
-  window._go = function(v) { view = v; render(); };
+  window._go = function(v) {
+    if (v === 'home') { view = v; render(); return; }
+    // muestra skeleton mientras carga la vista
+    showLoader();
+    view = v;
+    render();
+    hideLoader();
+  };
 
   // ===== Panel header helper =====
   function header(icon, title, subtitle, actionHtml) {
@@ -140,7 +147,9 @@ function initDocente() {
   };
   window._claseDel = async function(id) {
     if (!confirm('Eliminar esta clase?')) return;
+    showLoader('Eliminando...');
     const res = await Clases.eliminar(id);
+    hideLoader();
     if (res.ok) { toast('Clase eliminada'); window._claseReload(); }
     else toast('Error', res.error, 'error');
   };
@@ -179,9 +188,11 @@ function initDocente() {
     };
     if (!id) { toast('Falta el ID', 'Define un ID unico para la clase.', 'error'); return; }
     if (!data.tema) { toast('Falta el tema', null, 'error'); return; }
+    const btn = document.querySelector('.modal-foot .btn-primary');
+    const restore = btnLoading(btn, 'Guardando...');
     const res = isEdit ? await Clases.editar(data) : await Clases.crear(data);
     if (res.ok) { toast(isEdit ? 'Clase actualizada' : 'Clase creada', 'ID: ' + id); window._claseClose(); window._claseReload(); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   // ===== TAREAS =====
@@ -220,7 +231,7 @@ function initDocente() {
   };
   window._tareaNew = function() { tareaDialog(null); };
   window._tareaEdit = function(id) { tareaDialog(window._tareasCache.find(x => x.id === id)); };
-  window._tareaDel = async function(id) { if (confirm('Eliminar?')) { const r = await Tareas.eliminar(id); if (r.ok) { toast('Eliminada'); window._tareaReload(); } } };
+  window._tareaDel = async function(id) { if (confirm('Eliminar?')) { showLoader('Eliminando...'); const r = await Tareas.eliminar(id); hideLoader(); if (r.ok) { toast('Eliminada'); window._tareaReload(); } else toast('Error', r.error, 'error'); } };
   function tareaDialog(t) {
     const edit = !!t;
     const body =
@@ -242,9 +253,11 @@ function initDocente() {
     if (!id) { toast('Falta el ID', null, 'error'); return; }
     if (!data.titulo) { toast('Falta el titulo', null, 'error'); return; }
     if (!data.fechaInicio || !data.fechaFin) { toast('Falta el rango de fechas', null, 'error'); return; }
+    const btn = document.querySelector('.modal-foot .btn-teal');
+    const restore = btnLoading(btn, 'Guardando...');
     const res = isEdit ? await Tareas.editar(data) : await Tareas.crear(data);
     if (res.ok) { toast(isEdit ? 'Actualizada' : 'Creada'); window._tareaClose(); window._tareaReload(); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   // ===== EXAMENES =====
@@ -283,7 +296,7 @@ function initDocente() {
   };
   window._exaNew = function() { exaDialog(null); };
   window._exaEdit = function(id) { exaDialog(window._exaCache.find(x => x.id === id)); };
-  window._exaDel = async function(id) { if (confirm('Eliminar?')) { const r = await Examenes.eliminar(id); if (r.ok) { toast('Eliminado'); window._exaReload(); } } };
+  window._exaDel = async function(id) { if (confirm('Eliminar?')) { showLoader('Eliminando...'); const r = await Examenes.eliminar(id); hideLoader(); if (r.ok) { toast('Eliminado'); window._exaReload(); } else toast('Error', r.error, 'error'); } };
   function exaDialog(t) {
     const edit = !!t;
     const body =
@@ -305,9 +318,11 @@ function initDocente() {
     if (!id) { toast('Falta el ID', null, 'error'); return; }
     if (!data.titulo) { toast('Falta el titulo', null, 'error'); return; }
     if (!data.fechaInicio || !data.fechaFin) { toast('Falta el rango', null, 'error'); return; }
+    const btn = document.querySelector('.modal-foot .btn-amber');
+    const restore = btnLoading(btn, 'Guardando...');
     const res = isEdit ? await Examenes.editar(data) : await Examenes.crear(data);
     if (res.ok) { toast(isEdit ? 'Actualizado' : 'Creado'); window._exaClose(); window._exaReload(); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   // ===== TABLA DE NOTAS (compartida) =====
@@ -335,9 +350,12 @@ function initDocente() {
   window._notaSave = async function(grado, materia, tipo, nie, activityId, value) {
     const nota = value === '' ? null : Math.max(0, Math.min(10, parseFloat(value)));
     if (value !== '' && isNaN(nota)) return;
+    const input = event.target;
+    input.disabled = true;
+    input.style.opacity = '0.5';
     const res = await Notas.set(grado, materia, tipo, nie, activityId, nota);
     if (res.ok) { toast('Nota guardada'); renderTablaNotas(tipo, grado, materia, document.getElementById(tipo === 'clase' ? 'clase-content' : tipo === 'tarea' ? 'tarea-content' : 'exa-content')); }
-    else toast('Error', res.error, 'error');
+    else { input.disabled = false; input.style.opacity = ''; toast('Error', res.error, 'error'); }
   };
 
   function htmlRoute(grado, tipo, id) {
@@ -378,7 +396,7 @@ function initDocente() {
   }
   window._artNew = function() { window._artEditId = null; artDialog(null); };
   window._artEdit = function(id) { window._artEditId = id; artDialog(window._artsCache.find(x => x.id === id)); };
-  window._artDel = async function(id) { if (confirm('Eliminar?')) { const r = await Tienda.eliminarArt(id); if (r.ok) { toast('Eliminado'); renderArticulos(); } } };
+  window._artDel = async function(id) { if (confirm('Eliminar?')) { showLoader('Eliminando...'); const r = await Tienda.eliminarArt(id); hideLoader(); if (r.ok) { toast('Eliminado'); renderArticulos(); } else toast('Error', r.error, 'error'); } };
   function artDialog(a) {
     const edit = !!a;
     const body =
@@ -394,10 +412,12 @@ function initDocente() {
     const emoji = document.getElementById('d-emoji').value.trim() || '🎁';
     const data = { nombre: document.getElementById('d-nombre').value.trim(), descripcion: document.getElementById('d-desc').value.trim(), precio: Number(document.getElementById('d-precio').value), stock: Number(document.getElementById('d-stock').value), emoji };
     if (!data.nombre) { toast('Falta el nombre', null, 'error'); return; }
+    const btn = document.querySelector('.modal-foot .btn-rose');
+    const restore = btnLoading(btn, 'Guardando...');
     const editId = window._artEditId;
     const res = editId ? await Tienda.editarArt({ id: editId, ...data }) : await Tienda.crearArt(data);
     if (res.ok) { toast(editId ? 'Actualizado' : 'Creado'); window._artClose(); renderArticulos(); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   async function renderPedidos() {
@@ -427,9 +447,11 @@ function initDocente() {
     if (el) el.classList.toggle('hidden');
   };
   window._pedEntregar = async function(id, val) {
+    const btn = event.target;
+    const restore = btnLoading(btn, val ? 'Marcando...' : 'Desmarcando...');
     const res = await Tienda.actualizarPedido(id, { entregado: val });
     if (res.ok) { toast(val ? 'Pedido entregado' : 'Marcado pendiente'); renderPedidos(); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   // ===== ESTUDIANTES =====
@@ -488,9 +510,11 @@ function initDocente() {
   window._promover = async function() {
     if (!estSelected.size) { toast('Selecciona estudiantes', 'Marca quienes seran promovidos.', 'error'); return; }
     if (!confirm('Promover ' + estSelected.size + ' estudiantes de ' + estGradoSel + '? Los no seleccionados se archivaran.')) return;
+    const btn = event.target;
+    const restore = btnLoading(btn, 'Promoviendo...');
     const res = await Estudiantes.promover(Array.from(estSelected));
     if (res.ok) { toast('Promocion realizada', res.promovidos + ' promovidos, ' + res.archivados + ' archivados.'); estSelected.clear(); renderEstList('activos'); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   // ===== JUEGOS =====
@@ -522,7 +546,7 @@ function initDocente() {
   }
   window._juegoNew = function() { window._juegoEditId = null; juegoDialog(null); };
   window._juegoEdit = function(id) { window._juegoEditId = id; juegoDialog(window._juegosCache.find(x => x.id === id)); };
-  window._juegoDel = async function(id) { if (confirm('Eliminar?')) { const r = await Juegos.eliminar(id); if (r.ok) { toast('Eliminado'); renderJuegosList(); } } };
+  window._juegoDel = async function(id) { if (confirm('Eliminar?')) { showLoader('Eliminando...'); const r = await Juegos.eliminar(id); hideLoader(); if (r.ok) { toast('Eliminado'); renderJuegosList(); } else toast('Error', r.error, 'error'); } };
   function juegoDialog(j) {
     const edit = !!j;
     const body =
@@ -541,10 +565,12 @@ function initDocente() {
     const emoji = document.getElementById('d-emoji').value.trim() || '🎯';
     const data = { titulo: document.getElementById('d-titulo').value.trim(), descripcion: document.getElementById('d-desc').value.trim(), vidasNecesarias: Number(document.getElementById('d-vid').value), niveles: Number(document.getElementById('d-niv').value), puntosPorNivel: Number(document.getElementById('d-pts').value), tiempo: document.getElementById('d-tiempo').value ? Number(document.getElementById('d-tiempo').value) : '', url: document.getElementById('d-url').value.trim(), emoji };
     if (!data.titulo) { toast('Falta el titulo', null, 'error'); return; }
+    const btn = document.querySelector('.modal-foot .btn-sky');
+    const restore = btnLoading(btn, 'Guardando...');
     const editId = window._juegoEditId;
     const res = editId ? await Juegos.editar({ id: editId, ...data }) : await Juegos.crear(data);
     if (res.ok) { toast(editId ? 'Actualizado' : 'Creado'); window._juegoClose(); renderJuegosList(); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   // ===== RECURSOS =====
@@ -572,7 +598,7 @@ function initDocente() {
   }
   window._recNew = function() { recDialog(null); };
   window._recEdit = function(id) { recDialog(window._recsCache.find(x => x.id === id)); };
-  window._recDel = async function(id) { if (confirm('Eliminar?')) { const r = await Recursos.eliminar(id); if (r.ok) { toast('Eliminado'); renderRecursosList(); } } };
+  window._recDel = async function(id) { if (confirm('Eliminar?')) { showLoader('Eliminando...'); const r = await Recursos.eliminar(id); hideLoader(); if (r.ok) { toast('Eliminado'); renderRecursosList(); } else toast('Error', r.error, 'error'); } };
   function recDialog(r) {
     const edit = !!r;
     const body =
@@ -587,9 +613,11 @@ function initDocente() {
   window._recSave = async function(id) {
     const data = { id, titulo: document.getElementById('d-titulo').value.trim(), url: document.getElementById('d-url').value.trim(), descripcion: document.getElementById('d-desc').value.trim(), grado: document.getElementById('d-grado').value };
     if (!data.titulo || !data.url) { toast('Falta titulo o URL', null, 'error'); return; }
+    const btn = document.querySelector('.modal-foot .btn-orange');
+    const restore = btnLoading(btn, 'Guardando...');
     const res = id ? await Recursos.editar(data) : await Recursos.crear(data);
     if (res.ok) { toast(id ? 'Actualizado' : 'Creado'); window._recClose(); renderRecursosList(); }
-    else toast('Error', res.error, 'error');
+    else { restore(); toast('Error', res.error, 'error'); }
   };
 
   render();
