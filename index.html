@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduNova · Plataforma Escolar</title>
+  <link rel="stylesheet" href="css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+</head>
+<body>
+  <div class="login-wrap">
+    <!-- Branding -->
+    <div class="login-brand">
+      <div class="deco">
+        <span style="top:40px;left:40px">📚</span>
+        <span style="bottom:80px;right:40px">🎓</span>
+        <span style="top:33%;right:25%">✏️</span>
+        <span style="bottom:33%;left:25%">📐</span>
+      </div>
+      <div style="position:relative;z-index:1">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:28px">🎓</div>
+          <span style="font-size:24px;font-weight:900">EduNova</span>
+        </div>
+      </div>
+      <div style="position:relative;z-index:1;max-width:440px">
+        <h1>Aprende, juega y crece en tu plataforma escolar</h1>
+        <p>Gestiona tus clases, tareas y examenes. Acumula puntos, conserva tus vidas y desbloquea juegos mientras aprendes.</p>
+        <div class="feat">
+          <div>📚<br>Clases</div>
+          <div>🏆<br>Puntos</div>
+          <div>❤️<br>Vidas</div>
+        </div>
+      </div>
+      <div style="position:relative;z-index:1;color:rgba(236,253,245,.7);font-size:13px">© <span id="year"></span> EduNova · Plataforma Educativa</div>
+    </div>
+
+    <!-- Form -->
+    <div class="login-form-side">
+      <div class="login-card">
+        <div class="login-tabs">
+          <button id="tab-login" class="active" onclick="setMode('login')">🔑 Iniciar Sesion</button>
+          <button id="tab-register" onclick="setMode('register')">✨ Registrarse</button>
+        </div>
+
+        <!-- LOGIN -->
+        <form id="form-login" onsubmit="return doLogin(event)">
+          <div class="field">
+            <label>NIE</label>
+            <input id="l-nie" type="text" inputmode="numeric" placeholder="Ingresa tu NIE" oninput="this.value=this.value.replace(/\D/g,'')" style="font-size:18px;letter-spacing:1px" />
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <div class="pw-wrap">
+              <input id="l-pass" type="password" placeholder="Tu contraseña" />
+              <button type="button" class="eye" onclick="togglePw('l-pass',this)">👁️</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg">Entrar</button>
+          <div style="text-align:center;margin-top:12px">
+            <button type="button" id="admin-link" onclick="openAdminSetup()" style="background:none;border:none;color:#9ca3af;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">🔒 Acceso docente</button>
+          </div>
+        </form>
+
+        <!-- REGISTER -->
+        <form id="form-register" class="hidden" onsubmit="return doRegister(event)">
+          <div class="field">
+            <label>Nombre completo</label>
+            <input id="r-nombre" type="text" placeholder="Ej. JUAN PEREZ GONZALEZ" class="upper" oninput="this.value=normalizeNombre(this.value)" style="text-transform:uppercase" />
+            <div class="hint">Solo MAYÚSCULAS, sin tildes, Ñ permitida</div>
+          </div>
+          <div class="field">
+            <label>NIE</label>
+            <input id="r-nie" type="text" inputmode="numeric" placeholder="Solo numeros" oninput="this.value=this.value.replace(/\D/g,'')" style="font-size:18px;letter-spacing:1px" />
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <div class="pw-wrap">
+              <input id="r-pass" type="password" placeholder="Minimo 4 caracteres" />
+              <button type="button" class="eye" onclick="togglePw('r-pass',this)">👁️</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Grado</label>
+            <div class="radio-grid" id="grado-grid">
+              <label data-grado="Septimo"><input type="radio" name="grado" value="Septimo" checked>7°<small>Septimo</small></label>
+              <label data-grado="Octavo"><input type="radio" name="grado" value="Octavo">8°<small>Octavo</small></label>
+              <label data-grado="Noveno"><input type="radio" name="grado" value="Noveno">9°<small>Noveno</small></label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg">✨ Crear mi cuenta</button>
+          <p style="text-align:center;font-size:12px;color:#10b981;margin-top:8px">Al registrarte comienzas con <b>5 ❤️ vidas</b> y <b>0 ⭐ puntos</b></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Setup Admin -->
+  <div id="admin-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>🛡️ Acceso Administrativo</h3>
+        <button class="x" onclick="closeAdminSetup()">×</button>
+      </div>
+      <div class="modal-body" id="admin-body"></div>
+      <div class="modal-foot" id="admin-foot"></div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    let mode = 'login';
+    function setMode(m) {
+      mode = m;
+      document.getElementById('tab-login').classList.toggle('active', m === 'login');
+      document.getElementById('tab-register').classList.toggle('active', m === 'register');
+      document.getElementById('form-login').classList.toggle('hidden', m !== 'login');
+      document.getElementById('form-register').classList.toggle('hidden', m !== 'register');
+    }
+
+    // Grado radio grid
+    document.querySelectorAll('#grado-grid label').forEach(lbl => {
+      lbl.addEventListener('click', () => {
+        document.querySelectorAll('#grado-grid label').forEach(l => l.classList.remove('active'));
+        lbl.classList.add('active');
+        lbl.querySelector('input').checked = true;
+      });
+      if (lbl.querySelector('input').checked) lbl.classList.add('active');
+    });
+
+    function togglePw(id, btn) {
+      const inp = document.getElementById(id);
+      if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+      else { inp.type = 'password'; btn.textContent = '👁️'; }
+    }
+
+    async function doLogin(e) {
+      e.preventDefault();
+      const nie = document.getElementById('l-nie').value.trim();
+      const pass = document.getElementById('l-pass').value;
+      if (!nie || !pass) { toast('Completa todos los campos', null, 'error'); return false; }
+      const res = await Auth.login(nie, pass);
+      if (!res.ok) { toast('No se pudo iniciar sesion', res.error, 'error'); return false; }
+      Auth.setCurrent(res.usuario);
+      toast('Bienvenido', res.usuario.nombre);
+      setTimeout(() => {
+        window.location.href = res.usuario.rol === 'admin' ? 'docente.html' : 'estudiante.html';
+      }, 600);
+      return false;
+    }
+
+    async function doRegister(e) {
+      e.preventDefault();
+      const nombre = normalizeNombre(document.getElementById('r-nombre').value);
+      const nie = document.getElementById('r-nie').value.trim();
+      const pass = document.getElementById('r-pass').value;
+      const grado = document.querySelector('input[name=grado]:checked').value;
+      if (!isValidNombre(nombre)) { toast('Nombre invalido', 'Solo MAYÚSCULAS, sin tildes, Ñ permitida. Mínimo 2 palabras.', 'error'); return false; }
+      if (!isValidNie(nie)) { toast('NIE invalido', 'Debe contener solo numeros (minimo 6).', 'error'); return false; }
+      if (pass.length < 4) { toast('Contraseña muy corta', 'Minimo 4 caracteres.', 'error'); return false; }
+      const res = await Auth.crearEstudiante(nie, nombre, pass, grado);
+      if (!res.ok) { toast('No se pudo registrar', res.error, 'error'); return false; }
+      Auth.setCurrent(res.usuario);
+      toast('Cuenta creada', 'Bienvenido a EduNova');
+      setTimeout(() => { window.location.href = 'estudiante.html'; }, 700);
+      return false;
+    }
+
+    // ===== Admin setup =====
+    async function openAdminSetup() {
+      document.getElementById('admin-modal').classList.remove('hidden');
+      document.getElementById('admin-body').innerHTML = '<p style="text-align:center;color:#6b7280;padding:20px">Verificando...</p>';
+      document.getElementById('admin-foot').innerHTML = '';
+      const res = await Auth.adminExists();
+      if (res.ok && res.configured) renderAdminExists();
+      else renderAdminForm();
+    }
+    function closeAdminSetup() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+    function renderAdminForm() {
+      document.getElementById('admin-body').innerHTML =
+        '<div class="alert alert-warn"><b>⚠️ Importante:</b> Pega el enlace de tu Google Apps Script. Al conectar se generaran un NIE y contraseña privados para el docente.</div>' +
+        '<div class="field"><label>Enlace de Apps Script</label>' +
+        '<input id="apps-url" type="text" placeholder="https://script.google.com/macros/s/.../exec" style="font-family:monospace;font-size:12px">' +
+        '<div class="hint">Apps Script → Implementar → Aplicacion web → copia la URL</div></div>';
+      document.getElementById('admin-foot').innerHTML =
+        '<button class="btn btn-outline" onclick="closeAdminSetup()">Cancelar</button>' +
+        '<button class="btn btn-amber" onclick="conectarAdmin()">🔗 Conectar</button>';
+    }
+
+    async function conectarAdmin() {
+      const url = document.getElementById('apps-url').value.trim();
+      if (!url) { toast('Pega el enlace', null, 'error'); return; }
+      if (!/^https?:\/\//.test(url)) { toast('Enlace invalido', 'Debe comenzar con http(s)://', 'error'); return; }
+      setApiUrl(url);
+      const res = await Auth.setupAdmin();
+      if (!res.ok) {
+        toast('Error', res.error, 'error');
+        return;
+      }
+      renderAdminSuccess(res.nie, res.password);
+    }
+
+    function renderAdminSuccess(nie, password) {
+      document.getElementById('admin-body').innerHTML =
+        '<div class="alert alert-error"><b>⚠️ ¡Guarda estas credenciales ahora!</b><br><span style="font-size:12px">La contraseña solo se mostrara esta vez. Si la pierdes tendras que reconfigurar.</span></div>' +
+        '<div class="cred-box nie"><div class="lbl">Tu NIE de docente</div><div class="val"><code>' + nie + '</code><button class="btn btn-ghost btn-icon" onclick="copyTxt(\'' + nie + '\')">📋</button></div></div>' +
+        '<div class="cred-box pass"><div class="lbl">Tu contraseña</div><div class="val"><code>' + password + '</code><button class="btn btn-ghost btn-icon" onclick="copyTxt(\'' + password + '\')">📋</button></div></div>' +
+        '<p style="font-size:12px;color:#10b981;text-align:center;margin-top:8px">Proximas veces solo usa el formulario de inicio de sesion con estas credenciales.</p>';
+      document.getElementById('admin-foot').innerHTML =
+        '<button class="btn btn-primary btn-block" onclick="entrarAdmin(\'' + nie + '\',\'' + password + '\')">✅ He guardado mis credenciales — Entrar</button>';
+    }
+
+    async function entrarAdmin(nie, password) {
+      const res = await Auth.login(nie, password);
+      if (!res.ok) { toast('Error', res.error, 'error'); return; }
+      Auth.setCurrent(res.usuario);
+      toast('Bienvenido, docente');
+      setTimeout(() => { window.location.href = 'docente.html'; }, 600);
+    }
+
+    function renderAdminExists() {
+      document.getElementById('admin-body').innerHTML =
+        '<div class="alert alert-success" style="text-align:center;display:block"><div style="font-size:40px">🛡️</div><b>El administrador ya esta configurado</b><br><span style="font-size:12px">Inicia sesion con tu NIE y contraseña en el formulario principal.</span></div>' +
+        '<hr style="border:none;border-top:1px solid #fee2e2;margin:16px 0">' +
+        '<p style="font-size:12px;color:#e11d48;text-align:center;margin-bottom:8px">¿Olvidaste tus credenciales?</p>';
+      document.getElementById('admin-foot').innerHTML =
+        '<button class="btn btn-outline" style="border-color:#fecaca;color:#e11d48" onclick="reconfigAdmin()">⚠️ Reconfigurar administrador</button>' +
+        '<button class="btn btn-outline" onclick="closeAdminSetup()">Cerrar</button>';
+    }
+
+    async function reconfigAdmin() {
+      if (!confirm('Esto eliminara el administrador actual y generara credenciales nuevas. Los estudiantes NO se borran. Continuar?')) return;
+      const res = await Auth.reconfigurarAdmin();
+      if (res.ok) { toast('Listo', 'Pega el enlace de Apps Script para reconfigurar'); renderAdminForm(); }
+      else toast('Error', res.error, 'error');
+    }
+
+    function copyTxt(t) {
+      navigator.clipboard.writeText(t);
+      toast('Copiado', 'Pegalo en un lugar seguro');
+    }
+
+    // Si ya hay sesion, redirige
+    (function() {
+      const u = Auth.getCurrent();
+      if (u) window.location.href = u.rol === 'admin' ? 'docente.html' : 'estudiante.html';
+    })();
+  </script>
+</body>
+</html>

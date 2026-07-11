@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clase: Ecuaciones de primer grado · EduNova</title>
+  <link rel="stylesheet" href="../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>" />
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../estudiante.html">←</a>
+          <div class="icon-box">📚</div>
+          <div><h1>Ecuaciones de primer grado</h1><p>🔢 Matematica y Datos · Unidad 1 · Leccion 1</p></div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <span class="badge badge-emerald">🔢 Matematica y Datos</span>
+        <span class="badge badge-amber">Unidad 1 · Leccion 1</span>
+        <p style="font-family:monospace;font-size:11px;color:#10b981;margin-top:8px">ID: 7matu1l1c1</p>
+        <div class="alert alert-info">📋 Esta clase tiene actividad evaluada.</div>
+      </div>
+
+      <div class="item-card">
+        <h2 style="margin-bottom:12px">📖 Contenido de la clase</h2>
+        <p style="color:#6b7280">El docente agregara aqui el material: explicacion, videos, ejercicios, etc.</p>
+      </div>
+
+      <div class="item-card">
+        <h2 style="margin-bottom:12px">📝 Actividad evaluada</h2>
+        <div class="alert alert-info" style="white-space:pre-wrap">Responde la siguiente actividad. Tu nota se guardara automaticamente.</div>
+        <div class="field"><label>Tu respuesta</label><textarea id="respuesta" rows="5" placeholder="Escribe tu respuesta aqui..."></textarea></div>
+        <button class="btn btn-primary" id="btn-enviar" onclick="enviar()">Enviar actividad</button>
+        <div id="nota-display" class="hidden" style="margin-top:16px">
+          <div class="nota-pill nota-aprob" style="font-size:24px;padding:8px 20px" id="nota-val">—</div>
+          <p style="text-align:center;color:#92400e;font-weight:700;margin-top:4px">Tu nota</p>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="footer">EduNova · Plataforma Escolar</footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/userbar.js"></script>
+  <script>
+    // Esta plantilla es un ejemplo. El docente debe crear un HTML asi
+    // para cada actividad, en la ruta correcta (ej. 7/clases/7matu1l1c1.html).
+    // El ID de la actividad y el tipo se definen aqui:
+    const ACTIVITY_ID = '7matu1l1c1';
+    const GRADO = 'Septimo';
+    const MATERIA = 'Matematica';
+    const TIPO = 'clase'; // 'clase' | 'tarea' | 'examen'
+
+    renderUserBar(document.getElementById('userbar'));
+
+    (async function() {
+      // Si ya hay nota, la mostramos
+      const res = await Notas.get(GRADO, MATERIA, TIPO, Auth.getCurrent().nie, ACTIVITY_ID);
+      if (res.ok && res.nota !== null && res.nota !== undefined) mostrarNota(res.nota);
+    })();
+
+    async function enviar() {
+      const btn = document.getElementById('btn-enviar');
+      const resp = document.getElementById('respuesta').value.trim();
+      if (!resp) { toast('Escribe tu respuesta', null, 'error'); return; }
+      btn.disabled = true; btn.textContent = 'Enviando...';
+      // Por defecto enviamos null (pendiente de calificacion).
+      // Para auto-calificacion, calcula la nota aqui y pasa un numero 0-10.
+      const res = await Notas.set(GRADO, MATERIA, TIPO, Auth.getCurrent().nie, ACTIVITY_ID, null);
+      if (res.ok) {
+        btn.outerHTML = '<div class="alert alert-success">✓ Actividad enviada. Tu docente calificara tu trabajo.</div>';
+        toast('Enviado', 'Espera la calificacion del docente.');
+      } else {
+        toast('Error', res.error, 'error');
+        btn.disabled = false; btn.textContent = 'Enviar actividad';
+      }
+    }
+
+    function mostrarNota(nota) {
+      const d = document.getElementById('nota-display');
+      const v = document.getElementById('nota-val');
+      d.classList.remove('hidden');
+      v.textContent = Number(nota).toFixed(1);
+      v.className = 'nota-pill ' + (nota >= 6 ? 'nota-aprob' : 'nota-reprob');
+      v.style.fontSize = '24px'; v.style.padding = '8px 20px';
+      const btn = document.getElementById('btn-enviar');
+      if (btn) { btn.textContent = '✓ Ya enviado'; btn.disabled = true; }
+    }
+  </script>
+</body>
+</html>
