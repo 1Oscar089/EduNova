@@ -121,8 +121,11 @@ const JuegosAPI = {
 };
 
 // ===== Utilidades =====
+// Normaliza el nombre: MAYÚSCULAS, sin tildes, Ñ permitida, espacios permitidos.
+// NO hace trim() aqui para no borrar el espacio mientras el usuario escribe.
+// El trim se hace al validar/guardar (ver isValidNombre y doRegister).
 function normalizeNombre(v) {
-  return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-ZÑ\s]/g, '').replace(/\s+/g, ' ').trim();
+  return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-ZÑ\s]/g, '').replace(/\s+/g, ' ');
 }
 function isValidNombre(v) { return /^[A-ZÑ]+( [A-ZÑ]+)+$/.test(v.trim()); }
 function isValidNie(v) { return /^\d{6,}$/.test(v.trim()); }

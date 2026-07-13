@@ -157,7 +157,7 @@
 
     async function doRegister(e) {
       e.preventDefault();
-      const nombre = normalizeNombre(document.getElementById('r-nombre').value);
+      const nombre = normalizeNombre(document.getElementById('r-nombre').value).trim();
       const nie = document.getElementById('r-nie').value.trim();
       const pass = document.getElementById('r-pass').value;
       const grado = document.querySelector('input[name=grado]:checked').value;
