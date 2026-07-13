@@ -107,6 +107,7 @@
     </div>
   </div>
 
+  <script src="config.js"></script>
   <script src="js/api.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -175,34 +176,50 @@
     }
 
     // ===== Admin setup =====
+    // La URL del Apps Script ya viene en config.js (compartida por GitHub Pages).
+    // Aqui solo verificamos si el admin ya existe; si no, generamos credenciales.
     async function openAdminSetup() {
       document.getElementById('admin-modal').classList.remove('hidden');
       document.getElementById('admin-body').innerHTML = '<p style="text-align:center;color:#6b7280;padding:20px">Verificando...</p>';
       document.getElementById('admin-foot').innerHTML = '';
+      // Primero verifica que config.js tenga la URL
+      const url = getApiUrl();
+      if (!url) { renderAdminNoConfig(); return; }
       const res = await Auth.adminExists();
       if (res.ok && res.configured) renderAdminExists();
       else renderAdminForm();
     }
     function closeAdminSetup() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-    function renderAdminForm() {
+    // Se muestra si config.js no tiene la URL del Apps Script.
+    function renderAdminNoConfig() {
       document.getElementById('admin-body').innerHTML =
-        '<div class="alert alert-warn"><b>⚠️ Importante:</b> Pega el enlace de tu Google Apps Script. Al conectar se generaran un NIE y contraseña privados para el docente.</div>' +
-        '<div class="field"><label>Enlace de Apps Script</label>' +
-        '<input id="apps-url" type="text" placeholder="https://script.google.com/macros/s/.../exec" style="font-family:monospace;font-size:12px">' +
-        '<div class="hint">Apps Script → Implementar → Aplicacion web → copia la URL</div></div>';
+        '<div class="alert alert-error"><b>⚠️ Falta configurar config.js</b><br>' +
+        'Antes de usar la plataforma, debes pegar la URL de tu Google Apps Script en el archivo <code>config.js</code>.</div>' +
+        '<div class="alert alert-info"><b>Pasos:</b><br>' +
+        '1. Abre el archivo <code>config.js</code> en tu repo.<br>' +
+        '2. Pega tu URL de Apps Script entre las comillas: <code>const APPS_SCRIPT_URL = \'https://script.google.com/.../exec\';</code><br>' +
+        '3. Guarda y sube a GitHub (git push).<br>' +
+        '4. Recarga esta pagina.</div>';
       document.getElementById('admin-foot').innerHTML =
-        '<button class="btn btn-outline" onclick="closeAdminSetup()">Cancelar</button>' +
-        '<button class="btn btn-amber" onclick="conectarAdmin()">🔗 Conectar</button>';
+        '<button class="btn btn-outline" onclick="closeAdminSetup()">Cerrar</button>';
     }
 
-    async function conectarAdmin() {
-      const url = document.getElementById('apps-url').value.trim();
-      if (!url) { toast('Pega el enlace', null, 'error'); return; }
-      if (!/^https?:\/\//.test(url)) { toast('Enlace invalido', 'Debe comenzar con http(s)://', 'error'); return; }
+    // Ya hay URL configurada y no hay admin: botón para generar credenciales.
+    function renderAdminForm() {
+      document.getElementById('admin-body').innerHTML =
+        '<div class="alert alert-success"><b>✅ Conexión lista</b><br>' +
+        'La URL de Apps Script ya está configurada en <code>config.js</code>. ' +
+        'Al continuar se generarán un NIE y contraseña privados para el docente.</div>' +
+        '<div class="alert alert-warn"><b>⚠️ Importante:</b> Anota las credenciales que se mostrarán. La contraseña solo aparece una vez.</div>';
+      document.getElementById('admin-foot').innerHTML =
+        '<button class="btn btn-outline" onclick="closeAdminSetup()">Cancelar</button>' +
+        '<button class="btn btn-amber" onclick="generarAdmin()">🛡️ Generar credenciales</button>';
+    }
+
+    async function generarAdmin() {
       const btn = event.target;
-      const restore = btnLoading(btn, 'Conectando...');
-      setApiUrl(url);
+      const restore = btnLoading(btn, 'Generando...');
       const res = await Auth.setupAdmin();
       if (!res.ok) {
         restore();
@@ -248,7 +265,7 @@
       const btn = event.target;
       const restore = btnLoading(btn, 'Reconfigurando...');
       const res = await Auth.reconfigurarAdmin();
-      if (res.ok) { toast('Listo', 'Pega el enlace de Apps Script para reconfigurar'); renderAdminForm(); }
+      if (res.ok) { toast('Listo', 'Genera nuevas credenciales'); renderAdminForm(); }
       else { restore(); toast('Error', res.error, 'error'); }
     }
 
@@ -261,14 +278,19 @@
     (function() {
       const u = Auth.getCurrent();
       if (u) { window.location.href = u.rol === 'admin' ? 'docente.html' : 'estudiante.html'; return; }
-      // Solo muestra "Acceso docente" si NO hay admin configurado todavia.
-      // Una vez configurado, el enlace desaparece (el admin entra por el formulario normal).
+      // Si config.js no tiene URL, mostramos el link (al clic abrira el mensaje de "edita config.js")
+      if (!getApiUrl()) {
+        document.getElementById('admin-link-wrap').classList.remove('hidden');
+        return;
+      }
+      // Si hay URL, verificamos si el admin ya existe en el backend.
+      // Solo mostramos el link si NO hay admin configurado (primera vez).
       Auth.adminExists().then(res => {
         if (res.ok && !res.configured) {
           document.getElementById('admin-link-wrap').classList.remove('hidden');
         }
       }).catch(() => {
-        // Si no hay conexion al backend, igual mostramos el link por si es la primera vez
+        // Si el backend no responde, igual mostramos el link por si es la primera vez
         document.getElementById('admin-link-wrap').classList.remove('hidden');
       });
     })();

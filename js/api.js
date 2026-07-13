@@ -1,14 +1,16 @@
 // EduNova — Cliente API (habla con Google Apps Script)
 // =====================================================
-// La URL del Apps Script se guarda en localStorage como "apiUrl"
-// durante el setup del admin. Si no existe, las llamadas fallaran
-// con un mensaje claro.
+// La URL del Apps Script se define en config.js (variable global
+// APPS_SCRIPT_URL). Como config.js viaja con la web en GitHub Pages,
+// todos los dispositivos (celular, tablet, PC) leen la misma URL.
+// Si la variable no existe o esta vacia, las llamadas fallaran con
+// un mensaje claro.
 
 function getApiUrl() {
-  return localStorage.getItem('edunova:apiUrl') || '';
-}
-function setApiUrl(url) {
-  localStorage.setItem('edunova:apiUrl', url.trim());
+  try {
+    if (typeof APPS_SCRIPT_URL !== 'undefined' && APPS_SCRIPT_URL) return APPS_SCRIPT_URL;
+  } catch (e) {}
+  return '';
 }
 
 async function api(action, params) {
