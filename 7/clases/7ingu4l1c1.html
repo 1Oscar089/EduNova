@@ -7,16 +7,17 @@
   <link rel="stylesheet" href="../css/estilos.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>" />
   <style>
-    /* ===== Tooltip: English word → Spanish translation on hover ===== */
+    * { box-sizing: border-box; }
+    /* ===== Tooltip ===== */
     .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; }
     .tt:hover::after {
-      content: attr(data-es); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
-      background: #064e3b; color: #fff; padding: 5px 10px; border-radius: 8px;
+      content: attr(data-es); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 12px; border-radius: 8px;
       font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
       box-shadow: 0 4px 12px rgba(0,0,0,.25);
     }
     .tt:hover::before {
-      content: ''; position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
+      content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
       border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
     }
 
@@ -25,75 +26,105 @@
     .phase-tab {
       flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
       border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
-      color: #9ca3af; transition: all .2s; text-align: center;
+      color: #9ca3af; transition: all .2s; text-align: center; font-family: inherit;
     }
-    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,.3); }
     .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
-    .phase-tab:disabled, .phase-tab.locked { opacity: .45; cursor: not-allowed; }
+    .phase-tab.done::after { content: ' ✓'; }
+    .phase-tab.locked { opacity: .4; cursor: not-allowed; }
 
-    /* ===== House croquis (PRE) ===== */
-    .house-plan {
-      background: #fef3c7; border: 5px solid #92400e; border-radius: 16px;
-      padding: 12px; display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px; max-width: 600px; margin: 0 auto;
+    /* ===== Floor plan (PRE) ===== */
+    .plan-container {
+      background: #fffbeb; border-radius: 16px; padding: 16px; overflow: hidden;
+      border: 3px solid #92400e;
     }
-    .room {
-      background: #fff; border: 3px dashed #d1fae5; border-radius: 12px;
-      padding: 10px; min-height: 90px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 6px; transition: all .2s; cursor: pointer;
+    .plan-svg-wrap { position: relative; width: 100%; max-width: 560px; margin: 0 auto; }
+    .plan-svg { width: 100%; height: auto; display: block; }
+    .room-zone {
+      position: absolute; cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+      transition: all .2s; border-radius: 4px;
     }
-    .room.drag-over { border-color: #059669; background: #ecfdf5; transform: scale(1.05); }
-    .room.correct { border: 3px solid #059669; background: #d1fae5; }
-    .room.wrong { border-color: #e11d48; background: #fee2e2; animation: shake .3s; }
-    .room .furniture { font-size: 26px; line-height: 1; }
-    .room .room-label { font-weight: 800; font-size: 14px; color: #059669; min-height: 18px; text-align: center; }
-    .room .room-ph { color: #d1d5db; font-size: 24px; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-    .cards-pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 16px 0; }
-    .room-card {
+    .room-zone:hover { background: rgba(5,150,105,.12); }
+    .room-zone.drag-over { background: rgba(5,150,105,.25); outline: 3px dashed #059669; outline-offset: -4px; }
+    .room-zone.correct { background: rgba(5,150,105,.18); }
+    .room-zone.wrong { animation: shake .3s; background: rgba(225,29,72,.15); }
+    .room-zone .furniture { font-size: 22px; line-height: 1; opacity: .8; }
+    .room-zone .zone-label {
+      font-size: 13px; font-weight: 800; color: #92400e; min-height: 16px;
+      text-align: center; padding: 2px 6px; border-radius: 4px;
+    }
+    .room-zone .zone-ph { color: #d1d5db; font-size: 20px; font-weight: 900; }
+    .room-zone.correct .zone-label { background: #059669; color: #fff; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+    /* ===== Word bank (cards) ===== */
+    .word-bank {
+      background: #ecfdf5; border: 2px dashed #059669; border-radius: 12px;
+      padding: 12px; margin: 16px 0;
+    }
+    .word-bank-title { font-size: 13px; font-weight: 800; color: #059669; margin-bottom: 8px; text-align: center; }
+    .cards-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .word-card {
       background: #059669; color: #fff; padding: 10px 18px; border-radius: 10px;
       font-weight: 800; font-size: 14px; cursor: grab; user-select: none;
-      transition: all .15s; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      transition: all .15s; box-shadow: 0 3px 8px rgba(5,150,105,.3);
     }
-    .room-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
-    .room-card.selected { background: #0d9488; transform: scale(1.1); box-shadow: 0 4px 14px rgba(13,148,136,.4); }
-    .room-card.placed { opacity: .25; cursor: default; pointer-events: none; }
-    .room-card:active { cursor: grabbing; }
+    .word-card:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(5,150,105,.4); }
+    .word-card.selected { background: #0d9488; transform: scale(1.08); box-shadow: 0 6px 16px rgba(13,148,136,.5); }
+    .word-card.placed { opacity: .2; cursor: default; pointer-events: none; transform: none; }
+    .word-card:active { cursor: grabbing; }
 
     /* ===== Drawing canvas ===== */
-    .draw-canvas { border: 3px dashed #d1fae5; border-radius: 12px; background: #fff; cursor: crosshair; touch-action: none; display: block; margin: 0 auto; max-width: 100%; }
+    .draw-canvas { border: 3px solid #d1fae5; border-radius: 12px; background: #fff; cursor: crosshair; touch-action: none; display: block; margin: 0 auto; max-width: 100%; }
 
     /* ===== Tic Tac Toe (DURING) ===== */
     .ttt-wrap { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: flex-start; }
-    .ttt-board { display: grid; grid-template-columns: repeat(3, 80px); grid-template-rows: repeat(3, 80px); gap: 4px; background: #059669; padding: 4px; border-radius: 12px; }
-    .ttt-cell { background: #fff; border: none; border-radius: 8px; font-size: 38px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; color: #059669; font-family: Arial, sans-serif; }
-    .ttt-cell:hover:not(.taken) { background: #ecfdf5; }
+    .ttt-board { display: grid; grid-template-columns: repeat(3, 90px); grid-template-rows: repeat(3, 90px); gap: 6px; background: #059669; padding: 6px; border-radius: 16px; box-shadow: 0 6px 20px rgba(5,150,105,.3); }
+    .ttt-cell { background: #fff; border: none; border-radius: 10px; font-size: 42px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; font-family: Arial; }
+    .ttt-cell:hover:not(.taken) { background: #ecfdf5; transform: scale(.97); }
     .ttt-cell.taken { cursor: not-allowed; }
     .ttt-cell.x { color: #059669; }
     .ttt-cell.o { color: #e11d48; }
-    .ttt-cell.win { background: #fbbf24; }
-    .ttt-side { background: #fff; border: 2px solid #d1fae5; border-radius: 12px; padding: 16px; min-width: 240px; }
-    .word-input-area { background: #fff; border: 2px solid #d1fae5; border-radius: 12px; padding: 16px; margin-bottom: 12px; text-align: center; }
-    .used-words { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 8px; }
+    .ttt-cell.win { background: #fbbf24; animation: pulse .5s; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    .ttt-side { background: #fff; border: 2px solid #d1fae5; border-radius: 12px; padding: 16px; min-width: 250px; }
+    .word-input-area { background: #f0fdf4; border: 2px solid #d1fae5; border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
+    .used-words { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin: 10px 0; }
     .used-word { background: #f3f4f6; color: #9ca3af; padding: 3px 8px; border-radius: 6px; font-size: 11px; text-decoration: line-through; }
     .used-word.available { background: #d1fae5; color: #059669; text-decoration: none; font-weight: 700; }
-    .score-row { display: flex; justify-content: space-around; margin: 12px 0; font-weight: 800; }
-    .score-row span { text-align: center; }
-    .score-row .v { font-size: 28px; display: block; }
+    .score-row { display: flex; justify-content: space-around; margin: 12px 0; }
+    .score-row > span { text-align: center; }
+    .score-row .v { font-size: 28px; display: block; font-weight: 900; }
+    .progress-bar { background: #f3f4f6; border-radius: 999px; overflow: hidden; height: 10px; margin: 8px 0; }
+    .progress-fill { background: linear-gradient(90deg,#059669,#34d399); height: 100%; transition: width .4s; }
 
-    /* ===== POST activity ===== */
-    .post-card-display { background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border-radius: 20px; padding: 28px; text-align: center; margin: 16px auto; max-width: 360px; box-shadow: 0 8px 24px rgba(2,132,199,.3); }
+    /* ===== POST ===== */
+    .post-card-display {
+      background: linear-gradient(135deg,#0284c7,#0369a1); color: #fff;
+      border-radius: 20px; padding: 28px; text-align: center; margin: 16px auto;
+      max-width: 340px; box-shadow: 0 8px 24px rgba(2,132,199,.3);
+      animation: cardIn .4s;
+    }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(20px) rotate(-2deg); } to { opacity: 1; transform: translateY(0) rotate(0); } }
     .post-card-emoji { font-size: 72px; margin-bottom: 8px; line-height: 1; }
     .post-card-name { font-size: 26px; font-weight: 900; }
-    .notebook { background: #fffbeb; border: 3px solid #fbbf24; border-radius: 12px; padding: 16px; margin: 12px auto; max-width: 360px; background-image: linear-gradient(transparent 23px, #fde68a 24px); background-size: 100% 24px; }
-    .notebook input { background: transparent; border: none; border-bottom: 2px solid #fbbf24; font-size: 20px; font-family: 'Courier New', monospace; text-align: center; color: #92400e; width: 100%; padding: 4px; }
+    .notebook {
+      background: #fffbeb; border: 3px solid #fbbf24; border-radius: 12px;
+      padding: 16px; margin: 12px auto; max-width: 340px;
+      background-image: linear-gradient(transparent 23px,#fde68a 24px); background-size: 100% 24px;
+    }
+    .notebook input {
+      background: transparent; border: none; border-bottom: 2px solid #fbbf24;
+      font-size: 20px; font-family: 'Courier New',monospace; text-align: center;
+      color: #92400e; width: 100%; padding: 4px;
+    }
     .notebook input:focus { outline: none; border-bottom-color: #f59e0b; }
-    .progress-bar { background: #f3f4f6; border-radius: 999px; overflow: hidden; height: 10px; margin: 8px 0; }
-    .progress-fill { background: linear-gradient(90deg, #059669, #34d399); height: 100%; transition: width .4s; border-radius: 999px; }
 
     .phase { animation: fadeIn .3s; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .badge-score { font-size: 13px; padding: 4px 12px; }
+    .section-card { background: #fff; border-radius: 16px; border: 1px solid #d1fae5; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
   </style>
 </head>
 <body>
@@ -112,46 +143,156 @@
       </div>
 
       <div class="alert alert-info" style="margin-bottom:16px">
-        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</span>
-        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span>:
-        <b>1️⃣ Pre</b> (<span class="tt" data-es="Antes">Before</span>),
-        <b>2️⃣ During</b> (<span class="tt" data-es="Durante">During</span>),
-        <b>3️⃣ Post</b> (<span class="tt" data-es="Después">After</span>).
-        <span class="tt" data-es="Debes completar cada parte para desbloquear la siguiente">You must finish each phase to unlock the next one</span>.
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</b>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span> —
+        <b>1️⃣ Pre</b>, <b>2️⃣ During</b>, <b>3️⃣ Post</b>.
+        <span class="tt" data-es="Debes completar cada parte para desbloquear la siguiente">Complete each phase to unlock the next one</span>.
       </div>
 
-      <!-- Phase tabs -->
       <div class="phase-tabs">
         <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
         <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')" disabled>2️⃣ During</button>
         <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')" disabled>3️⃣ Post</button>
       </div>
 
-      <!-- ============ PRE PHASE ============ -->
+      <!-- ============ PRE ============ -->
       <div id="phase-pre" class="phase">
-        <div class="item-card">
-          <h2 style="margin-bottom:8px">1️⃣ Pre: <span class="tt" data-es="Plano de la casa">House Plan</span> 🏠</h2>
+        <div class="section-card">
+          <h2 style="margin-bottom:8px">1️⃣ Pre: <span class="tt" data-es="Plano de la casa">House Floor Plan</span> 🏠</h2>
           <p style="color:#6b7280;margin-bottom:12px">
-            <span class="tt" data-es="Mira el plano de la casa">Look at the house plan</span>.
-            <span class="tt" data-es="Arrastra">Drag</span> <span class="tt" data-es="cada tarjeta">each card</span>
-            <span class="tt" data-es="a la habitación correcta">to the correct room</span>.
+            <span class="tt" data-es="Mira el plano de la casa de una planta">Look at the one-floor house plan</span>.
+            <span class="tt" data-es="Cada habitación tiene muebles como pista">Each room has furniture as a clue</span>.
+            <span class="tt" data-es="Arrastra cada tarjeta a la habitación correcta">Drag each card to the correct room</span>.
           </p>
 
-          <!-- Cards pool -->
-          <div class="cards-pool" id="cards-pool"></div>
+          <!-- Word bank: cards outside the house -->
+          <div class="word-bank">
+            <div class="word-bank-title">📋 <span class="tt" data-es="Tarjetas — arrastra al plano">Cards — drag to the plan</span></div>
+            <div class="cards-row" id="cards-pool"></div>
+          </div>
 
-          <!-- House floor plan -->
-          <div class="house-plan" id="house-plan"></div>
+          <!-- Floor plan SVG -->
+          <div class="plan-container">
+            <div class="plan-svg-wrap" id="plan-wrap">
+              <svg class="plan-svg" viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- House outline (thick walls) -->
+                <rect x="10" y="10" width="540" height="380" fill="#fffbeb" stroke="#92400e" stroke-width="6" rx="4"/>
 
-          <p id="pre-status" style="text-align:center;margin-top:12px;font-weight:700;color:#6b7280"></p>
+                <!-- Interior walls -->
+                <!-- Vertical wall: Living room | Kitchen/Dining -->
+                <line x1="240" y1="10" x2="240" y2="160" stroke="#92400e" stroke-width="4"/>
+                <!-- Door gap in that wall (y=80 to y=120) -->
+                <rect x="238" y="80" width="4" height="40" fill="#fffbeb"/>
+                <!-- Vertical wall: Kitchen | Bedroom -->
+                <line x1="400" y1="10" x2="400" y2="200" stroke="#92400e" stroke-width="4"/>
+                <!-- Door gap -->
+                <rect x="398" y="100" width="4" height="40" fill="#fffbeb"/>
+
+                <!-- Horizontal wall: top rooms | bottom rooms -->
+                <line x1="10" y1="200" x2="400" y2="200" stroke="#92400e" stroke-width="4"/>
+                <!-- Door gap (x=100 to x=140) -->
+                <rect x="100" y="198" width="40" height="4" fill="#fffbeb"/>
+                <!-- Door gap (x=280 to x=320) -->
+                <rect x="280" y="198" width="40" height="4" fill="#fffbeb"/>
+
+                <!-- Vertical wall: Bathroom | Hall -->
+                <line x1="120" y1="200" x2="120" y2="390" stroke="#92400e" stroke-width="4"/>
+                <!-- Vertical wall: Hall | Dining -->
+                <line x1="260" y1="200" x2="260" y2="300" stroke="#92400e" stroke-width="4"/>
+
+                <!-- Horizontal wall: Dining/Garage split -->
+                <line x1="260" y1="300" x2="550" y2="300" stroke="#92400e" stroke-width="4"/>
+                <!-- Door gap -->
+                <rect x="320" y="298" width="40" height="4" fill="#fffbeb"/>
+
+                <!-- Vertical wall: Bedroom | Garage (bottom right) -->
+                <line x1="400" y1="200" x2="400" y2="390" stroke="#92400e" stroke-width="4"/>
+
+                <!-- Garage door (double line at bottom) -->
+                <line x1="400" y1="375" x2="550" y2="375" stroke="#92400e" stroke-width="2" stroke-dasharray="6,4"/>
+
+                <!-- Room furniture hints (drawn in SVG) -->
+                <!-- Living Room: sofa + TV -->
+                <text x="80" y="80" font-size="28">🛋️</text>
+                <text x="180" y="80" font-size="28">📺</text>
+                <text x="120" y="150" font-size="22">🪑</text>
+
+                <!-- Kitchen: stove + fridge -->
+                <text x="280" y="60" font-size="28">🍳</text>
+                <text x="350" y="60" font-size="28">🧊</text>
+                <text x="310" y="140" font-size="22">🍽️</text>
+
+                <!-- Bedroom: bed + nightstand -->
+                <text x="450" y="80" font-size="28">🛏️</text>
+                <text x="440" y="150" font-size="22">🕯️</text>
+
+                <!-- Bathroom: shower + toilet -->
+                <text x="45" y="260" font-size="24">🚿</text>
+                <text x="80" y="320" font-size="24">🚽</text>
+
+                <!-- Hall: door mat -->
+                <text x="170" y="270" font-size="22">🚪</text>
+                <text x="210" y="340" font-size="22">🪑</text>
+
+                <!-- Dining Room: table + chairs -->
+                <text x="305" y="250" font-size="28">🍽️</text>
+                <text x="350" y="270" font-size="22">🪑</text>
+
+                <!-- Garage: car + tools -->
+                <text x="430" y="260" font-size="28">🚗</text>
+                <text x="500" y="260" font-size="24">🔧</text>
+
+                <!-- Outside label -->
+                <text x="280" y="395" font-size="12" fill="#92400e" text-anchor="middle" font-weight="bold">🏠 FLOOR PLAN</text>
+              </svg>
+              <!-- Room drop zones (positioned over the SVG) -->
+              <!-- Living Room: x=10-240, y=10-160 → 41%, 2.5%, 41%, 38% -->
+              <div class="room-zone" id="zone-Living-room" data-room="Living room"
+                   style="left:4%;top:3%;width:38%;height:38%">
+                <div class="zone-label zone-ph">?</div>
+              </div>
+              <!-- Kitchen: x=240-400, y=10-200 → 43%, 2.5%, 28%, 47% -->
+              <div class="room-zone" id="zone-Kitchen" data-room="Kitchen"
+                   style="left:43%;top:3%;width:28%;height:47%">
+                <div class="zone-label zone-ph">?</div>
+              </div>
+              <!-- Bedroom: x=400-550, y=10-200 → 72%, 2.5%, 27%, 47% -->
+              <div class="room-zone" id="zone-Bedroom" data-room="Bedroom"
+                   style="left:72%;top:3%;width:26%;height:47%">
+                <div class="zone-label zone-ph">?</div>
+              </div>
+              <!-- Bathroom: x=10-120, y=200-390 → 4%, 50%, 19%, 47% -->
+              <div class="room-zone" id="zone-Bathroom" data-room="Bathroom"
+                   style="left:4%;top:50%;width:17%;height:47%">
+                <div class="zone-label zone-ph">?</div>
+              </div>
+              <!-- Hall: x=120-260, y=200-390 → 22%, 50%, 25%, 47% -->
+              <div class="room-zone" id="zone-Hall" data-room="Hall"
+                   style="left:22%;top:50%;width:24%;height:47%">
+                <div class="zone-label zone-ph">?</div>
+              </div>
+              <!-- Dining Room: x=260-400, y=200-300 → 46%, 50%, 25%, 25% -->
+              <div class="room-zone" id="zone-Dining-room" data-room="Dining room"
+                   style="left:46%;top:50%;width:25%;height:25%">
+                <div class="zone-label zone-ph">?</div>
+              </div>
+              <!-- Garage: x=400-550, y=200-390 → 72%, 50%, 27%, 47% -->
+              <div class="room-zone" id="zone-Garage" data-room="Garage"
+                   style="left:72%;top:50%;width:26%;height:47%">
+                <div class="zone-label zone-ph">?</div>
+              </div>
+            </div>
+          </div>
+
+          <p id="pre-status" style="text-align:center;margin-top:12px;font-weight:700;color:#6b7280;min-height:20px"></p>
         </div>
 
-        <!-- Drawing section (hidden until drag-drop complete) -->
-        <div class="item-card hidden" id="pre-draw-section">
+        <!-- Drawing section -->
+        <div class="section-card hidden" id="pre-draw-section">
           <h2 style="margin-bottom:8px">✏️ <span class="tt" data-es="Dibuja tu casa">Draw your house</span></h2>
           <p style="color:#6b7280;margin-bottom:12px">
             <span class="tt" data-es="En el lienzo de abajo">On the canvas below</span>,
-            <span class="tt" data-es="dibuja el plano de una casa">draw a one-floor house plan</span>
+            <span class="tt" data-es="dibuja el plano de una casa de una planta">draw a one-floor house plan</span>
             <span class="tt" data-es="y escribe los nombres de las habitaciones">and write the room names</span>.
           </p>
           <canvas id="draw-canvas" class="draw-canvas" width="560" height="380"></canvas>
@@ -162,23 +303,21 @@
         </div>
       </div>
 
-      <!-- ============ DURING PHASE ============ -->
+      <!-- ============ DURING ============ -->
       <div id="phase-during" class="phase hidden">
-        <div class="item-card">
+        <div class="section-card">
           <h2 style="margin-bottom:8px">2️⃣ During: <span class="tt" data-es="Tic Tac Toe">Tic Tac Toe</span> ⭕❌</h2>
-          <p style="color:#6b7280;margin-bottom:12px">
+          <p style="color:#6b7280;margin-bottom:16px">
             <span class="tt" data-es="Juega contra la máquina">Play against the computer</span>!
             <span class="tt" data-es="Antes de cada jugada">Before each move</span>,
-            <span class="tt" data-es="debes escribir una parte de la casa">type a part of the house</span>.
-            <span class="tt" data-es="No puedes repetir">You can't repeat</span>
-            <span class="tt" data-es="hasta usar todas">until you use all of them</span>.
+            <span class="tt" data-es="escribe una parte de la casa">type a part of the house</span>
+            (<span class="tt" data-es="no importa mayúsculas o minúsculas">case-insensitive</span>).
+            <span class="tt" data-es="No puedes repetir hasta usar todas">No repeats until all are used</span>.
             <span class="tt" data-es="Gana 5 rondas">Win 5 rounds</span> <span class="tt" data-es="para desbloquear Post">to unlock Post</span>.
           </p>
 
           <div class="ttt-wrap">
-            <div>
-              <div class="ttt-board" id="ttt-board"></div>
-            </div>
+            <div class="ttt-board" id="ttt-board"></div>
             <div class="ttt-side">
               <div class="word-input-area">
                 <label style="font-weight:700;font-size:13px;color:#059669;display:block;margin-bottom:6px">
@@ -190,36 +329,31 @@
                 </button>
                 <p id="word-msg" style="font-size:12px;margin-top:6px;min-height:16px"></p>
               </div>
-
               <div class="used-words" id="used-words"></div>
-
               <div class="score-row">
-                <span><span class="v" style="color:#059669" id="ttt-wins">0</span><span class="tt" data-es="Ganas">Wins</span></span>
-                <span><span class="v" style="color:#e11d48" id="ttt-losses">0</span><span class="tt" data-es="Pierdes">Losses</span></span>
-                <span><span class="v" style="color:#6b7280" id="ttt-draws">0</span><span class="tt" data-es="Empates">Draws</span></span>
+                <span><span class="v" style="color:#059669" id="ttt-wins">0</span><small><span class="tt" data-es="Ganas">Wins</span></small></span>
+                <span><span class="v" style="color:#e11d48" id="ttt-losses">0</span><small><span class="tt" data-es="Pierdes">Losses</span></small></span>
+                <span><span class="v" style="color:#6b7280" id="ttt-draws">0</span><small><span class="tt" data-es="Empates">Draws</span></small></span>
               </div>
-
-              <div style="text-align:center">
-                <p style="font-size:13px;color:#6b7280"><span class="tt" data-es="Meta">Goal</span>: 5 <span class="tt" data-es="victorias">wins</span></p>
-                <div class="progress-bar"><div class="progress-fill" id="ttt-progress" style="width:0%"></div></div>
-                <p id="ttt-msg" style="font-weight:700;margin-top:8px;min-height:20px"></p>
-                <button class="btn btn-outline btn-sm hidden" id="ttt-restart" onclick="newRound()">🔄 <span class="tt" data-es="Nueva ronda">New round</span></button>
-              </div>
+              <p style="font-size:13px;color:#6b7280;text-align:center"><span class="tt" data-es="Meta">Goal</span>: 5 <span class="tt" data-es="victorias">wins</span></p>
+              <div class="progress-bar"><div class="progress-fill" id="ttt-progress" style="width:0%"></div></div>
+              <p id="ttt-msg" style="font-weight:700;margin-top:8px;min-height:20px;text-align:center"></p>
+              <button class="btn btn-outline btn-sm hidden" id="ttt-restart" onclick="newRound()" style="width:100%;margin-top:8px">🔄 <span class="tt" data-es="Nueva ronda">New round</span></button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ============ POST PHASE ============ -->
+      <!-- ============ POST ============ -->
       <div id="phase-post" class="phase hidden">
-        <div class="item-card">
+        <div class="section-card">
           <h2 style="margin-bottom:8px">3️⃣ Post: <span class="tt" data-es="Bolsa de vocabulario">Vocabulary Bag</span> 🎒</h2>
           <p style="color:#6b7280;margin-bottom:12px">
             <span class="tt" data-es="Mira la tarjeta">Look at the card</span>.
-            <span class="tt" data-es="Escribe la palabra en tu libreta">Write the word in your notebook</span>.
-            <span class="tt" data-es="Luego dale siguiente">Then click Next</span> —
-            <span class="tt" data-es="te pedirá escribir la palabra de memoria">you'll type it from memory</span>!
-            <span class="tt" data-es="Consigue 20 puntos">Get 20 points</span> <span class="tt" data-es="para terminar">to finish</span>.
+            <span class="tt" data-es="Escribe la palabra en tu libreta">Write it in your notebook</span>,
+            <span class="tt" data-es="luego dale siguiente">then click Next</span> —
+            <span class="tt" data-es="escribe la palabra de memoria">type it from memory</span>!
+            <span class="tt" data-es="Consigue 20 puntos">Get 20 points</span> = <b>10/10</b>.
           </p>
 
           <div style="display:flex;gap:12px;justify-content:center;margin-bottom:12px;flex-wrap:wrap">
@@ -228,14 +362,14 @@
           </div>
           <div class="progress-bar"><div class="progress-fill" id="post-progress" style="width:0%"></div></div>
 
-          <!-- Step 1: See card + write in notebook -->
+          <!-- Step 1: see card + notebook -->
           <div id="post-step1">
             <div class="post-card-display" id="post-card">
               <div class="post-card-emoji" id="post-emoji">❓</div>
               <div class="post-card-name" id="post-name">Loading...</div>
             </div>
             <div class="notebook">
-              <label style="font-weight:700;font-size:13px;color:#92400e;display:block;margin-bottom:6px">📓 <span class="tt" data-es="Libreta">Notebook</span> — <span class="tt" data-es="Escribe aquí">Write here</span>:</label>
+              <label style="font-weight:700;font-size:13px;color:#92400e;display:block;margin-bottom:6px">📓 <span class="tt" data-es="Libreta — escribe aquí">Notebook — write here</span>:</label>
               <input id="post-notebook" type="text" placeholder="type the word..." autocomplete="off">
             </div>
             <div style="text-align:center">
@@ -243,7 +377,7 @@
             </div>
           </div>
 
-          <!-- Step 2: Recall (type from memory) -->
+          <!-- Step 2: recall -->
           <div id="post-step2" class="hidden">
             <div class="post-card-display" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">
               <div class="post-card-emoji">🤔</div>
@@ -259,7 +393,7 @@
             <p id="post-msg" style="text-align:center;font-weight:700;margin-top:8px;min-height:20px"></p>
           </div>
 
-          <!-- Completion -->
+          <!-- Done -->
           <div id="post-done" class="hidden" style="text-align:center;padding:20px">
             <div style="font-size:64px">🏆</div>
             <h2 style="color:#059669"><span class="tt" data-es="¡Felicidades!">Congratulations!</span></h2>
@@ -277,30 +411,25 @@
   <script src="../js/api.js"></script>
   <script src="../js/userbar.js"></script>
   <script>
-    // ================================================================
-    // EduNova — Class: 7ingu4l1c1
-    // My Home: Rooms and Furniture (English, Unit 4, Lesson 1)
-    // No evaluada. 3 phases: Pre (drag-drop + drawing), During (tic-tac-toe), Post (vocab game)
-    // ================================================================
     const ACTIVITY_ID = '7ingu4l1c1';
     const GRADO = 'Septimo';
     const MATERIA = 'English';
     const TIPO = 'clase';
-
     const u = requireLogin();
     renderUserBar(document.getElementById('userbar'));
 
-    // ===== Rooms for PRE and DURING =====
+    // ===== Rooms (7 rooms in the floor plan) =====
     const ROOMS = [
-      { en: 'Kitchen',       es: 'Cocina',      emoji: '🍳🧊' },
-      { en: 'Bedroom',       es: 'Dormitorio',   emoji: '🛏️' },
-      { en: 'Bathroom',      es: 'Baño',         emoji: '🚿🚽' },
-      { en: 'Living room',   es: 'Sala',         emoji: '🛋️📺' },
-      { en: 'Dining room',   es: 'Comedor',      emoji: '🍽️🪑' },
-      { en: 'Garage',        es: 'Garaje',       emoji: '🚗🔧' }
+      { en: 'Living room',  es: 'Sala' },
+      { en: 'Kitchen',      es: 'Cocina' },
+      { en: 'Bedroom',      es: 'Dormitorio' },
+      { en: 'Bathroom',     es: 'Baño' },
+      { en: 'Hall',         es: 'Pasillo' },
+      { en: 'Dining room',  es: 'Comedor' },
+      { en: 'Garage',       es: 'Garaje' }
     ];
 
-    // ===== 100-item vocabulary bank for POST =====
+    // ===== 100-item vocabulary bank (house parts, furniture, appliances) =====
     const VOCAB_BANK = [
       {e:'🧊',n:'Refrigerator',s:'Refrigerador'},{e:'🍳',n:'Stove',s:'Estufa'},
       {e:'🍞',n:'Oven',s:'Horno'},{e:'⚡',n:'Microwave',s:'Microondas'},
@@ -356,8 +485,7 @@
 
     // ===== State =====
     let preComplete = false, duringComplete = false, postComplete = false;
-    let selectedCard = null;
-    let placedCount = 0;
+    let selectedCard = null, placedCount = 0;
     let drawing = false, drawCtx = null;
     let tttBoard = [], tttWordsUsed = [], tttWins = 0, tttLosses = 0, tttDraws = 0;
     let tttStudentTurn = true, tttWordValidated = false, tttGameActive = false;
@@ -373,81 +501,74 @@
       if (phase === 'during' && preComplete) initDuring();
       if (phase === 'post' && duringComplete) initPost();
     }
-
     function unlockPhase(phase) {
       const tab = document.getElementById('tab-' + phase);
       tab.classList.remove('locked');
       tab.disabled = false;
     }
 
-    // ================================================================
-    // PRE PHASE: Drag-and-drop room cards + drawing canvas
-    // ================================================================
+    // ===== PRE: floor plan + cards + drawing =====
     function initPre() {
-      if (document.getElementById('cards-pool').children.length) return; // already built
-      // Build cards (shuffled)
+      // Build word cards (shuffled)
       const pool = document.getElementById('cards-pool');
+      if (pool.children.length) return;
       const shuffled = [...ROOMS].sort(() => Math.random() - 0.5);
       shuffled.forEach(room => {
         const card = document.createElement('div');
-        card.className = 'room-card';
+        card.className = 'word-card';
         card.textContent = room.en;
         card.draggable = true;
         card.dataset.room = room.en;
         card.onclick = () => selectCard(card);
-        card.ondragstart = (e) => { e.dataTransfer.setData('text', room.en); };
+        card.ondragstart = (e) => { e.dataTransfer.setData('text', room.en); e.dataTransfer.effectAllowed = 'move'; };
         pool.appendChild(card);
       });
 
-      // Build house plan
-      const plan = document.getElementById('house-plan');
-      ROOMS.forEach(room => {
-        const div = document.createElement('div');
-        div.className = 'room';
-        div.dataset.room = room.en;
-        div.innerHTML = '<div class="furniture">' + room.emoji + '</div><div class="room-label room-ph">?</div>';
-        div.ondragover = (e) => { e.preventDefault(); div.classList.add('drag-over'); };
-        div.ondragleave = () => div.classList.remove('drag-over');
-        div.ondrop = (e) => { e.preventDefault(); div.classList.remove('drag-over'); tryPlace(room.en, div); };
-        div.onclick = () => { if (selectedCard) tryPlace(selectedCard.dataset.room, div); };
-        plan.appendChild(div);
+      // Set up room drop zones
+      document.querySelectorAll('.room-zone').forEach(zone => {
+        zone.ondragover = (e) => { e.preventDefault(); zone.classList.add('drag-over'); };
+        zone.ondragleave = () => zone.classList.remove('drag-over');
+        zone.ondrop = (e) => {
+          e.preventDefault();
+          zone.classList.remove('drag-over');
+          const cardRoom = e.dataTransfer.getData('text');
+          tryPlace(cardRoom, zone);
+        };
+        zone.onclick = () => { if (selectedCard) tryPlace(selectedCard.dataset.room, zone); };
       });
     }
 
     function selectCard(card) {
       if (card.classList.contains('placed')) return;
-      document.querySelectorAll('.room-card.selected').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.word-card.selected').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       selectedCard = card;
     }
 
-    function tryPlace(cardRoom, roomDiv) {
-      if (roomDiv.classList.contains('correct')) return;
-      const targetRoom = roomDiv.dataset.room;
-      const card = document.querySelector('.room-card[data-room="' + cardRoom + '"]');
+    function tryPlace(cardRoom, zone) {
+      if (zone.classList.contains('correct')) return;
+      const targetRoom = zone.dataset.room;
+      const card = document.querySelector('.word-card[data-room="' + cardRoom + '"]');
       if (!card || card.classList.contains('placed')) return;
 
       if (cardRoom === targetRoom) {
-        // Correct!
-        roomDiv.classList.add('correct');
-        roomDiv.querySelector('.room-label').textContent = cardRoom;
-        roomDiv.querySelector('.room-label').classList.remove('room-ph');
+        zone.classList.add('correct');
+        zone.querySelector('.zone-label').textContent = cardRoom;
+        zone.querySelector('.zone-label').classList.remove('zone-ph');
         card.classList.add('placed');
         card.classList.remove('selected');
         selectedCard = null;
         placedCount++;
-        document.getElementById('pre-status').innerHTML = '✅ <span class="tt" data-es="Correcto">Correct</span>! ' + placedCount + '/6';
-        if (placedCount === 6) {
+        document.getElementById('pre-status').innerHTML = '✅ <span class="tt" data-es="Correcto">Correct</span>! ' + placedCount + '/' + ROOMS.length;
+        if (placedCount === ROOMS.length) {
           document.getElementById('pre-status').innerHTML = '🎉 <span class="tt" data-es="¡Todas correctas! Ahora dibuja tu casa">All correct! Now draw your house</span>';
           document.getElementById('pre-draw-section').classList.remove('hidden');
           initCanvas();
-          // Award some platform points for completing the drag-drop
           if (u) Auth.ajustarPuntos(u.nie, 5).then(r => { if (r.ok) { u.puntos = r.puntos; Auth.setCurrent(u); updateUserBarStats(); } });
         }
       } else {
-        // Wrong
-        roomDiv.classList.add('wrong');
-        setTimeout(() => roomDiv.classList.remove('wrong'), 400);
+        zone.classList.add('wrong');
+        setTimeout(() => zone.classList.remove('wrong'), 400);
         document.getElementById('pre-status').innerHTML = '❌ <span class="tt" data-es="Intenta de nuevo">Try again</span>';
       }
     }
@@ -462,7 +583,6 @@
       drawCtx.strokeStyle = '#059669';
       drawCtx.lineWidth = 3;
       drawCtx.lineCap = 'round';
-
       const getPos = (e) => {
         const rect = canvas.getBoundingClientRect();
         const cx = e.touches ? e.touches[0].clientX : e.clientX;
@@ -480,13 +600,11 @@
       canvas.addEventListener('touchmove', move);
       canvas.addEventListener('touchend', end);
     }
-
     function clearCanvas() {
       const canvas = document.getElementById('draw-canvas');
       drawCtx.fillStyle = '#fff';
       drawCtx.fillRect(0, 0, canvas.width, canvas.height);
     }
-
     function finishPre() {
       preComplete = true;
       document.getElementById('tab-pre').classList.add('done');
@@ -495,13 +613,8 @@
       showPhase('during');
     }
 
-    // ================================================================
-    // DURING PHASE: Tic Tac Toe with vocabulary
-    // ================================================================
-    function initDuring() {
-      newRound();
-      renderUsedWords();
-    }
+    // ===== DURING: Tic Tac Toe =====
+    function initDuring() { newRound(); renderUsedWords(); }
 
     function newRound() {
       tttBoard = Array(9).fill(null);
@@ -509,8 +622,8 @@
       tttStudentTurn = true;
       tttWordValidated = false;
       tttGameActive = true;
-      document.getElementById('ttt-word').value = '';
-      document.getElementById('ttt-word').disabled = false;
+      const inp = document.getElementById('ttt-word');
+      inp.value = ''; inp.disabled = false;
       document.getElementById('word-msg').innerHTML = '';
       document.getElementById('ttt-msg').innerHTML = '';
       document.getElementById('ttt-restart').classList.add('hidden');
@@ -548,19 +661,15 @@
       const word = input.value.trim().toLowerCase();
       const msg = document.getElementById('word-msg');
       if (!word) { msg.innerHTML = '⚠️ <span class="tt" data-es="Escribe una palabra">Type a word</span>'; return; }
-
-      // Check if it matches any room (case-insensitive)
       const match = ROOMS.find(r => r.en.toLowerCase() === word);
       if (!match) {
         msg.innerHTML = '❌ <span class="tt" data-es="No es una parte de la casa">Not a part of the house</span>';
         tttWordValidated = false;
         return;
       }
-      // Check if already used (unless all 6 used → reset)
       const alreadyUsed = tttWordsUsed.some(w => w.toLowerCase() === word);
       if (alreadyUsed) {
         if (tttWordsUsed.length >= ROOMS.length) {
-          // All used → reset pool
           tttWordsUsed = [match.en];
         } else {
           msg.innerHTML = '🚫 <span class="tt" data-es="Ya usada — prueba otra">Already used — try another</span>';
@@ -572,13 +681,13 @@
       }
       tttWordValidated = true;
       input.disabled = true;
-      msg.innerHTML = '✅ <span class="tt" data-es="Palabra válida — haz tu jugada">Valid word — make your move!</span>';
+      msg.innerHTML = '✅ <span class="tt" data-es="Palabra válida — haz tu jugada">Valid — make your move!</span>';
       renderUsedWords();
     }
 
     function placeMove(idx) {
       if (!tttGameActive || !tttStudentTurn || tttBoard[idx] || !tttWordValidated) {
-        if (!tttWordValidated) toast('Register a word first', 'Type a part of the house', 'error');
+        if (!tttWordValidated && tttGameActive) toast('Register a word first', 'Type a part of the house', 'error');
         return;
       }
       tttBoard[idx] = 'X';
@@ -587,12 +696,9 @@
       document.getElementById('ttt-word').disabled = false;
       document.getElementById('ttt-word').value = '';
       renderBoard();
-
       const winner = checkWinner(tttBoard);
       if (winner) { endRound(winner); return; }
       if (!tttBoard.includes(null)) { endRound('draw'); return; }
-
-      // Machine plays after a short delay
       setTimeout(() => {
         machineMove();
         renderBoard();
@@ -604,7 +710,6 @@
     }
 
     function machineMove() {
-      // Basic AI: try to win → block → center → corner → side
       const move = findBestMove('O') || findBestMove('X') || (tttBoard[4] === null ? 4 : null) ||
                    [0,2,6,8].find(i => tttBoard[i] === null) ||
                    [1,3,5,7].find(i => tttBoard[i] === null) ||
@@ -626,7 +731,6 @@
       const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
       for (const [a,b2,c] of lines) {
         if (b[a] && b[a] === b[b2] && b[a] === b[c]) {
-          // highlight winning cells
           document.querySelectorAll('.ttt-cell').forEach((cell, i) => {
             if (i === a || i === b2 || i === c) cell.classList.add('win');
           });
@@ -639,27 +743,18 @@
     function endRound(result) {
       tttGameActive = false;
       const msg = document.getElementById('ttt-msg');
-      if (result === 'X') {
-        tttWins++;
-        msg.innerHTML = '🎉 <span class="tt" data-es="¡Ganaste!">You won!</span>';
-      } else if (result === 'O') {
-        tttLosses++;
-        msg.innerHTML = '😢 <span class="tt" data-es="Perdiste">You lost</span>';
-      } else {
-        tttDraws++;
-        msg.innerHTML = '🤝 <span class="tt" data-es="Empate">Draw</span>';
-      }
+      if (result === 'X') { tttWins++; msg.innerHTML = '🎉 <span class="tt" data-es="¡Ganaste!">You won!</span>'; }
+      else if (result === 'O') { tttLosses++; msg.innerHTML = '😢 <span class="tt" data-es="Perdiste">You lost</span>'; }
+      else { tttDraws++; msg.innerHTML = '🤝 <span class="tt" data-es="Empate">Draw</span>'; }
       document.getElementById('ttt-wins').textContent = tttWins;
       document.getElementById('ttt-losses').textContent = tttLosses;
       document.getElementById('ttt-draws').textContent = tttDraws;
       document.getElementById('ttt-progress').style.width = Math.min(100, (tttWins / 5) * 100) + '%';
-
       if (tttWins >= 5) {
         duringComplete = true;
         document.getElementById('tab-during').classList.add('done');
         unlockPhase('post');
         msg.innerHTML += ' — 🏆 <span class="tt" data-es="¡5 victorias! Post desbloqueado">5 wins! Post unlocked!</span>';
-        // Award platform points
         if (u) Auth.ajustarPuntos(u.nie, 10).then(r => { if (r.ok) { u.puntos = r.puntos; Auth.setCurrent(u); updateUserBarStats(); } });
         setTimeout(() => showPhase('post'), 2000);
       } else {
@@ -667,24 +762,20 @@
       }
     }
 
-    // ================================================================
-    // POST PHASE: Vocabulary bag game
-    // ================================================================
+    // ===== POST: vocabulary bag =====
     function initPost() {
-      if (postPoints > 0) return; // already started
+      if (postPoints > 0) return;
       postSeenItems = [];
       nextPostCard();
     }
 
     function nextPostCard() {
-      // Pick a random item not seen recently (or reset if all seen)
       if (postSeenItems.length >= VOCAB_BANK.length) postSeenItems = [];
       let idx;
       do { idx = Math.floor(Math.random() * VOCAB_BANK.length); }
       while (postSeenItems.includes(idx));
       postSeenItems.push(idx);
       postCurrentItem = VOCAB_BANK[idx];
-
       document.getElementById('post-emoji').textContent = postCurrentItem.e;
       document.getElementById('post-name').textContent = postCurrentItem.n;
       document.getElementById('post-notebook').value = '';
@@ -696,7 +787,6 @@
     function postNext() {
       const note = document.getElementById('post-notebook').value.trim();
       if (!note) { toast('Write the word first', null, 'error'); return; }
-      // Step 1 done (copying) → go to step 2 (recall)
       document.getElementById('post-step1').classList.add('hidden');
       document.getElementById('post-step2').classList.remove('hidden');
       document.getElementById('post-recall').value = '';
@@ -708,7 +798,6 @@
       const recall = document.getElementById('post-recall').value.trim().toLowerCase();
       const correct = postCurrentItem.n.toLowerCase();
       const msg = document.getElementById('post-msg');
-
       if (recall === correct) {
         postPoints++;
         document.getElementById('post-points').textContent = postPoints;
@@ -716,10 +805,7 @@
         document.getElementById('post-progress').style.width = (postPoints / 20 * 100) + '%';
         msg.innerHTML = '✅ <span class="tt" data-es="¡Correcto!">Correct!</span> +1';
         msg.style.color = '#059669';
-
-        // Award platform points (1 per correct, so 20 total for full completion)
         if (u) Auth.ajustarPuntos(u.nie, 1).then(r => { if (r.ok) { u.puntos = r.puntos; Auth.setCurrent(u); updateUserBarStats(); } });
-
         if (postPoints >= 20) {
           postComplete = true;
           document.getElementById('tab-post').classList.add('done');
@@ -734,7 +820,6 @@
       } else {
         msg.innerHTML = '❌ <span class="tt" data-es="Incorrecto — la palabra era">Wrong — the word was</span>: <b>' + postCurrentItem.n + '</b>';
         msg.style.color = '#e11d48';
-        // No points for wrong, but continue to next card
         setTimeout(nextPostCard, 2000);
       }
     }
