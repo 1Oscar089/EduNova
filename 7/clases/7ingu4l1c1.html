@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Home: Rooms and Furniture · EduNova</title>
+  <link rel="stylesheet" href="../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>" />
+  <style>
+    /* ===== Tooltip: English word → Spanish translation on hover ===== */
+    .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; }
+    .tt:hover::after {
+      content: attr(data-es); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 10px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+    .tt:hover::before {
+      content: ''; position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
+    }
+
+    /* ===== Phase tabs ===== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
+      border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
+      color: #9ca3af; transition: all .2s; text-align: center;
+    }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; }
+    .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
+    .phase-tab:disabled, .phase-tab.locked { opacity: .45; cursor: not-allowed; }
+
+    /* ===== House croquis (PRE) ===== */
+    .house-plan {
+      background: #fef3c7; border: 5px solid #92400e; border-radius: 16px;
+      padding: 12px; display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px; max-width: 600px; margin: 0 auto;
+    }
+    .room {
+      background: #fff; border: 3px dashed #d1fae5; border-radius: 12px;
+      padding: 10px; min-height: 90px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px; transition: all .2s; cursor: pointer;
+    }
+    .room.drag-over { border-color: #059669; background: #ecfdf5; transform: scale(1.05); }
+    .room.correct { border: 3px solid #059669; background: #d1fae5; }
+    .room.wrong { border-color: #e11d48; background: #fee2e2; animation: shake .3s; }
+    .room .furniture { font-size: 26px; line-height: 1; }
+    .room .room-label { font-weight: 800; font-size: 14px; color: #059669; min-height: 18px; text-align: center; }
+    .room .room-ph { color: #d1d5db; font-size: 24px; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .cards-pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 16px 0; }
+    .room-card {
+      background: #059669; color: #fff; padding: 10px 18px; border-radius: 10px;
+      font-weight: 800; font-size: 14px; cursor: grab; user-select: none;
+      transition: all .15s; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
+    .room-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+    .room-card.selected { background: #0d9488; transform: scale(1.1); box-shadow: 0 4px 14px rgba(13,148,136,.4); }
+    .room-card.placed { opacity: .25; cursor: default; pointer-events: none; }
+    .room-card:active { cursor: grabbing; }
+
+    /* ===== Drawing canvas ===== */
+    .draw-canvas { border: 3px dashed #d1fae5; border-radius: 12px; background: #fff; cursor: crosshair; touch-action: none; display: block; margin: 0 auto; max-width: 100%; }
+
+    /* ===== Tic Tac Toe (DURING) ===== */
+    .ttt-wrap { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: flex-start; }
+    .ttt-board { display: grid; grid-template-columns: repeat(3, 80px); grid-template-rows: repeat(3, 80px); gap: 4px; background: #059669; padding: 4px; border-radius: 12px; }
+    .ttt-cell { background: #fff; border: none; border-radius: 8px; font-size: 38px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; color: #059669; font-family: Arial, sans-serif; }
+    .ttt-cell:hover:not(.taken) { background: #ecfdf5; }
+    .ttt-cell.taken { cursor: not-allowed; }
+    .ttt-cell.x { color: #059669; }
+    .ttt-cell.o { color: #e11d48; }
+    .ttt-cell.win { background: #fbbf24; }
+    .ttt-side { background: #fff; border: 2px solid #d1fae5; border-radius: 12px; padding: 16px; min-width: 240px; }
+    .word-input-area { background: #fff; border: 2px solid #d1fae5; border-radius: 12px; padding: 16px; margin-bottom: 12px; text-align: center; }
+    .used-words { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 8px; }
+    .used-word { background: #f3f4f6; color: #9ca3af; padding: 3px 8px; border-radius: 6px; font-size: 11px; text-decoration: line-through; }
+    .used-word.available { background: #d1fae5; color: #059669; text-decoration: none; font-weight: 700; }
+    .score-row { display: flex; justify-content: space-around; margin: 12px 0; font-weight: 800; }
+    .score-row span { text-align: center; }
+    .score-row .v { font-size: 28px; display: block; }
+
+    /* ===== POST activity ===== */
+    .post-card-display { background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border-radius: 20px; padding: 28px; text-align: center; margin: 16px auto; max-width: 360px; box-shadow: 0 8px 24px rgba(2,132,199,.3); }
+    .post-card-emoji { font-size: 72px; margin-bottom: 8px; line-height: 1; }
+    .post-card-name { font-size: 26px; font-weight: 900; }
+    .notebook { background: #fffbeb; border: 3px solid #fbbf24; border-radius: 12px; padding: 16px; margin: 12px auto; max-width: 360px; background-image: linear-gradient(transparent 23px, #fde68a 24px); background-size: 100% 24px; }
+    .notebook input { background: transparent; border: none; border-bottom: 2px solid #fbbf24; font-size: 20px; font-family: 'Courier New', monospace; text-align: center; color: #92400e; width: 100%; padding: 4px; }
+    .notebook input:focus { outline: none; border-bottom-color: #f59e0b; }
+    .progress-bar { background: #f3f4f6; border-radius: 999px; overflow: hidden; height: 10px; margin: 8px 0; }
+    .progress-fill { background: linear-gradient(90deg, #059669, #34d399); height: 100%; transition: width .4s; border-radius: 999px; }
+
+    .phase { animation: fadeIn .3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .badge-score { font-size: 13px; padding: 4px 12px; }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../estudiante.html">←</a>
+          <div class="icon-box">🏠</div>
+          <div>
+            <h1>My Home: <span class="tt" data-es="Habitaciones y muebles">Rooms and Furniture</span></h1>
+            <p>📘 English · <span class="tt" data-es="Unidad 4: Mi casa">Unit 4: My House</span> · <span class="tt" data-es="Lección 1: Partes de la casa">Lesson 1: Parts of the House</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</span>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span>:
+        <b>1️⃣ Pre</b> (<span class="tt" data-es="Antes">Before</span>),
+        <b>2️⃣ During</b> (<span class="tt" data-es="Durante">During</span>),
+        <b>3️⃣ Post</b> (<span class="tt" data-es="Después">After</span>).
+        <span class="tt" data-es="Debes completar cada parte para desbloquear la siguiente">You must finish each phase to unlock the next one</span>.
+      </div>
+
+      <!-- Phase tabs -->
+      <div class="phase-tabs">
+        <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
+        <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')" disabled>2️⃣ During</button>
+        <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')" disabled>3️⃣ Post</button>
+      </div>
+
+      <!-- ============ PRE PHASE ============ -->
+      <div id="phase-pre" class="phase">
+        <div class="item-card">
+          <h2 style="margin-bottom:8px">1️⃣ Pre: <span class="tt" data-es="Plano de la casa">House Plan</span> 🏠</h2>
+          <p style="color:#6b7280;margin-bottom:12px">
+            <span class="tt" data-es="Mira el plano de la casa">Look at the house plan</span>.
+            <span class="tt" data-es="Arrastra">Drag</span> <span class="tt" data-es="cada tarjeta">each card</span>
+            <span class="tt" data-es="a la habitación correcta">to the correct room</span>.
+          </p>
+
+          <!-- Cards pool -->
+          <div class="cards-pool" id="cards-pool"></div>
+
+          <!-- House floor plan -->
+          <div class="house-plan" id="house-plan"></div>
+
+          <p id="pre-status" style="text-align:center;margin-top:12px;font-weight:700;color:#6b7280"></p>
+        </div>
+
+        <!-- Drawing section (hidden until drag-drop complete) -->
+        <div class="item-card hidden" id="pre-draw-section">
+          <h2 style="margin-bottom:8px">✏️ <span class="tt" data-es="Dibuja tu casa">Draw your house</span></h2>
+          <p style="color:#6b7280;margin-bottom:12px">
+            <span class="tt" data-es="En el lienzo de abajo">On the canvas below</span>,
+            <span class="tt" data-es="dibuja el plano de una casa">draw a one-floor house plan</span>
+            <span class="tt" data-es="y escribe los nombres de las habitaciones">and write the room names</span>.
+          </p>
+          <canvas id="draw-canvas" class="draw-canvas" width="560" height="380"></canvas>
+          <div style="text-align:center;margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" onclick="clearCanvas()">🗑️ <span class="tt" data-es="Limpiar">Clear</span></button>
+            <button class="btn btn-primary" onclick="finishPre()">✅ <span class="tt" data-es="Terminé — Ir a During">I finished — Go to During</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ DURING PHASE ============ -->
+      <div id="phase-during" class="phase hidden">
+        <div class="item-card">
+          <h2 style="margin-bottom:8px">2️⃣ During: <span class="tt" data-es="Tic Tac Toe">Tic Tac Toe</span> ⭕❌</h2>
+          <p style="color:#6b7280;margin-bottom:12px">
+            <span class="tt" data-es="Juega contra la máquina">Play against the computer</span>!
+            <span class="tt" data-es="Antes de cada jugada">Before each move</span>,
+            <span class="tt" data-es="debes escribir una parte de la casa">type a part of the house</span>.
+            <span class="tt" data-es="No puedes repetir">You can't repeat</span>
+            <span class="tt" data-es="hasta usar todas">until you use all of them</span>.
+            <span class="tt" data-es="Gana 5 rondas">Win 5 rounds</span> <span class="tt" data-es="para desbloquear Post">to unlock Post</span>.
+          </p>
+
+          <div class="ttt-wrap">
+            <div>
+              <div class="ttt-board" id="ttt-board"></div>
+            </div>
+            <div class="ttt-side">
+              <div class="word-input-area">
+                <label style="font-weight:700;font-size:13px;color:#059669;display:block;margin-bottom:6px">
+                  <span class="tt" data-es="Escribe una parte de la casa">Type a part of the house</span>:
+                </label>
+                <input id="ttt-word" type="text" placeholder="ej. kitchen" style="text-align:center;font-size:16px;padding:8px;border:2px solid #d1fae5;border-radius:8px;width:100%" onkeypress="if(event.key==='Enter')validateWord()">
+                <button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%" onclick="validateWord()">
+                  <span class="tt" data-es="Registrar palabra">Register word</span>
+                </button>
+                <p id="word-msg" style="font-size:12px;margin-top:6px;min-height:16px"></p>
+              </div>
+
+              <div class="used-words" id="used-words"></div>
+
+              <div class="score-row">
+                <span><span class="v" style="color:#059669" id="ttt-wins">0</span><span class="tt" data-es="Ganas">Wins</span></span>
+                <span><span class="v" style="color:#e11d48" id="ttt-losses">0</span><span class="tt" data-es="Pierdes">Losses</span></span>
+                <span><span class="v" style="color:#6b7280" id="ttt-draws">0</span><span class="tt" data-es="Empates">Draws</span></span>
+              </div>
+
+              <div style="text-align:center">
+                <p style="font-size:13px;color:#6b7280"><span class="tt" data-es="Meta">Goal</span>: 5 <span class="tt" data-es="victorias">wins</span></p>
+                <div class="progress-bar"><div class="progress-fill" id="ttt-progress" style="width:0%"></div></div>
+                <p id="ttt-msg" style="font-weight:700;margin-top:8px;min-height:20px"></p>
+                <button class="btn btn-outline btn-sm hidden" id="ttt-restart" onclick="newRound()">🔄 <span class="tt" data-es="Nueva ronda">New round</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ POST PHASE ============ -->
+      <div id="phase-post" class="phase hidden">
+        <div class="item-card">
+          <h2 style="margin-bottom:8px">3️⃣ Post: <span class="tt" data-es="Bolsa de vocabulario">Vocabulary Bag</span> 🎒</h2>
+          <p style="color:#6b7280;margin-bottom:12px">
+            <span class="tt" data-es="Mira la tarjeta">Look at the card</span>.
+            <span class="tt" data-es="Escribe la palabra en tu libreta">Write the word in your notebook</span>.
+            <span class="tt" data-es="Luego dale siguiente">Then click Next</span> —
+            <span class="tt" data-es="te pedirá escribir la palabra de memoria">you'll type it from memory</span>!
+            <span class="tt" data-es="Consigue 20 puntos">Get 20 points</span> <span class="tt" data-es="para terminar">to finish</span>.
+          </p>
+
+          <div style="display:flex;gap:12px;justify-content:center;margin-bottom:12px;flex-wrap:wrap">
+            <span class="badge badge-emerald badge-score">⭐ <span class="tt" data-es="Puntos">Points</span>: <b id="post-points">0</b>/20</span>
+            <span class="badge badge-amber badge-score">📊 <span class="tt" data-es="Calificación">Score</span>: <b id="post-score">0</b>/10</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="post-progress" style="width:0%"></div></div>
+
+          <!-- Step 1: See card + write in notebook -->
+          <div id="post-step1">
+            <div class="post-card-display" id="post-card">
+              <div class="post-card-emoji" id="post-emoji">❓</div>
+              <div class="post-card-name" id="post-name">Loading...</div>
+            </div>
+            <div class="notebook">
+              <label style="font-weight:700;font-size:13px;color:#92400e;display:block;margin-bottom:6px">📓 <span class="tt" data-es="Libreta">Notebook</span> — <span class="tt" data-es="Escribe aquí">Write here</span>:</label>
+              <input id="post-notebook" type="text" placeholder="type the word..." autocomplete="off">
+            </div>
+            <div style="text-align:center">
+              <button class="btn btn-sky" onclick="postNext()">➡️ <span class="tt" data-es="Siguiente">Next</span></button>
+            </div>
+          </div>
+
+          <!-- Step 2: Recall (type from memory) -->
+          <div id="post-step2" class="hidden">
+            <div class="post-card-display" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">
+              <div class="post-card-emoji">🤔</div>
+              <div class="post-card-name"><span class="tt" data-es="¿Qué palabra acabas de ver?">What word did you just see?</span></div>
+            </div>
+            <div class="notebook">
+              <label style="font-weight:700;font-size:13px;color:#92400e;display:block;margin-bottom:6px">✍️ <span class="tt" data-es="Escribe de memoria">Type from memory</span>:</label>
+              <input id="post-recall" type="text" placeholder="type the word..." autocomplete="off" onkeypress="if(event.key==='Enter')checkRecall()">
+            </div>
+            <div style="text-align:center">
+              <button class="btn btn-primary" onclick="checkRecall()">✅ <span class="tt" data-es="Comprobar">Check</span></button>
+            </div>
+            <p id="post-msg" style="text-align:center;font-weight:700;margin-top:8px;min-height:20px"></p>
+          </div>
+
+          <!-- Completion -->
+          <div id="post-done" class="hidden" style="text-align:center;padding:20px">
+            <div style="font-size:64px">🏆</div>
+            <h2 style="color:#059669"><span class="tt" data-es="¡Felicidades!">Congratulations!</span></h2>
+            <p style="font-size:18px;margin:8px 0"><span class="tt" data-es="Completaste la clase">You completed the class</span>! 🎉</p>
+            <p style="font-size:24px;font-weight:900;color:#92400e">⭐ 20/20 · 📊 10/10</p>
+            <a class="btn btn-primary btn-lg" href="../estudiante.html" style="margin-top:12px">← <span class="tt" data-es="Volver">Back</span></a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="footer">EduNova · English · Unit 4: My House</footer>
+
+  <script src="../config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/userbar.js"></script>
+  <script>
+    // ================================================================
+    // EduNova — Class: 7ingu4l1c1
+    // My Home: Rooms and Furniture (English, Unit 4, Lesson 1)
+    // No evaluada. 3 phases: Pre (drag-drop + drawing), During (tic-tac-toe), Post (vocab game)
+    // ================================================================
+    const ACTIVITY_ID = '7ingu4l1c1';
+    const GRADO = 'Septimo';
+    const MATERIA = 'English';
+    const TIPO = 'clase';
+
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // ===== Rooms for PRE and DURING =====
+    const ROOMS = [
+      { en: 'Kitchen',       es: 'Cocina',      emoji: '🍳🧊' },
+      { en: 'Bedroom',       es: 'Dormitorio',   emoji: '🛏️' },
+      { en: 'Bathroom',      es: 'Baño',         emoji: '🚿🚽' },
+      { en: 'Living room',   es: 'Sala',         emoji: '🛋️📺' },
+      { en: 'Dining room',   es: 'Comedor',      emoji: '🍽️🪑' },
+      { en: 'Garage',        es: 'Garaje',       emoji: '🚗🔧' }
+    ];
+
+    // ===== 100-item vocabulary bank for POST =====
+    const VOCAB_BANK = [
+      {e:'🧊',n:'Refrigerator',s:'Refrigerador'},{e:'🍳',n:'Stove',s:'Estufa'},
+      {e:'🍞',n:'Oven',s:'Horno'},{e:'⚡',n:'Microwave',s:'Microondas'},
+      {e:'🍽️',n:'Dishwasher',s:'Lavavajillas'},{e:'🧺',n:'Washing machine',s:'Lavadora'},
+      {e:'🌀',n:'Dryer',s:'Secadora'},{e:'📺',n:'Television',s:'Televisor'},
+      {e:'💻',n:'Computer',s:'Computadora'},{e:'📱',n:'Phone',s:'Teléfono'},
+      {e:'🍞',n:'Toaster',s:'Tostadora'},{e:'🥤',n:'Blender',s:'Licuadora'},
+      {e:'☕',n:'Coffee maker',s:'Cafetera'},{e:'🫖',n:'Kettle',s:'Tetera'},
+      {e:'👔',n:'Iron',s:'Plancha'},{e:'🧹',n:'Vacuum',s:'Aspiradora'},
+      {e:'🧹',n:'Broom',s:'Escoba'},{e:'🧽',n:'Mop',s:'Trapeador'},
+      {e:'🪣',n:'Bucket',s:'Cubeta'},{e:'🌀',n:'Fan',s:'Ventilador'},
+      {e:'❄️',n:'Air conditioner',s:'Aire acondicionado'},{e:'🔥',n:'Heater',s:'Calentador'},
+      {e:'🚿',n:'Shower',s:'Ducha'},{e:'🛁',n:'Bathtub',s:'Bañera'},
+      {e:'🚽',n:'Toilet',s:'Inodoro'},{e:'🚰',n:'Sink',s:'Lavabo'},
+      {e:'🛏️',n:'Bed',s:'Cama'},{e:'🛋️',n:'Sofa',s:'Sofá'},
+      {e:'🪑',n:'Chair',s:'Silla'},{e:'🖥️',n:'Desk',s:'Escritorio'},
+      {e:'🗄️',n:'Wardrobe',s:'Armario'},{e:'📚',n:'Bookshelf',s:'Librero'},
+      {e:'🗄️',n:'Dresser',s:'Cómoda'},{e:'🕯️',n:'Nightstand',s:'Mesita de noche'},
+      {e:'☕',n:'Coffee table',s:'Mesa de centro'},{e:'🍽️',n:'Dining table',s:'Mesa de comedor'},
+      {e:'📚',n:'Shelf',s:'Estante'},{e:'🗄️',n:'Cabinet',s:'Gabinete'},
+      {e:'🪞',n:'Mirror',s:'Espejo'},{e:'💡',n:'Lamp',s:'Lámpara'},
+      {e:'🟫',n:'Rug',s:'Alfombra'},{e:'🪟',n:'Curtain',s:'Cortina'},
+      {e:'🛏️',n:'Pillow',s:'Almohada'},{e:'🧶',n:'Blanket',s:'Manta'},
+      {e:'🕐',n:'Clock',s:'Reloj'},{e:'🖼️',n:'Painting',s:'Cuadro'},
+      {e:'🏺',n:'Vase',s:'Jarrón'},{e:'🪴',n:'Plant',s:'Planta'},
+      {e:'🚪',n:'Door',s:'Puerta'},{e:'🪟',n:'Window',s:'Ventana'},
+      {e:'🪜',n:'Stairs',s:'Escaleras'},{e:'🔥',n:'Fireplace',s:'Chimenea'},
+      {e:'🗑️',n:'Trash can',s:'Basurero'},{e:'♻️',n:'Recycling bin',s:'Contenedor'},
+      {e:'💡',n:'Light bulb',s:'Bombilla'},{e:'🔌',n:'Switch',s:'Interruptor'},
+      {e:'🔌',n:'Outlet',s:'Enchufe'},{e:'📱',n:'Remote',s:'Control remoto'},
+      {e:'🔊',n:'Speaker',s:'Altavoz'},{e:'🎧',n:'Headphones',s:'Auriculares'},
+      {e:'📷',n:'Camera',s:'Cámara'},{e:'🖨️',n:'Printer',s:'Impresora'},
+      {e:'📠',n:'Scanner',s:'Escáner'},{e:'⌨️',n:'Keyboard',s:'Teclado'},
+      {e:'🖱️',n:'Mouse',s:'Ratón'},{e:'🖥️',n:'Monitor',s:'Monitor'},
+      {e:'📶',n:'Router',s:'Router'},{e:'⏰',n:'Alarm',s:'Alarma'},
+      {e:'🔔',n:'Doorbell',s:'Timbre'},{e:'🔒',n:'Lock',s:'Cerradura'},
+      {e:'🗝️',n:'Key',s:'Llave'},{e:'📬',n:'Mailbox',s:'Buzón'},
+      {e:'🚧',n:'Fence',s:'Cerca'},{e:'🛤️',n:'Path',s:'Camino'},
+      {e:'🏠',n:'Porch',s:'Pórtico'},{e:'🍳',n:'Kitchen',s:'Cocina'},
+      {e:'🛏️',n:'Bedroom',s:'Dormitorio'},{e:'🚿',n:'Bathroom',s:'Baño'},
+      {e:'🛋️',n:'Living room',s:'Sala'},{e:'🍽️',n:'Dining room',s:'Comedor'},
+      {e:'🚗',n:'Garage',s:'Garaje'},{e:'🌳',n:'Garden',s:'Jardín'},
+      {e:'🚪',n:'Hallway',s:'Pasillo'},{e:'🧺',n:'Laundry room',s:'Lavandería'},
+      {e:'💻',n:'Office',s:'Oficina'},{e:'📦',n:'Attic',s:'Ático'},
+      {e:'🏚️',n:'Basement',s:'Sótano'},{e:'🌿',n:'Balcony',s:'Balcón'},
+      {e:'👔',n:'Closet',s:'Clóset'},{e:'🥫',n:'Pantry',s:'Despensa'},
+      {e:'🛋️',n:'Couch',s:'Sofá'},{e:'🍽️',n:'Plate',s:'Plato'},
+      {e:'🍴',n:'Fork',s:'Tenedor'},{e:'🥄',n:'Spoon',s:'Cuchara'},
+      {e:'🔪',n:'Knife',s:'Cuchillo'},{e:'☕',n:'Cup',s:'Taza'},
+      {e:'🍷',n:'Glass',s:'Vaso'},{e:'🍲',n:'Pot',s:'Olla'},
+      {e:'🥘',n:'Pan',s:'Sartén'},{e:'🧽',n:'Sponge',s:'Esponja'}
+    ];
+
+    // ===== State =====
+    let preComplete = false, duringComplete = false, postComplete = false;
+    let selectedCard = null;
+    let placedCount = 0;
+    let drawing = false, drawCtx = null;
+    let tttBoard = [], tttWordsUsed = [], tttWins = 0, tttLosses = 0, tttDraws = 0;
+    let tttStudentTurn = true, tttWordValidated = false, tttGameActive = false;
+    let postPoints = 0, postCurrentItem = null, postSeenItems = [];
+
+    // ===== Phase management =====
+    function showPhase(phase) {
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.phase').forEach(p => p.classList.add('hidden'));
+      document.getElementById('phase-' + phase).classList.remove('hidden');
+      document.getElementById('tab-' + phase).classList.add('active');
+      if (phase === 'pre') initPre();
+      if (phase === 'during' && preComplete) initDuring();
+      if (phase === 'post' && duringComplete) initPost();
+    }
+
+    function unlockPhase(phase) {
+      const tab = document.getElementById('tab-' + phase);
+      tab.classList.remove('locked');
+      tab.disabled = false;
+    }
+
+    // ================================================================
+    // PRE PHASE: Drag-and-drop room cards + drawing canvas
+    // ================================================================
+    function initPre() {
+      if (document.getElementById('cards-pool').children.length) return; // already built
+      // Build cards (shuffled)
+      const pool = document.getElementById('cards-pool');
+      const shuffled = [...ROOMS].sort(() => Math.random() - 0.5);
+      shuffled.forEach(room => {
+        const card = document.createElement('div');
+        card.className = 'room-card';
+        card.textContent = room.en;
+        card.draggable = true;
+        card.dataset.room = room.en;
+        card.onclick = () => selectCard(card);
+        card.ondragstart = (e) => { e.dataTransfer.setData('text', room.en); };
+        pool.appendChild(card);
+      });
+
+      // Build house plan
+      const plan = document.getElementById('house-plan');
+      ROOMS.forEach(room => {
+        const div = document.createElement('div');
+        div.className = 'room';
+        div.dataset.room = room.en;
+        div.innerHTML = '<div class="furniture">' + room.emoji + '</div><div class="room-label room-ph">?</div>';
+        div.ondragover = (e) => { e.preventDefault(); div.classList.add('drag-over'); };
+        div.ondragleave = () => div.classList.remove('drag-over');
+        div.ondrop = (e) => { e.preventDefault(); div.classList.remove('drag-over'); tryPlace(room.en, div); };
+        div.onclick = () => { if (selectedCard) tryPlace(selectedCard.dataset.room, div); };
+        plan.appendChild(div);
+      });
+    }
+
+    function selectCard(card) {
+      if (card.classList.contains('placed')) return;
+      document.querySelectorAll('.room-card.selected').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedCard = card;
+    }
+
+    function tryPlace(cardRoom, roomDiv) {
+      if (roomDiv.classList.contains('correct')) return;
+      const targetRoom = roomDiv.dataset.room;
+      const card = document.querySelector('.room-card[data-room="' + cardRoom + '"]');
+      if (!card || card.classList.contains('placed')) return;
+
+      if (cardRoom === targetRoom) {
+        // Correct!
+        roomDiv.classList.add('correct');
+        roomDiv.querySelector('.room-label').textContent = cardRoom;
+        roomDiv.querySelector('.room-label').classList.remove('room-ph');
+        card.classList.add('placed');
+        card.classList.remove('selected');
+        selectedCard = null;
+        placedCount++;
+        document.getElementById('pre-status').innerHTML = '✅ <span class="tt" data-es="Correcto">Correct</span>! ' + placedCount + '/6';
+        if (placedCount === 6) {
+          document.getElementById('pre-status').innerHTML = '🎉 <span class="tt" data-es="¡Todas correctas! Ahora dibuja tu casa">All correct! Now draw your house</span>';
+          document.getElementById('pre-draw-section').classList.remove('hidden');
+          initCanvas();
+          // Award some platform points for completing the drag-drop
+          if (u) Auth.ajustarPuntos(u.nie, 5).then(r => { if (r.ok) { u.puntos = r.puntos; Auth.setCurrent(u); updateUserBarStats(); } });
+        }
+      } else {
+        // Wrong
+        roomDiv.classList.add('wrong');
+        setTimeout(() => roomDiv.classList.remove('wrong'), 400);
+        document.getElementById('pre-status').innerHTML = '❌ <span class="tt" data-es="Intenta de nuevo">Try again</span>';
+      }
+    }
+
+    // ===== Drawing canvas =====
+    function initCanvas() {
+      const canvas = document.getElementById('draw-canvas');
+      if (!canvas || drawCtx) return;
+      drawCtx = canvas.getContext('2d');
+      drawCtx.fillStyle = '#fff';
+      drawCtx.fillRect(0, 0, canvas.width, canvas.height);
+      drawCtx.strokeStyle = '#059669';
+      drawCtx.lineWidth = 3;
+      drawCtx.lineCap = 'round';
+
+      const getPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: (cx - rect.left) * (canvas.width / rect.width), y: (cy - rect.top) * (canvas.height / rect.height) };
+      };
+      const start = (e) => { e.preventDefault(); drawing = true; const p = getPos(e); drawCtx.beginPath(); drawCtx.moveTo(p.x, p.y); };
+      const move = (e) => { if (!drawing) return; e.preventDefault(); const p = getPos(e); drawCtx.lineTo(p.x, p.y); drawCtx.stroke(); };
+      const end = () => { drawing = false; };
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      canvas.addEventListener('mouseup', end);
+      canvas.addEventListener('mouseleave', end);
+      canvas.addEventListener('touchstart', start);
+      canvas.addEventListener('touchmove', move);
+      canvas.addEventListener('touchend', end);
+    }
+
+    function clearCanvas() {
+      const canvas = document.getElementById('draw-canvas');
+      drawCtx.fillStyle = '#fff';
+      drawCtx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function finishPre() {
+      preComplete = true;
+      document.getElementById('tab-pre').classList.add('done');
+      unlockPhase('during');
+      toast('Pre complete!', 'During phase unlocked');
+      showPhase('during');
+    }
+
+    // ================================================================
+    // DURING PHASE: Tic Tac Toe with vocabulary
+    // ================================================================
+    function initDuring() {
+      newRound();
+      renderUsedWords();
+    }
+
+    function newRound() {
+      tttBoard = Array(9).fill(null);
+      tttWordsUsed = [];
+      tttStudentTurn = true;
+      tttWordValidated = false;
+      tttGameActive = true;
+      document.getElementById('ttt-word').value = '';
+      document.getElementById('ttt-word').disabled = false;
+      document.getElementById('word-msg').innerHTML = '';
+      document.getElementById('ttt-msg').innerHTML = '';
+      document.getElementById('ttt-restart').classList.add('hidden');
+      renderBoard();
+      renderUsedWords();
+    }
+
+    function renderBoard() {
+      const board = document.getElementById('ttt-board');
+      board.innerHTML = '';
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('button');
+        cell.className = 'ttt-cell' + (tttBoard[i] ? ' taken ' + tttBoard[i].toLowerCase() : '');
+        cell.textContent = tttBoard[i] || '';
+        cell.onclick = () => placeMove(i);
+        board.appendChild(cell);
+      }
+    }
+
+    function renderUsedWords() {
+      const div = document.getElementById('used-words');
+      div.innerHTML = '<small style="width:100%;text-align:center;color:#9ca3af;margin-bottom:4px"><span class="tt" data-es="Palabras">Words</span>:</small>';
+      ROOMS.forEach(r => {
+        const used = tttWordsUsed.some(w => w.toLowerCase() === r.en.toLowerCase());
+        const span = document.createElement('span');
+        span.className = 'used-word' + (used ? '' : ' available');
+        span.textContent = r.en;
+        div.appendChild(span);
+      });
+    }
+
+    function validateWord() {
+      if (!tttGameActive || !tttStudentTurn) return;
+      const input = document.getElementById('ttt-word');
+      const word = input.value.trim().toLowerCase();
+      const msg = document.getElementById('word-msg');
+      if (!word) { msg.innerHTML = '⚠️ <span class="tt" data-es="Escribe una palabra">Type a word</span>'; return; }
+
+      // Check if it matches any room (case-insensitive)
+      const match = ROOMS.find(r => r.en.toLowerCase() === word);
+      if (!match) {
+        msg.innerHTML = '❌ <span class="tt" data-es="No es una parte de la casa">Not a part of the house</span>';
+        tttWordValidated = false;
+        return;
+      }
+      // Check if already used (unless all 6 used → reset)
+      const alreadyUsed = tttWordsUsed.some(w => w.toLowerCase() === word);
+      if (alreadyUsed) {
+        if (tttWordsUsed.length >= ROOMS.length) {
+          // All used → reset pool
+          tttWordsUsed = [match.en];
+        } else {
+          msg.innerHTML = '🚫 <span class="tt" data-es="Ya usada — prueba otra">Already used — try another</span>';
+          tttWordValidated = false;
+          return;
+        }
+      } else {
+        tttWordsUsed.push(match.en);
+      }
+      tttWordValidated = true;
+      input.disabled = true;
+      msg.innerHTML = '✅ <span class="tt" data-es="Palabra válida — haz tu jugada">Valid word — make your move!</span>';
+      renderUsedWords();
+    }
+
+    function placeMove(idx) {
+      if (!tttGameActive || !tttStudentTurn || tttBoard[idx] || !tttWordValidated) {
+        if (!tttWordValidated) toast('Register a word first', 'Type a part of the house', 'error');
+        return;
+      }
+      tttBoard[idx] = 'X';
+      tttStudentTurn = false;
+      tttWordValidated = false;
+      document.getElementById('ttt-word').disabled = false;
+      document.getElementById('ttt-word').value = '';
+      renderBoard();
+
+      const winner = checkWinner(tttBoard);
+      if (winner) { endRound(winner); return; }
+      if (!tttBoard.includes(null)) { endRound('draw'); return; }
+
+      // Machine plays after a short delay
+      setTimeout(() => {
+        machineMove();
+        renderBoard();
+        const w2 = checkWinner(tttBoard);
+        if (w2) { endRound(w2); return; }
+        if (!tttBoard.includes(null)) { endRound('draw'); return; }
+        tttStudentTurn = true;
+      }, 500);
+    }
+
+    function machineMove() {
+      // Basic AI: try to win → block → center → corner → side
+      const move = findBestMove('O') || findBestMove('X') || (tttBoard[4] === null ? 4 : null) ||
+                   [0,2,6,8].find(i => tttBoard[i] === null) ||
+                   [1,3,5,7].find(i => tttBoard[i] === null) ||
+                   tttBoard.findIndex(v => v === null);
+      if (move !== null && move !== -1) tttBoard[move] = 'O';
+    }
+
+    function findBestMove(player) {
+      const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      for (const [a,b,c] of lines) {
+        if (tttBoard[a] === player && tttBoard[b] === player && tttBoard[c] === null) return c;
+        if (tttBoard[a] === player && tttBoard[c] === player && tttBoard[b] === null) return b;
+        if (tttBoard[b] === player && tttBoard[c] === player && tttBoard[a] === null) return a;
+      }
+      return null;
+    }
+
+    function checkWinner(b) {
+      const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      for (const [a,b2,c] of lines) {
+        if (b[a] && b[a] === b[b2] && b[a] === b[c]) {
+          // highlight winning cells
+          document.querySelectorAll('.ttt-cell').forEach((cell, i) => {
+            if (i === a || i === b2 || i === c) cell.classList.add('win');
+          });
+          return b[a];
+        }
+      }
+      return null;
+    }
+
+    function endRound(result) {
+      tttGameActive = false;
+      const msg = document.getElementById('ttt-msg');
+      if (result === 'X') {
+        tttWins++;
+        msg.innerHTML = '🎉 <span class="tt" data-es="¡Ganaste!">You won!</span>';
+      } else if (result === 'O') {
+        tttLosses++;
+        msg.innerHTML = '😢 <span class="tt" data-es="Perdiste">You lost</span>';
+      } else {
+        tttDraws++;
+        msg.innerHTML = '🤝 <span class="tt" data-es="Empate">Draw</span>';
+      }
+      document.getElementById('ttt-wins').textContent = tttWins;
+      document.getElementById('ttt-losses').textContent = tttLosses;
+      document.getElementById('ttt-draws').textContent = tttDraws;
+      document.getElementById('ttt-progress').style.width = Math.min(100, (tttWins / 5) * 100) + '%';
+
+      if (tttWins >= 5) {
+        duringComplete = true;
+        document.getElementById('tab-during').classList.add('done');
+        unlockPhase('post');
+        msg.innerHTML += ' — 🏆 <span class="tt" data-es="¡5 victorias! Post desbloqueado">5 wins! Post unlocked!</span>';
+        // Award platform points
+        if (u) Auth.ajustarPuntos(u.nie, 10).then(r => { if (r.ok) { u.puntos = r.puntos; Auth.setCurrent(u); updateUserBarStats(); } });
+        setTimeout(() => showPhase('post'), 2000);
+      } else {
+        document.getElementById('ttt-restart').classList.remove('hidden');
+      }
+    }
+
+    // ================================================================
+    // POST PHASE: Vocabulary bag game
+    // ================================================================
+    function initPost() {
+      if (postPoints > 0) return; // already started
+      postSeenItems = [];
+      nextPostCard();
+    }
+
+    function nextPostCard() {
+      // Pick a random item not seen recently (or reset if all seen)
+      if (postSeenItems.length >= VOCAB_BANK.length) postSeenItems = [];
+      let idx;
+      do { idx = Math.floor(Math.random() * VOCAB_BANK.length); }
+      while (postSeenItems.includes(idx));
+      postSeenItems.push(idx);
+      postCurrentItem = VOCAB_BANK[idx];
+
+      document.getElementById('post-emoji').textContent = postCurrentItem.e;
+      document.getElementById('post-name').textContent = postCurrentItem.n;
+      document.getElementById('post-notebook').value = '';
+      document.getElementById('post-step1').classList.remove('hidden');
+      document.getElementById('post-step2').classList.add('hidden');
+      document.getElementById('post-msg').textContent = '';
+    }
+
+    function postNext() {
+      const note = document.getElementById('post-notebook').value.trim();
+      if (!note) { toast('Write the word first', null, 'error'); return; }
+      // Step 1 done (copying) → go to step 2 (recall)
+      document.getElementById('post-step1').classList.add('hidden');
+      document.getElementById('post-step2').classList.remove('hidden');
+      document.getElementById('post-recall').value = '';
+      document.getElementById('post-recall').focus();
+      document.getElementById('post-msg').textContent = '';
+    }
+
+    function checkRecall() {
+      const recall = document.getElementById('post-recall').value.trim().toLowerCase();
+      const correct = postCurrentItem.n.toLowerCase();
+      const msg = document.getElementById('post-msg');
+
+      if (recall === correct) {
+        postPoints++;
+        document.getElementById('post-points').textContent = postPoints;
+        document.getElementById('post-score').textContent = (postPoints / 2).toFixed(1);
+        document.getElementById('post-progress').style.width = (postPoints / 20 * 100) + '%';
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Correcto!">Correct!</span> +1';
+        msg.style.color = '#059669';
+
+        // Award platform points (1 per correct, so 20 total for full completion)
+        if (u) Auth.ajustarPuntos(u.nie, 1).then(r => { if (r.ok) { u.puntos = r.puntos; Auth.setCurrent(u); updateUserBarStats(); } });
+
+        if (postPoints >= 20) {
+          postComplete = true;
+          document.getElementById('tab-post').classList.add('done');
+          setTimeout(() => {
+            document.getElementById('post-step2').classList.add('hidden');
+            document.getElementById('post-done').classList.remove('hidden');
+            toast('Class complete!', '⭐ 20/20 · 📊 10/10');
+          }, 800);
+        } else {
+          setTimeout(nextPostCard, 1000);
+        }
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Incorrecto — la palabra era">Wrong — the word was</span>: <b>' + postCurrentItem.n + '</b>';
+        msg.style.color = '#e11d48';
+        // No points for wrong, but continue to next card
+        setTimeout(nextPostCard, 2000);
+      }
+    }
+
+    // ===== Start =====
+    showPhase('pre');
+  </script>
+</body>
+</html>
