@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fuerza de Restitución y MAS · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>" />
+  <style>
+    .sim-container {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    canvas {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      cursor: grab;
+      touch-action: none;
+      max-width: 100%;
+    }
+    canvas:active { cursor: grabbing; }
+    .math-block {
+      background: #f0fdfa;
+      border-left: 4px solid #0d9488;
+      padding: 12px 16px;
+      border-radius: 0 12px 12px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      color: #0f766e;
+      margin: 12px 0;
+      overflow-x: auto;
+    }
+    .vector-legend {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      flex-wrap: wrap;
+    }
+    .v-item { display: flex; align-items: center; gap: 6px; }
+    .v-color { width: 12px; height: 12px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ccfbf1;color:#0f766e">⚖️</div>
+          <div>
+            <h1>Fuerza de Restitución y MAS</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 2</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <b>💡 Explora:</b> Interactúa con las simulaciones arrastrando las masas para observar cómo se comportan los vectores de fuerza y desplazamiento.
+      </div>
+
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px">¿Qué es la Fuerza de Restitución?</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:12px">
+          En los sistemas que presentan un <b>Movimiento Armónico Simple (MAS)</b>, existe una fuerza fundamental llamada <b>fuerza de restitución</b>. Su característica principal es que <i>siempre apunta hacia la posición de equilibrio</i> del sistema.
+        </p>
+        <p style="color:#4b5563; line-height:1.6">
+          Esta fuerza cumple la <b>segunda condición del MAS</b>: es directamente proporcional al desplazamiento, pero en sentido contrario. El signo negativo en las fórmulas refleja matemáticamente esta oposición.
+        </p>
+      </div>
+
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0d9488">1. El Péndulo Simple</h2>
+        <p style="color:#4b5563; line-height:1.6">
+          Al analizar un péndulo para ángulos de oscilación pequeños (menores a 20°), la trayectoria curva de la lenteja se aproxima a una línea recta horizontal (<b>x</b>). Analizando la geometría y las componentes del peso, deducimos que la fuerza que hace regresar al péndulo al centro es:
+        </p>
+        
+        <div class="math-block">
+          F<sub>gx</sub> = - (mg / L) · x
+        </div>
+        
+        <ul style="color:#4b5563; line-height:1.6; margin-left:24px; margin-bottom:16px">
+          <li><b>m</b> = masa de la lenteja</li>
+          <li><b>g</b> = gravedad (9.8 m/s²)</li>
+          <li><b>L</b> = longitud del hilo</li>
+          <li><b>x</b> = desplazamiento horizontal</li>
+        </ul>
+
+        <div class="sim-container">
+          <h3 style="font-size:16px; margin-bottom:8px">Simulación: Péndulo</h3>
+          <p style="font-size:13px; color:#64748b; margin-bottom:12px">Arrastra la masa roja para cambiar el ángulo. Observa el vector de fuerza.</p>
+          <canvas id="sim-pendulum" width="400" height="250"></canvas>
+          <div class="vector-legend">
+            <div class="v-item"><div class="v-color" style="background:#e11d48"></div> Fuerza de restitución (F<sub>gx</sub>)</div>
+            <div class="v-item"><div class="v-color" style="background:#3b82f6"></div> Desplazamiento (x)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0d9488">2. Sistema Masa-Resorte (Ley de Hooke)</h2>
+        <p style="color:#4b5563; line-height:1.6">
+          Otro sistema mecánico donde se manifiesta la fuerza de restitución es el resorte. Dentro de sus límites elásticos, las deformaciones que sufre son proporcionales a la fuerza, según la <b>Ley de Hooke</b>:
+        </p>
+
+        <div class="math-block">
+          F = -k · y
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:16px">
+          Donde <b>k</b> es la constante de rigidez (ej. en N/m o N/cm) e <b>y</b> es el desplazamiento (estiramiento o contracción).<br><br>
+          <b>Ejemplo:</b> Si k = 1 N/cm y contraemos el resorte hacia arriba (y = +3 cm), la fuerza será F = -(1)(3) = -3 N (apuntando hacia abajo, buscando el equilibrio).
+        </p>
+
+        <div class="sim-container">
+          <h3 style="font-size:16px; margin-bottom:8px">Simulación: Resorte Vertical</h3>
+          <p style="font-size:13px; color:#64748b; margin-bottom:12px">Arrastra el bloque para estirar o contraer el resorte.</p>
+          <canvas id="sim-spring" width="400" height="250"></canvas>
+          <div class="vector-legend">
+            <div class="v-item"><div class="v-color" style="background:#e11d48"></div> Fuerza de restitución (F)</div>
+            <div class="v-item"><div class="v-color" style="background:#3b82f6"></div> Desplazamiento (y)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card text-center" id="finish-section">
+        <h3 style="margin-bottom:8px; color:#0f766e">¡Has comprendido la base del MAS!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Al finalizar la lectura y explorar las simulaciones, marca esta clase como completada.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Terminar Lección</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · Fuerza de Restitución</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '8cieu3l2c32';
+    const GRADO = 'Octavo';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // ==========================================
+    // SIMULACIÓN 1: PÉNDULO SIMPLE
+    // ==========================================
+    const cPend = document.getElementById('sim-pendulum');
+    const ctxPend = cPend.getContext('2d');
+    
+    let pend = {
+      ox: 200, oy: 20,       // Pivot
+      L: 150,                // Longitud
+      angle: Math.PI / 6,    // Ángulo inicial (30 deg)
+      dragging: false
+    };
+
+    function drawArrow(ctx, fromX, fromY, toX, toY, color, label) {
+      const headlen = 8; 
+      const dx = toX - fromX;
+      const dy = toY - fromY;
+      const angle = Math.atan2(dy, dx);
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return; // Muy pequeño para dibujar
+
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.moveTo(fromX, fromY);
+      ctx.lineTo(toX, toY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.fillStyle = color;
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+      ctx.fill();
+
+      if (label) {
+        ctx.fillStyle = color;
+        ctx.font = "bold 14px sans-serif";
+        ctx.fillText(label, toX + (dx > 0 ? 10 : -25), toY + (dy > 0 ? 15 : -10));
+      }
+    }
+
+    function renderPendulum() {
+      ctxPend.clearRect(0, 0, cPend.width, cPend.height);
+      
+      // Eje de equilibrio (línea punteada)
+      ctxPend.beginPath();
+      ctxPend.setLineDash([5, 5]);
+      ctxPend.strokeStyle = '#cbd5e1';
+      ctxPend.lineWidth = 2;
+      ctxPend.moveTo(pend.ox, pend.oy);
+      ctxPend.lineTo(pend.ox, pend.oy + pend.L + 40);
+      ctxPend.stroke();
+      ctxPend.setLineDash([]);
+
+      // Posición de la masa
+      const bx = pend.ox + pend.L * Math.sin(pend.angle);
+      const by = pend.oy + pend.L * Math.cos(pend.angle);
+
+      // Cuerda
+      ctxPend.beginPath();
+      ctxPend.strokeStyle = '#64748b';
+      ctxPend.lineWidth = 3;
+      ctxPend.moveTo(pend.ox, pend.oy);
+      ctxPend.lineTo(bx, by);
+      ctxPend.stroke();
+
+      // Vectores
+      const dispX = bx - pend.ox;
+      // Vector desplazamiento (x) en azul
+      drawArrow(ctxPend, pend.ox, by, bx, by, '#3b82f6', 'x');
+      
+      // Vector Fuerza restitución (proporcional a -x) en rojo
+      // Lo dibujamos desde la masa hacia el centro
+      drawArrow(ctxPend, bx, by, bx - dispX * 0.5, by, '#e11d48', 'F');
+
+      // Masa
+      ctxPend.beginPath();
+      ctxPend.fillStyle = pend.dragging ? '#f59e0b' : '#334155';
+      ctxPend.arc(bx, by, 14, 0, Math.PI * 2);
+      ctxPend.fill();
+    }
+
+    // Eventos Péndulo
+    function getMousePos(canvas, evt) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+      const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+      return {
+        x: (clientX - rect.left) * (canvas.width / rect.width),
+        y: (clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    function handlePendulumMove(e) {
+      if (!pend.dragging) return;
+      e.preventDefault();
+      const pos = getMousePos(cPend, e);
+      let dx = pos.x - pend.ox;
+      let dy = pos.y - pend.oy;
+      let angle = Math.atan2(dx, dy);
+      // Limitar el ángulo para que no dé la vuelta completa (aprox max 60 deg)
+      if (angle > 1.2) angle = 1.2;
+      if (angle < -1.2) angle = -1.2;
+      pend.angle = angle;
+      renderPendulum();
+    }
+
+    cPend.addEventListener('mousedown', () => pend.dragging = true);
+    cPend.addEventListener('mousemove', handlePendulumMove);
+    window.addEventListener('mouseup', () => pend.dragging = false);
+    
+    cPend.addEventListener('touchstart', (e) => { e.preventDefault(); pend.dragging = true; });
+    cPend.addEventListener('touchmove', handlePendulumMove);
+    window.addEventListener('touchend', () => pend.dragging = false);
+
+    renderPendulum();
+
+    // ==========================================
+    // SIMULACIÓN 2: RESORTE (LEY DE HOOKE)
+    // ==========================================
+    const cSpr = document.getElementById('sim-spring');
+    const ctxSpr = cSpr.getContext('2d');
+    
+    let spr = {
+      x: 200,                // Centro horizontal
+      eqY: 120,              // Punto de equilibrio
+      y: 180,                // Posición actual de la masa
+      dragging: false
+    };
+
+    function drawSpring(ctx, startX, startY, endX, endY) {
+      const coils = 10;
+      const width = 20;
+      ctx.beginPath();
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 3;
+      ctx.moveTo(startX, startY);
+      
+      let step = (endY - startY) / (coils + 1);
+      for(let i = 1; i <= coils; i++) {
+        let offsetX = (i % 2 === 0) ? width : -width;
+        ctx.lineTo(startX + offsetX, startY + step * i);
+      }
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+    }
+
+    function renderSpring() {
+      ctxSpr.clearRect(0, 0, cSpr.width, cSpr.height);
+
+      // Techo
+      ctxSpr.fillStyle = '#cbd5e1';
+      ctxSpr.fillRect(spr.x - 40, 10, 80, 10);
+      
+      // Línea de equilibrio (punteada)
+      ctxSpr.beginPath();
+      ctxSpr.setLineDash([5, 5]);
+      ctxSpr.strokeStyle = '#94a3b8';
+      ctxSpr.lineWidth = 1;
+      ctxSpr.moveTo(spr.x - 60, spr.eqY);
+      ctxSpr.lineTo(spr.x + 100, spr.eqY);
+      ctxSpr.stroke();
+      ctxSpr.setLineDash([]);
+      ctxSpr.fillStyle = '#64748b';
+      ctxSpr.font = "12px sans-serif";
+      ctxSpr.fillText("y = 0", spr.x + 60, spr.eqY - 5);
+
+      // Resorte
+      drawSpring(ctxSpr, spr.x, 20, spr.x, spr.y - 15);
+
+      // Vectores
+      const dispY = spr.y - spr.eqY;
+      
+      // Vector desplazamiento (y) en azul (a la izquierda)
+      drawArrow(ctxSpr, spr.x - 35, spr.eqY, spr.x - 35, spr.y, '#3b82f6', 'y');
+      
+      // Vector Fuerza restitución (-y) en rojo (a la derecha)
+      // La magnitud de la flecha será proporcional al desplazamiento
+      drawArrow(ctxSpr, spr.x + 35, spr.y, spr.x + 35, spr.y - dispY, '#e11d48', 'F');
+
+      // Masa
+      ctxSpr.fillStyle = spr.dragging ? '#f59e0b' : '#334155';
+      ctxSpr.fillRect(spr.x - 20, spr.y - 15, 40, 30);
+    }
+
+    function handleSpringMove(e) {
+      if (!spr.dragging) return;
+      e.preventDefault();
+      const pos = getMousePos(cSpr, e);
+      let newY = pos.y;
+      if (newY < 50) newY = 50;   // Tope compresión
+      if (newY > 230) newY = 230; // Tope estiramiento
+      spr.y = newY;
+      renderSpring();
+    }
+
+    cSpr.addEventListener('mousedown', () => spr.dragging = true);
+    cSpr.addEventListener('mousemove', handleSpringMove);
+    window.addEventListener('mouseup', () => spr.dragging = false);
+    
+    cSpr.addEventListener('touchstart', (e) => { e.preventDefault(); spr.dragging = true; });
+    cSpr.addEventListener('touchmove', handleSpringMove);
+    window.addEventListener('touchend', () => spr.dragging = false);
+
+    renderSpring();
+
+    // ==========================================
+    // CONTROL DE LA LECCIÓN
+    // ==========================================
+    (async function() {
+      // Si el estudiante ya la marcó como leída (si usáramos Notas.set para llevar control)
+      // Para esta clase, revisaremos si ya tiene la nota registrada (podemos usar '10' como leída).
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      // Guardamos un "10" ficticio para saber que la completó
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        // Regalamos 5 puntos por la interactividad
+        const resPts = await Auth.ajustarPuntos(u.nie, 5);
+        if (resPts.ok) { 
+          u.puntos = resPts.puntos; 
+          Auth.setCurrent(u); 
+          updateUserBarStats(); 
+        }
+        toast('¡Lección completada!', '+5 ⭐ puntos ganados');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      btn.outerHTML = '<div class="alert alert-success text-center">✓ Lección completada.</div>';
+    }
+  </script>
+</body>
+</html>
