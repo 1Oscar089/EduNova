@@ -56,6 +56,13 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
+    .example-box {
+      background: #fffbeb;
+      border: 2px dashed #f59e0b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -139,7 +146,7 @@
           <div class="step-num">4</div>
           <div>
             <h4 style="font-size:16px; color:#0f766e; margin-bottom:4px">Registra la taxonomía</h4>
-            <p style="color:#4b5563; font-size:14px; line-height:1.5">Accede al primer resultado de tu búsqueda. En la parte izquierda de la pantalla se desplegarán los nombres de los taxones. <b>Escríbelos en tu cuaderno de trabajo</b> en orden, desde el más incluyente (Dominio) hasta el menos incluyente (Especie).</p>
+            <p style="color:#4b5563; font-size:14px; line-height:1.5">Accede al primer resultado de tu búsqueda. En la parte izquierda de la pantalla se desplegarán los nombres de los taxones. <b>Escríbelos en tu cuaderno de trabajo</b> en orden, desde el más incluyente (Reino) hasta el menos incluyente (Especie).</p>
           </div>
         </div>
 
@@ -147,7 +154,31 @@
           <div class="step-num">5</div>
           <div>
             <h4 style="font-size:16px; color:#0f766e; margin-bottom:4px">Sitios de avistamiento</h4>
-            <p style="color:#4b5563; font-size:14px; line-height:1.5">Finalmente, accede a <b>«Ver galería»</b>, revisa las imágenes y consulta si han tenido avistamientos de alguna de las especies. Si es así, <b>lista los sitios de avistamiento en tu cuaderno</b>.</p>
+            <p style="color:#4b5563; font-size:14px; line-height:1.5">Finalmente, accede a <b>«Ver galería»</b> en la misma página de GBIF, revisa las imágenes y los mapas para verificar en qué lugares de El Salvador han sido vistas. <b>Escribe los sitios de avistamiento en tu cuaderno</b>.</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <h4 style="color:#d97706; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <span style="font-size:24px;">👀</span> Ejemplo de llenado en tu cuaderno
+          </h4>
+          <p style="color:#4b5563; font-size:14px; margin-bottom:12px;">
+            Si buscaras la especie <i>Licania platypus</i> (sunzapote), los datos que debes escribir en tu cuaderno siguiendo los pasos anteriores se verían así:
+          </p>
+          
+          <div style="background:#ffffff; border:1px solid #fcd34d; border-radius:8px; padding:12px;">
+            <p style="color:#92400e; font-weight:bold; margin-bottom:8px;">a. Licania platypus (sunzapote):</p>
+            <ul style="color:#4b5563; font-size:14px; margin-left:20px; line-height:1.6; margin-bottom:12px;">
+              <li><b>Reino:</b> Plantae</li>
+              <li><b>Filo:</b> Tracheophyta</li>
+              <li><b>Clase:</b> Magnoliopsida</li>
+              <li><b>Orden:</b> Malpighiales</li>
+              <li><b>Familia:</b> Chrysobalanaceae</li>
+              <li><b>Género:</b> Licania</li>
+              <li><b>Especie:</b> Licania platypus</li>
+            </ul>
+            <p style="color:#92400e; font-weight:bold; margin-bottom:4px;">Sitios de avistamiento:</p>
+            <p style="color:#4b5563; font-size:14px; margin-left:8px;">- Parque El Espino, San Salvador.</p>
           </div>
         </div>
 
@@ -189,11 +220,10 @@
       const btn = document.getElementById('btn-completar');
       const restore = btnLoading(btn, 'Registrando...');
       
-      // Guardamos un "10" simbólico para indicar que se completó (no afecta evaluación real por falta de columna evaluada)
+      // Guardamos un "10" simbólico para indicar que se completó
       const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
       
       if (resNota.ok) {
-        // En esta clase NO se otorgan puntos adicionales, tal como fue solicitado.
         toast('¡Lección completada!', 'Has marcado esta actividad como finalizada.');
         marcarCompletadaUI();
       } else {
