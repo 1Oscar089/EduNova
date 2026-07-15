@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spelling Rules for Plural Nouns · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
+  <style>
+    * { box-sizing: border-box; }
+    /* ===== Tooltip ===== */
+    .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; color: inherit; }
+    .tt:hover::after {
+      content: attr(data-es); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+    .tt:hover::before {
+      content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
+    }
+
+    /* ===== Phase tabs ===== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
+      border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
+      color: #9ca3af; transition: all .2s; text-align: center; font-family: inherit;
+    }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,.3); }
+    .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
+    .phase-tab.done::after { content: ' ✓'; }
+    .phase-tab.locked { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    /* ===== Inputs and Tables ===== */
+    .ws-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .ws-input, .ws-select { padding: 8px; border: 2px solid #d1fae5; border-radius: 8px; font-family: inherit; font-weight: 600; color: #0f766e; outline: none; flex: 1; min-width: 120px; }
+    .ws-input.correct, .ws-select.correct { border-color: #059669; background: #d1fae5; pointer-events: none; }
+    .ws-input.wrong, .ws-select.wrong { border-color: #e11d48; animation: shake .3s; }
+    .ws-input:disabled { background: #e2e8f0; border-color: #cbd5e1; color: #94a3b8; cursor: not-allowed; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+    /* ===== Flashcards ===== */
+    .fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
+    .fc-card { background-color: transparent; height: 140px; perspective: 1000px; cursor: pointer; }
+    .fc-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+    .fc-card.flipped .fc-inner { transform: rotateY(180deg); }
+    .fc-front, .fc-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .fc-front { background-color: #f0fdfa; border: 2px solid #0d9488; color: #0f766e; font-size: 20px; font-weight: bold; }
+    .fc-back { background-color: #0d9488; color: white; transform: rotateY(180deg); font-size: 18px; }
+
+    .section-card { background: #fff; border-radius: 16px; border: 1px solid #d1fae5; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .phase { animation: fadeIn .3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .rule-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 16px; }
+    .rule-box h3 { color: #b45309; margin-bottom: 8px; }
+    .rule-box ul { margin-left: 20px; color: #4b5563; }
+    .rule-box li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ede9fe;color:#7c3aed">📝</div>
+          <div>
+            <h1>Spelling Rules for Plural Nouns</h1>
+            <p>📘 English · <span class="tt" data-es="Unidad 3">Unit 3</span> · <span class="tt" data-es="Lección 2">Lesson 2</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</b>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span> —
+        <b>1️⃣ Pre</b>, <b>2️⃣ During</b>, <b>3️⃣ Post</b>.
+        <span class="tt" data-es="Completa cada parte para desbloquear la siguiente. Tu progreso se guardará.">Complete each phase to unlock the next one. Your progress will be saved.</span>
+      </div>
+
+      <div class="phase-tabs">
+        <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
+        <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')">2️⃣ During</button>
+        <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')">3️⃣ Post</button>
+      </div>
+
+      <!-- ============ PRE ============ -->
+      <div id="phase-pre" class="phase">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="Caja de sustantivos">Noun Box</span> 📦</h2>
+          <p style="color:#6b7280;margin-bottom:12px">
+            <span class="tt" data-es="Clasifica los sustantivos seleccionando la regla de pluralización correcta y escribe su forma plural.">Classify the nouns by selecting the correct pluralization rule and write their plural form.</span>
+          </p>
+
+          <div id="pre-form">
+            <!-- Rendered by JS -->
+          </div>
+          
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-primary" onclick="validatePre()">✅ <span class="tt" data-es="Comprobar respuestas">Check answers</span></button>
+          </div>
+          <p id="pre-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ DURING ============ -->
+      <div id="phase-during" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="Reglas de ortografía">Spelling Rules</span> 🧠</h2>
+          
+          <div class="rule-box">
+            <h3><span class="tt" data-es="Reglas para sustantivos plurales">Rules for Plural Nouns</span></h3>
+            <ul>
+              <li><span class="tt" data-es="Para la mayoría de los sustantivos, solo agrega -s.">For most nouns, just add <b>-s</b> (apple → apples).</span></li>
+              <li><span class="tt" data-es="Sustantivos que terminan en s, x, z, ch, sh: agrega -es.">Nouns ending in <b>s, x, z, ch, sh</b>: add <b>-es</b> (bus → buses).</span></li>
+              <li><span class="tt" data-es="Sustantivos que terminan en consonante + y: cambia la -y por -ies.">Nouns ending in consonant + <b>y</b>: change -y to <b>-ies</b> (city → cities).</span></li>
+              <li><span class="tt" data-es="Sustantivos que terminan en f o fe: cambia por -ves.">Nouns ending in <b>f</b> or <b>fe</b>: change to <b>-ves</b> (wolf → wolves).</span></li>
+              <li><span class="tt" data-es="Plurales irregulares: cambian la palabra por completo o se mantienen igual."><b>Irregular plurals</b>: change the word completely or stay the same (man → men, sheep → sheep).</span></li>
+            </ul>
+          </div>
+
+          <h3 style="color:#0f766e; margin-bottom:8px;"><span class="tt" data-es="Tarjetas de práctica">Flashcards Practice</span></h3>
+          <p style="color:#6b7280; margin-bottom:12px;"><span class="tt" data-es="Haz clic en cada tarjeta para ver su forma plural y la regla aplicada.">Click on each flashcard to see its plural form and the applied rule.</span></p>
+          
+          <div class="fc-grid" id="flashcards-container">
+            <!-- Flashcards -->
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front">Fox</div>
+                <div class="fc-back"><b>Foxes</b><br><small>(Add -es)</small></div>
+              </div>
+            </div>
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front">Baby</div>
+                <div class="fc-back"><b>Children</b><br><small>(Irregular)</small></div>
+              </div>
+            </div>
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front">Party</div>
+                <div class="fc-back"><b>Parties</b><br><small>(Change -y to -ies)</small></div>
+              </div>
+            </div>
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front">Wife</div>
+                <div class="fc-back"><b>Wives</b><br><small>(Change -f/fe to -ves)</small></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:center; margin-top:24px;">
+            <p style="color:#6b7280; margin-bottom:12px; font-size:14px;"><span class="tt" data-es="Copia las reglas en tu cuaderno antes de continuar.">Copy the rules in your notebook before continuing.</span></p>
+            <button class="btn btn-primary hidden" id="btn-during-next" onclick="finishDuring()">✅ <span class="tt" data-es="Completado en mi cuaderno">Completed in my notebook</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ POST ============ -->
+      <div id="phase-post" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">3️⃣ Post: <span class="tt" data-es="¡Adivina el sustantivo!">Guess the Noun!</span> 🤔</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Clasifica cada sustantivo como contable (Countable) o incontable (Uncountable). Si es contable, escribe su forma plural.">Classify each noun as Countable or Uncountable. If the noun is countable, also write its plural form.</span>
+          </p>
+
+          <div id="post-form">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-primary" onclick="validatePost()">✅ <span class="tt" data-es="Comprobar respuestas">Check answers</span></button>
+          </div>
+          <p id="post-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ FINISH ============ -->
+      <div id="phase-finish" class="phase hidden text-center">
+        <div class="section-card" style="background:#f0fdf4; border-color:#059669;">
+          <div style="font-size:64px; margin-bottom:12px;">🏆</div>
+          <h2 style="color:#059669; margin-bottom:8px;"><span class="tt" data-es="¡Excelente trabajo!">Excellent job!</span></h2>
+          <p style="color:#4b5563; margin-bottom:20px;">
+            <span class="tt" data-es="Has dominado las reglas de pluralización y los sustantivos contables/incontables.">You have mastered the pluralization rules and countable/uncountable nouns.</span>
+          </p>
+          <button class="btn btn-primary btn-lg" onclick="resetProgress()">🔄 <span class="tt" data-es="Finalizar y reiniciar">Finish and Restart</span></button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · English · Spelling Rules for Plural Nouns</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '9ingu3l2c2';
+    const LOCAL_KEY = 'edunova_' + ACTIVITY_ID + '_progress';
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // State
+    let progress = parseInt(localStorage.getItem(LOCAL_KEY) || '0');
+    let flippedCards = 0;
+
+    // Data for PRE: 12 words from the image
+    const preNouns = [
+      { noun: "lemon", rule: "s", plural: "lemons" },
+      { noun: "cherry", rule: "ies", plural: "cherries" },
+      { noun: "strawberry", rule: "ies", plural: "strawberries" },
+      { noun: "fish", rule: "irr", plural: "fish" },
+      { noun: "pear", rule: "s", plural: "pears" },
+      { noun: "tooth", rule: "irr", plural: "teeth" },
+      { noun: "leaf", rule: "ves", plural: "leaves" },
+      { noun: "potato", rule: "es", plural: "potatoes" },
+      { noun: "thief", rule: "ves", plural: "thieves" },
+      { noun: "deer", rule: "irr", plural: "deer" },
+      { noun: "bed", rule: "s", plural: "beds" },
+      { noun: "sandwich", rule: "es", plural: "sandwiches" }
+    ];
+
+    // Data for POST
+    const postNouns = [
+      { noun: "Apple", type: "C", plural: "apples" },
+      { noun: "Water", type: "U", plural: "" },
+      { noun: "Box", type: "C", plural: "boxes" },
+      { noun: "Money", type: "U", plural: "" },
+      { noun: "Child", type: "C", plural: "children" },
+      { noun: "Milk", type: "U", plural: "" }
+    ];
+
+    function init() {
+      renderPre();
+      renderPost();
+      applyProgress();
+    }
+
+    function renderPre() {
+      const form = document.getElementById('pre-form');
+      let html = '';
+      preNouns.forEach((n, i) => {
+        html += `
+          <div class="ws-row">
+            <span style="font-weight:bold; color:#0f766e; width:90px; font-size:16px;">${n.noun}</span>
+            <select id="pre-rule-${i}" class="ws-select">
+              <option value="">-- Select Rule --</option>
+              <option value="s">Add -s</option>
+              <option value="es">Add -es</option>
+              <option value="ies">Change -y to -ies</option>
+              <option value="ves">Change -f/-fe to -ves</option>
+              <option value="irr">Irregular plural</option>
+            </select>
+            <input type="text" id="pre-input-${i}" class="ws-input" placeholder="Plural form" autocomplete="off" />
+          </div>
+        `;
+      });
+      form.innerHTML = html;
+    }
+
+    function renderPost() {
+      const form = document.getElementById('post-form');
+      let html = '';
+      postNouns.forEach((n, i) => {
+        html += `
+          <div class="ws-row">
+            <span style="font-weight:bold; color:#0f766e; width:90px; font-size:16px;">${n.noun}</span>
+            <select id="post-type-${i}" class="ws-select" onchange="togglePostInput(${i})">
+              <option value="">-- C / U --</option>
+              <option value="C">Countable</option>
+              <option value="U">Uncountable</option>
+            </select>
+            <input type="text" id="post-input-${i}" class="ws-input" placeholder="Plural (if Countable)" autocomplete="off" />
+          </div>
+        `;
+      });
+      form.innerHTML = html;
+    }
+
+    // Toggles the plural input based on Countable/Uncountable selection
+    window.togglePostInput = function(i) {
+      const type = document.getElementById(`post-type-${i}`).value;
+      const input = document.getElementById(`post-input-${i}`);
+      if (type === 'U') {
+        input.value = '';
+        input.disabled = true;
+        input.placeholder = "No plural";
+      } else {
+        input.disabled = false;
+        input.placeholder = "Plural form";
+      }
+    };
+
+    function applyProgress() {
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active', 'done'));
+      
+      if (progress >= 1) {
+        document.getElementById('tab-pre').classList.add('done');
+        document.getElementById('tab-during').classList.remove('locked');
+      }
+      if (progress >= 2) {
+        document.getElementById('tab-during').classList.add('done');
+        document.getElementById('tab-post').classList.remove('locked');
+      }
+      if (progress >= 3) {
+        document.getElementById('tab-post').classList.add('done');
+        document.getElementById('phase-finish').classList.remove('hidden');
+        document.getElementById('phase-pre').classList.add('hidden');
+        document.getElementById('phase-during').classList.add('hidden');
+        document.getElementById('phase-post').classList.add('hidden');
+        return; 
+      }
+
+      if (progress === 0) showPhase('pre');
+      else if (progress === 1) showPhase('during');
+      else if (progress === 2) showPhase('post');
+    }
+
+    window.showPhase = function(phase) {
+      if (progress === 3) return; 
+      
+      document.querySelectorAll('.phase-tab').forEach(t => {
+        if (!t.classList.contains('done')) t.classList.remove('active');
+      });
+      document.querySelectorAll('.phase').forEach(p => {
+        if (p.id !== 'phase-finish') p.classList.add('hidden');
+      });
+      
+      document.getElementById('phase-' + phase).classList.remove('hidden');
+      const tab = document.getElementById('tab-' + phase);
+      if(tab) tab.classList.add('active');
+    };
+
+    window.validatePre = function() {
+      let allCorrect = true;
+      preNouns.forEach((n, i) => {
+        const sel = document.getElementById(`pre-rule-${i}`);
+        const inp = document.getElementById(`pre-input-${i}`);
+        
+        if (sel.value === n.rule) {
+          sel.classList.remove('wrong'); sel.classList.add('correct');
+        } else {
+          sel.classList.add('wrong'); setTimeout(() => sel.classList.remove('wrong'), 400);
+          allCorrect = false;
+        }
+
+        if (inp.value.trim().toLowerCase() === n.plural) {
+          inp.classList.remove('wrong'); inp.classList.add('correct');
+        } else {
+          inp.classList.add('wrong'); setTimeout(() => inp.classList.remove('wrong'), 400);
+          allCorrect = false;
+        }
+      });
+
+      const msg = document.getElementById('pre-msg');
+      if (allCorrect) {
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Perfecto! Has desbloqueado la siguiente sección.">Perfect! You unlocked the next section.</span>';
+        msg.style.color = '#059669';
+        progress = Math.max(progress, 1);
+        localStorage.setItem(LOCAL_KEY, progress);
+        applyProgress();
+        setTimeout(() => showPhase('during'), 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Revisa tus respuestas e intenta de nuevo.">Check your answers and try again.</span>';
+        msg.style.color = '#e11d48';
+      }
+    };
+
+    window.flipCard = function(card) {
+      if (!card.classList.contains('flipped')) {
+        card.classList.add('flipped');
+        flippedCards++;
+        if (flippedCards === 4) {
+          document.getElementById('btn-during-next').classList.remove('hidden');
+        }
+      }
+    };
+
+    window.finishDuring = function() {
+      progress = Math.max(progress, 2);
+      localStorage.setItem(LOCAL_KEY, progress);
+      applyProgress();
+      showPhase('post');
+    };
+
+    window.validatePost = function() {
+      let allCorrect = true;
+      postNouns.forEach((n, i) => {
+        const sel = document.getElementById(`post-type-${i}`);
+        const inp = document.getElementById(`post-input-${i}`);
+        
+        if (sel.value === n.type) {
+          sel.classList.remove('wrong'); sel.classList.add('correct');
+        } else {
+          sel.classList.add('wrong'); setTimeout(() => sel.classList.remove('wrong'), 400);
+          allCorrect = false;
+        }
+
+        if (n.type === 'C') {
+          if (inp.value.trim().toLowerCase() === n.plural) {
+            inp.classList.remove('wrong'); inp.classList.add('correct');
+          } else {
+            inp.classList.add('wrong'); setTimeout(() => inp.classList.remove('wrong'), 400);
+            allCorrect = false;
+          }
+        }
+      });
+
+      const msg = document.getElementById('post-msg');
+      if (allCorrect) {
+        msg.innerHTML = '🏆 <span class="tt" data-es="¡Todo es correcto!">Everything is correct!</span>';
+        msg.style.color = '#059669';
+        progress = 3;
+        localStorage.setItem(LOCAL_KEY, progress);
+        setTimeout(() => applyProgress(), 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Hay errores. Verifica si son contables o incontables.">There are mistakes. Verify if they are countable or uncountable.</span>';
+        msg.style.color = '#e11d48';
+      }
+    };
+
+    window.resetProgress = function() {
+      localStorage.removeItem(LOCAL_KEY);
+      location.reload(); // Reloads the page to start from scratch
+    };
+
+    init();
+  </script>
+</body>
+</html>
