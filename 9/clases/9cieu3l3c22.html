@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cálculo de la constante de equilibrio · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>" />
+  <script defer src="https://unpkg.com/mathlive"></script>
+  <style>
+    .math-container {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    /* Estilizar los campos de MathLive */
+    math-field {
+      font-size: 18px;
+      background: transparent;
+      padding: 8px;
+    }
+    math-field.ans-field {
+      background: #ffffff;
+      border: 2px solid #0d9488;
+      border-radius: 8px;
+      min-width: 120px;
+      padding: 4px 8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .exercise-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .res-indicator {
+      font-weight: 800;
+      margin-left: 12px;
+      font-size: 14px;
+    }
+    .text-emerald { color: #059669; }
+    .text-rose { color: #e11d48; }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#fef3c7;color:#d97706">⚖️</div>
+          <div>
+            <h1>Aprende cómo se calcula la constante de equilibrio ($K_c$)</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 3</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <b>💡 Indicación:</b> Revisa los ejemplos paso a paso para aprender a calcular $K_c$. Luego, resuelve los ejercicios de práctica.
+      </div>
+
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#d97706">Ejemplo 1</h2>
+        <p style="color:#4b5563; line-height:1.6">
+          En un recipiente de un litro de capacidad, se somete a reacción el dióxido de azufre y oxígeno. Al alcanzarse el equilibrio se tienen <b>0.6 moles</b> de trióxido de azufre, <b>0.2 moles</b> de dióxido de azufre y <b>0.3 moles</b> de oxígeno. Calcular la constante de equilibrio. 
+        </p>
+        
+        <p style="color:#4b5563; line-height:1.6; margin-top:12px">Primero, planteamos la ecuación de la reacción y sus concentraciones:</p>
+        <div class="math-container">
+          <math-field readonly>2SO_{2(g)} + O_{2(g)} \rightleftharpoons 2SO_{3(g)}</math-field><br>
+          <math-field readonly>[0.2] + [0.3] \leftrightarrow [0.6]</math-field>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6">Luego, planteamos la fórmula de la constante de equilibrio:</p>
+        <div class="math-container">
+          <math-field readonly>K_c = \frac{[SO_3]^2}{[SO_2]^2[O_2]}</math-field>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6">Finalmente, sustituimos los valores de concentración de las sustancias:</p>
+        <div class="math-container">
+          <math-field readonly>K_c = \frac{[0.6]^2}{[0.2]^2[0.3]}</math-field><br><br>
+          <math-field readonly>K_c = \frac{0.36}{[0.04][0.3]} = 30</math-field>
+        </div>
+      </div>
+
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#d97706">Ejemplo 2</h2>
+        <p style="color:#4b5563; line-height:1.6">
+          Un recipiente de <b>400 mL</b> de capacidad a 30 °C contiene una mezcla de <b>0.42 g</b> de $NO_2$ y <b>1.8 g</b> de $N_2O_4$. Calcular la constante de equilibrio.
+        </p>
+
+        <p style="color:#4b5563; line-height:1.6; margin-top:12px">Primero, planteamos la ecuación de la reacción:</p>
+        <div class="math-container">
+          <math-field readonly>N_2O_{4(g)} \rightleftharpoons 2NO_{2(g)}</math-field><br>
+          <math-field readonly>1.8\text{ g} \rightleftharpoons 0.42\text{ g}</math-field>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6">
+          Como nos dan los gramos de reactivos y productos, primero se tendrá que determinar la <b>concentración molar</b> ($M = \text{mol}/L$). Aplicamos la fórmula $[X] = \frac{g}{MM \times L}$ recordando que 400 mL son 0.4 L:
+        </p>
+        <div class="math-container">
+          <math-field readonly>[N_2O_4] = \frac{1.8\text{ g}}{92\text{ g/mol} \times 0.4\text{ L}} = 0.048\text{ M}</math-field><br><br>
+          <math-field readonly>[NO_2] = \frac{0.42\text{ g}}{46\text{ g/mol} \times 0.4\text{ L}} = 0.02\text{ M}</math-field>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6">Sustituimos en la fórmula de la constante de equilibrio:</p>
+        <div class="math-container">
+          <math-field readonly>K_c = \frac{[NO_2]^2}{[N_2O_4]}</math-field><br><br>
+          <math-field readonly>K_c = \frac{[0.02]^2}{[0.048]} = 0.0083</math-field>
+        </div>
+      </div>
+
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#059669">Práctica Autónoma</h2>
+        <div class="alert alert-warn">
+          <b>⚠️ Instrucciones de escritura:</b> Por cuestiones técnicas, <b>usa exclusivamente el teclado virtual</b> que aparece al tocar los cuadros de respuesta. No uses el teclado físico de tu dispositivo. Redondea tus respuestas a <b>dos decimales</b> (ej. 14.56).
+        </div>
+
+        <div class="exercise-box">
+          <p style="color:#4b5563; font-weight:700;">1. En un recipiente de 1 L, se tienen en equilibrio: 0.1 moles de $H_2$, 0.2 moles de $I_2$ y 0.4 moles de $HI$.</p>
+          <div class="math-container">
+            <math-field readonly>H_{2(g)} + I_{2(g)} \rightleftharpoons 2HI_{(g)}</math-field>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:700; font-size:18px;">$K_c$ = </span>
+            <math-field id="ex1" class="ans-field" virtual-keyboard-mode="onfocus"></math-field>
+            <span id="res1" class="res-indicator"></span>
+          </div>
+        </div>
+
+        <div class="exercise-box">
+          <p style="color:#4b5563; font-weight:700;">2. En un recipiente de 2 L, se tienen en equilibrio: 0.2 moles de $N_2$, 0.4 moles de $H_2$ y 0.6 moles de $NH_3$. (Recuerda calcular la concentración Molar primero dividiendo entre 2L).</p>
+          <div class="math-container">
+            <math-field readonly>N_{2(g)} + 3H_{2(g)} \rightleftharpoons 2NH_{3(g)}</math-field>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:700; font-size:18px;">$K_c$ = </span>
+            <math-field id="ex2" class="ans-field" virtual-keyboard-mode="onfocus"></math-field>
+            <span id="res2" class="res-indicator"></span>
+          </div>
+        </div>
+
+        <div class="exercise-box">
+          <p style="color:#4b5563; font-weight:700;">3. Un recipiente de 1 L contiene en equilibrio 9.2 g de $N_2O_4$ ($MM = 92\text{ g/mol}$) y 4.6 g de $NO_2$ ($MM = 46\text{ g/mol}$).</p>
+          <div class="math-container">
+            <math-field readonly>N_2O_{4(g)} \rightleftharpoons 2NO_{2(g)}</math-field>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:700; font-size:18px;">$K_c$ = </span>
+            <math-field id="ex3" class="ans-field" virtual-keyboard-mode="onfocus"></math-field>
+            <span id="res3" class="res-indicator"></span>
+          </div>
+        </div>
+
+        <div class="exercise-box">
+          <p style="color:#4b5563; font-weight:700;">4. En un sistema en equilibrio las concentraciones molares son: $[CO] = 0.2\text{ M}$, $[O_2] = 0.1\text{ M}$, y $[CO_2] = 0.4\text{ M}$.</p>
+          <div class="math-container">
+            <math-field readonly>2CO_{(g)} + O_{2(g)} \rightleftharpoons 2CO_{2(g)}</math-field>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:700; font-size:18px;">$K_c$ = </span>
+            <math-field id="ex4" class="ans-field" virtual-keyboard-mode="onfocus"></math-field>
+            <span id="res4" class="res-indicator"></span>
+          </div>
+        </div>
+
+        <div class="text-center" style="margin-top:20px">
+          <button class="btn btn-amber" onclick="verificarRespuestas()">✅ Evaluar Ejercicios</button>
+        </div>
+      </div>
+
+      <div class="item-card text-center hidden" id="finish-section">
+        <h3 style="margin-bottom:8px; color:#059669">¡Excelente trabajo!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Has dominado el cálculo de la constante de equilibrio. Marca la clase como completada.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Terminar Lección</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · Constante de Equilibrio</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  
+  <script>
+    const ACTIVITY_ID = '9cieu3l3c22';
+    const GRADO = 'Noveno';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // ==========================================
+    // MATHLIVE CONFIG & VALIDATION
+    // ==========================================
+
+    // Respuestas correctas (redondeadas a 2 decimales)
+    // 1. [0.4]^2 / (0.1 * 0.2) = 0.16 / 0.02 = 8
+    // 2. Moles a Molaridad: N2=0.1, H2=0.2, NH3=0.3 -> [0.3]^2 / (0.1 * 0.2^3) = 0.09 / (0.1 * 0.008) = 112.5
+    // 3. g a Molaridad (1L): N2O4 = 9.2/92 = 0.1M, NO2 = 4.6/46 = 0.1M -> [0.1]^2 / 0.1 = 0.1
+    // 4. [0.4]^2 / (0.2^2 * 0.1) = 0.16 / (0.04 * 0.1) = 0.16 / 0.004 = 40
+    const correctAnswers = [8.00, 112.50, 0.10, 40.00];
+
+    // Configurar MathLive al cargar
+    document.addEventListener("DOMContentLoaded", () => {
+      // Forzar que el teclado virtual solo muestre la capa numérica para facilitar el ingreso
+      mathVirtualKeyboard.layouts = ['numeric'];
+
+      document.querySelectorAll('math-field.ans-field').forEach(mf => {
+        // Interceptar el teclado físico para evitar distorsiones (permitir solo teclas de control como backspace/tab)
+        mf.addEventListener('keydown', (e) => {
+          if(!['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(e.key)){
+            e.preventDefault();
+            toast('Usa el teclado virtual', 'Por favor usa el teclado en pantalla para evitar errores de formato.', 'warn');
+          }
+        });
+      });
+    });
+
+    function verificarRespuestas() {
+      let allCorrect = true;
+      
+      for(let i = 1; i <= 4; i++) {
+        let mf = document.getElementById('ex' + i);
+        let resSpan = document.getElementById('res' + i);
+        
+        // Extraer el valor ingresado y convertirlo a número flotante
+        let valString = mf.value.replace(',', '.'); // Cambiar comas a puntos por si acaso
+        let studentAns = parseFloat(valString);
+        
+        if (isNaN(studentAns)) {
+          studentAns = -1; // Forzar error si está vacío o mal formateado
+        }
+
+        // Validar con un margen de tolerancia de 0.02 por cuestiones de redondeo manual del estudiante
+        if (Math.abs(studentAns - correctAnswers[i-1]) <= 0.02) {
+          resSpan.innerHTML = '✅ Correcto';
+          resSpan.className = 'res-indicator text-emerald';
+          mf.style.borderColor = '#059669';
+        } else {
+          resSpan.innerHTML = '❌ Intenta de nuevo';
+          resSpan.className = 'res-indicator text-rose';
+          mf.style.borderColor = '#e11d48';
+          allCorrect = false;
+        }
+      }
+
+      if(allCorrect) {
+        document.getElementById('finish-section').classList.remove('hidden');
+        toast('¡Excelente!', 'Todas tus respuestas son correctas.', 'success');
+      } else {
+        toast('Revisa tus cálculos', 'Al menos una respuesta es incorrecta. ¡Tú puedes!', 'error');
+      }
+    }
+
+    // ==========================================
+    // CONTROL DE LA LECCIÓN (Sin Evaluación)
+    // ==========================================
+    (async function() {
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+        document.getElementById('finish-section').classList.remove('hidden');
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      // Guardar nota simbólica de 10 como completado
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        const resPts = await Auth.ajustarPuntos(u.nie, 5); // +5 pts por práctica
+        if (resPts.ok) { 
+          u.puntos = resPts.puntos; 
+          Auth.setCurrent(u); 
+          updateUserBarStats(); 
+        }
+        toast('¡Lección completada!', '+5 ⭐ puntos ganados');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      if(btn) {
+        btn.outerHTML = '<div class="alert alert-success text-center" style="justify-content:center">✓ Lección completada.</div>';
+      }
+    }
+  </script>
+</body>
+</html>
