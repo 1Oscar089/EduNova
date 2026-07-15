@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Present Tense · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗣️</text></svg>" />
+  <style>
+    * { box-sizing: border-box; }
+    /* ===== Tooltip ===== */
+    .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; color: inherit; }
+    .tt:hover::after {
+      content: attr(data-es); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+    .tt:hover::before {
+      content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
+    }
+
+    /* ===== Phase tabs ===== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
+      border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
+      color: #9ca3af; transition: all .2s; text-align: center; font-family: inherit;
+    }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,.3); }
+    .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
+    .phase-tab.done::after { content: ' ✓'; }
+    .phase-tab.locked { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    /* ===== Worksheets Inputs ===== */
+    .ws-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .ws-input { padding: 8px; border: 2px solid #d1fae5; border-radius: 8px; font-family: inherit; font-weight: 600; color: #0f766e; outline: none; width: 120px; }
+    .ws-input.correct { border-color: #059669; background: #d1fae5; pointer-events: none; }
+    .ws-input.wrong { border-color: #e11d48; animation: shake .3s; }
+    .ws-select { padding: 8px; border: 2px solid #d1fae5; border-radius: 8px; font-family: inherit; font-weight: 600; color: #0f766e; outline: none; }
+    .ws-select.correct { border-color: #059669; background: #d1fae5; pointer-events: none; }
+    .ws-select.wrong { border-color: #e11d48; animation: shake .3s; }
+    .ws-sentence-input { flex: 1; min-width: 250px; padding: 8px; border: 2px solid #d1fae5; border-radius: 8px; font-family: inherit; font-weight: 600; color: #0f766e; outline: none; }
+    .ws-sentence-input.correct { border-color: #059669; background: #d1fae5; pointer-events: none; }
+    .ws-sentence-input.wrong { border-color: #e11d48; animation: shake .3s; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+    /* ===== Flashcards ===== */
+    .fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
+    .fc-card { background-color: transparent; height: 140px; perspective: 1000px; cursor: pointer; }
+    .fc-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+    .fc-card.flipped .fc-inner { transform: rotateY(180deg); }
+    .fc-front, .fc-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .fc-front { background-color: #f0fdfa; border: 2px solid #0d9488; color: #0f766e; }
+    .fc-back { background-color: #0d9488; color: white; transform: rotateY(180deg); }
+
+    .section-card { background: #fff; border-radius: 16px; border: 1px solid #d1fae5; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .phase { animation: fadeIn .3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ede9fe;color:#7c3aed">🗣️</div>
+          <div>
+            <h1>Simple Present Tense</h1>
+            <p>📘 English · <span class="tt" data-es="Unidad 3">Unit 3</span> · <span class="tt" data-es="Lección 4">Lesson 4</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</b>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span> —
+        <b>1️⃣ Pre</b>, <b>2️⃣ During</b>, <b>3️⃣ Post</b>.
+        <span class="tt" data-es="Completa cada parte para desbloquear la siguiente. Tu progreso se guardará.">Complete each phase to unlock the next one. Your progress will be saved.</span>
+      </div>
+
+      <div class="phase-tabs">
+        <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
+        <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')">2️⃣ During</button>
+        <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')">3️⃣ Post</button>
+      </div>
+
+      <div id="phase-pre" class="phase">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="Hoja de trabajo 4 (Parte I)">Worksheet 4 (Part I)</span> 📝</h2>
+          <p style="color:#6b7280;margin-bottom:12px">
+            <b>A)</b> <span class="tt" data-es="Reescribe los siguientes verbos en el presente simple para la tercera persona del singular.">Rewrite the following verbs in the simple present tense for the third person singular.</span><br>
+            <b>B)</b> <span class="tt" data-es="Clasifica los verbos según la pronunciación de su terminación -s / -es.">Classify the verbs according to the pronunciation of their -s / -es ending.</span>
+          </p>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px;" id="pre-form">
+            </div>
+          
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-primary" onclick="validatePre()">✅ <span class="tt" data-es="Comprobar respuestas">Check answers</span></button>
+          </div>
+          <p id="pre-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <div id="phase-during" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="Oraciones negativas">Negative Statements</span> 🚫</h2>
+          
+          <div style="background:#fffbeb; border-left:4px solid #f59e0b; padding:16px; border-radius:0 12px 12px 0; margin-bottom:20px;">
+            <h3 style="color:#b45309; margin-bottom:8px;"><span class="tt" data-es="Regla gramatical">Grammar Rule</span></h3>
+            <p style="color:#4b5563; margin-bottom:12px;">
+              <span class="tt" data-es="Para formar oraciones negativas con los pronombres he, she e it, usamos el verbo auxiliar 'doesn't' (does not).">To make negative statements with the pronouns <b>he, she, and it</b>, we use the auxiliary verb <b>doesn't</b> (does not).</span>
+              <span class="tt" data-es="Recuerda que el verbo principal después del auxiliar se mantiene en su forma base (sin la 's').">Also, the verb after the auxiliary verb remains in the <b>base form</b>.</span>
+            </p>
+            <div style="background:#ffffff; border:1px solid #fcd34d; border-radius:8px; padding:12px; font-family:monospace; font-size:15px; color:#92400e;">
+              Marlene <b>doesn't</b> <span style="color:#0284c7">read</span> comics in the afternoon.<br>
+              Santiago <b>doesn't</b> <span style="color:#0284c7">play board games</span> with his family.
+            </div>
+          </div>
+
+          <h3 style="color:#0f766e; margin-bottom:8px;"><span class="tt" data-es="Tarjetas de práctica">Flashcards Practice</span></h3>
+          <p style="color:#6b7280; margin-bottom:12px;"><span class="tt" data-es="Haz clic en cada tarjeta para revelar la oración negativa. ¡Léelas en voz alta!">Click on each flashcard to reveal the negative statement. Read them out loud!</span></p>
+          
+          <div class="fc-grid" id="flashcards-container">
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front"><b>Jorge</b><br><br>♟️ play chess</div>
+                <div class="fc-back">Jorge <b>doesn't play</b> chess.</div>
+              </div>
+            </div>
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front"><b>Alejandra</b><br><br>⚽ play soccer</div>
+                <div class="fc-back">Alejandra <b>doesn't play</b> soccer.</div>
+              </div>
+            </div>
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front"><b>My dog</b><br><br>💤 sleep</div>
+                <div class="fc-back">My dog <b>doesn't sleep</b>.</div>
+              </div>
+            </div>
+            <div class="fc-card" onclick="flipCard(this)">
+              <div class="fc-inner">
+                <div class="fc-front"><b>Patricia</b><br><br>🎲 play board games</div>
+                <div class="fc-back">Patricia <b>doesn't play</b> board games.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:center; margin-top:24px;">
+            <button class="btn btn-primary hidden" id="btn-during-next" onclick="finishDuring()">➡️ <span class="tt" data-es="Continuar a la siguiente fase">Continue to Post</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="phase-post" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">3️⃣ Post: <span class="tt" data-es="Hoja de trabajo 4 (Parte II)">Worksheet 4 (Part II)</span> 📝</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Escribe oraciones negativas en presente simple usando la información proporcionada.">Write negative sentences in the simple present tense using the information provided.</span>
+          </p>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px;" id="post-form">
+            </div>
+
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-primary" onclick="validatePost()">✅ <span class="tt" data-es="Comprobar oraciones">Check sentences</span></button>
+          </div>
+          <p id="post-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <div id="phase-finish" class="phase hidden text-center">
+        <div class="section-card" style="background:#f0fdf4; border-color:#059669;">
+          <div style="font-size:64px; margin-bottom:12px;">🏆</div>
+          <h2 style="color:#059669; margin-bottom:8px;"><span class="tt" data-es="¡Excelente trabajo!">Excellent job!</span></h2>
+          <p style="color:#4b5563; margin-bottom:20px;">
+            <span class="tt" data-es="Has dominado las oraciones negativas en tercera persona.">You have mastered negative statements in the third person singular.</span>
+          </p>
+          <button class="btn btn-outline" onclick="resetProgress()">🔄 <span class="tt" data-es="Reiniciar progreso">Restart lesson</span></button>
+          <a href="../../estudiante.html" class="btn btn-primary">🏠 <span class="tt" data-es="Volver al inicio">Back home</span></a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · English · Simple Present Tense</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '8ingu3l4c2';
+    const LOCAL_KEY = 'edunova_' + ACTIVITY_ID + '_progress';
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // State: 0 (Pre), 1 (During), 2 (Post), 3 (Finished)
+    let progress = parseInt(localStorage.getItem(LOCAL_KEY) || '0');
+    let flippedCards = 0;
+
+    // Data for PRE (Part I)
+    const preVerbs = [
+      { i: 1, base: "I watch", pro: "He", ans: "watches", sound: "/ɪz/" },
+      { i: 2, base: "We stop", pro: "She", ans: "stops", sound: "/s/" },
+      { i: 3, base: "They listen", pro: "He", ans: "listens", sound: "/z/" },
+      { i: 4, base: "You pass", pro: "It", ans: "passes", sound: "/ɪz/" },
+      { i: 5, base: "They change", pro: "He", ans: "changes", sound: "/ɪz/" },
+      { i: 6, base: "I have", pro: "She", ans: "has", sound: "/z/" },
+      { i: 7, base: "We eat", pro: "It", ans: "eats", sound: "/s/" },
+      { i: 8, base: "You wash", pro: "He", ans: "washes", sound: "/ɪz/" },
+      { i: 9, base: "They do", pro: "She", ans: "does", sound: "/z/" },
+      { i: 10, base: "I sing", pro: "It", ans: "sings", sound: "/z/" },
+      { i: 11, base: "We surf", pro: "He", ans: "surfs", sound: "/s/" },
+      { i: 12, base: "You check", pro: "She", ans: "checks", sound: "/s/" }
+    ];
+
+    // Data for POST (Part II)
+    const postSentences = [
+      { i: 1, p: "Jorge", act: "play chess", img: "♟️", rest: "after school", ans: "Jorge doesn't play chess after school." },
+      { i: 2, p: "Alejandra", act: "play soccer", img: "⚽", rest: "on the soccer field", ans: "Alejandra doesn't play soccer on the soccer field." },
+      { i: 3, p: "My friends", act: "wash the car", img: "🚗", rest: "in their leisure time", ans: "My friends don't wash the car in their leisure time." },
+      { i: 4, p: "Patricia", act: "play board games", img: "🎲", rest: "with her family", ans: "Patricia doesn't play board games with her family." },
+      { i: 5, p: "Silvia and Marcos", act: "play baseball", img: "⚾", rest: "at the park after classes", ans: "Silvia and Marcos don't play baseball at the park after classes." },
+      { i: 6, p: "Daniela", act: "fly a kite", img: "🪁", rest: "on weekends", ans: "Daniela doesn't fly a kite on weekends." },
+      { i: 7, p: "My dog", act: "sleep", img: "💤", rest: "when I get home from school", ans: "My dog doesn't sleep when I get home from school." },
+      { i: 8, p: "Carlos", act: "play the guitar", img: "🎸", rest: "in music classes on Fridays", ans: "Carlos doesn't play the guitar in music classes on Fridays." },
+      { i: 9, p: "Marcela", act: "go shopping", img: "🛒", rest: "twice a week", ans: "Marcela doesn't go shopping twice a week." }
+    ];
+
+    // Initialize UI
+    function init() {
+      renderPre();
+      renderPost();
+      applyProgress();
+    }
+
+    function renderPre() {
+      const form = document.getElementById('pre-form');
+      let html = '';
+      preVerbs.forEach(v => {
+        html += `
+          <div class="ws-row">
+            <span style="width:24px; font-weight:bold; color:#64748b;">${v.i}.</span>
+            <span style="width:100px;">${v.base}</span>
+            <span style="width:30px; text-align:right;">→</span>
+            <span style="width:40px; font-weight:bold;">${v.pro}</span>
+            <input type="text" id="pre-input-${v.i}" class="ws-input" autocomplete="off" />
+            <select id="pre-sound-${v.i}" class="ws-select">
+              <option value="">- Sound -</option>
+              <option value="/ɪz/">/ɪz/</option>
+              <option value="/s/">/s/</option>
+              <option value="/z/">/z/</option>
+            </select>
+          </div>
+        `;
+      });
+      form.innerHTML = html;
+    }
+
+    function renderPost() {
+      const form = document.getElementById('post-form');
+      let html = '';
+      postSentences.forEach(s => {
+        html += `
+          <div class="ws-row" style="flex-wrap:nowrap; align-items:flex-start;">
+            <span style="width:24px; font-weight:bold; color:#64748b; margin-top:8px;">${s.i}.</span>
+            <div style="flex:1;">
+              <div style="margin-bottom:4px; font-size:14px; color:#4b5563;">
+                ${s.p} / <b>[${s.img} ${s.act}]</b> / ${s.rest} .
+              </div>
+              <input type="text" id="post-input-${s.i}" class="ws-sentence-input" placeholder="Type the full negative sentence..." autocomplete="off" style="width:100%;" />
+            </div>
+          </div>
+        `;
+      });
+      form.innerHTML = html;
+    }
+
+    function applyProgress() {
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active', 'done'));
+      
+      if (progress >= 1) {
+        document.getElementById('tab-pre').classList.add('done');
+        document.getElementById('tab-during').classList.remove('locked');
+      }
+      if (progress >= 2) {
+        document.getElementById('tab-during').classList.add('done');
+        document.getElementById('tab-post').classList.remove('locked');
+      }
+      if (progress >= 3) {
+        document.getElementById('tab-post').classList.add('done');
+        document.getElementById('phase-finish').classList.remove('hidden');
+        document.getElementById('phase-pre').classList.add('hidden');
+        document.getElementById('phase-during').classList.add('hidden');
+        document.getElementById('phase-post').classList.add('hidden');
+        return; // UI is on finish screen
+      }
+
+      // Show the current active phase
+      if (progress === 0) showPhase('pre');
+      else if (progress === 1) showPhase('during');
+      else if (progress === 2) showPhase('post');
+    }
+
+    function showPhase(phase) {
+      if (progress === 3) return; // Prevent navigation if done
+      
+      document.querySelectorAll('.phase-tab').forEach(t => {
+        if (!t.classList.contains('done')) t.classList.remove('active');
+      });
+      document.querySelectorAll('.phase').forEach(p => {
+        if (p.id !== 'phase-finish') p.classList.add('hidden');
+      });
+      
+      document.getElementById('phase-' + phase).classList.remove('hidden');
+      const tab = document.getElementById('tab-' + phase);
+      if(tab) tab.classList.add('active');
+    }
+
+    function validatePre() {
+      let allCorrect = true;
+      preVerbs.forEach(v => {
+        const inp = document.getElementById(`pre-input-${v.i}`);
+        const sel = document.getElementById(`pre-sound-${v.i}`);
+        
+        if (inp.value.trim().toLowerCase() === v.ans) {
+          inp.classList.remove('wrong'); inp.classList.add('correct');
+        } else {
+          inp.classList.add('wrong'); setTimeout(() => inp.classList.remove('wrong'), 400);
+          allCorrect = false;
+        }
+
+        if (sel.value === v.sound) {
+          sel.classList.remove('wrong'); sel.classList.add('correct');
+        } else {
+          sel.classList.add('wrong'); setTimeout(() => sel.classList.remove('wrong'), 400);
+          allCorrect = false;
+        }
+      });
+
+      const msg = document.getElementById('pre-msg');
+      if (allCorrect) {
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Perfecto! Has desbloqueado la siguiente sección.">Perfect! You unlocked the next section.</span>';
+        msg.style.color = '#059669';
+        progress = Math.max(progress, 1);
+        localStorage.setItem(LOCAL_KEY, progress);
+        applyProgress();
+        setTimeout(() => showPhase('during'), 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Revisa tus respuestas e intenta de nuevo.">Check your answers and try again.</span>';
+        msg.style.color = '#e11d48';
+      }
+    }
+
+    function flipCard(card) {
+      if (!card.classList.contains('flipped')) {
+        card.classList.add('flipped');
+        flippedCards++;
+        if (flippedCards === 4) {
+          document.getElementById('btn-during-next').classList.remove('hidden');
+        }
+      }
+    }
+
+    function finishDuring() {
+      progress = Math.max(progress, 2);
+      localStorage.setItem(LOCAL_KEY, progress);
+      applyProgress();
+      showPhase('post');
+    }
+
+    function validatePost() {
+      let allCorrect = true;
+      postSentences.forEach(s => {
+        const inp = document.getElementById(`post-input-${s.i}`);
+        let val = inp.value.trim().toLowerCase();
+        // Remove trailing period if user added it
+        if(val.endsWith('.')) val = val.slice(0, -1).trim();
+        
+        let correctAns = s.ans.toLowerCase();
+        if(correctAns.endsWith('.')) correctAns = correctAns.slice(0, -1).trim();
+
+        // Also allow "does not" / "do not" instead of contractions
+        let correctAlt = correctAns.replace("doesn't", "does not").replace("don't", "do not");
+
+        if (val === correctAns || val === correctAlt) {
+          inp.classList.remove('wrong'); inp.classList.add('correct');
+        } else {
+          inp.classList.add('wrong'); setTimeout(() => inp.classList.remove('wrong'), 400);
+          allCorrect = false;
+        }
+      });
+
+      const msg = document.getElementById('post-msg');
+      if (allCorrect) {
+        msg.innerHTML = '🏆 <span class="tt" data-es="¡Todas las oraciones son correctas!">All sentences are correct!</span>';
+        msg.style.color = '#059669';
+        progress = 3;
+        localStorage.setItem(LOCAL_KEY, progress);
+        setTimeout(() => applyProgress(), 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Hay errores. Recuerda usar doesn\'t para he/she/it y don\'t para plurales.">There are mistakes. Remember: use doesn\'t for he/she/it and don\'t for plurals.</span>';
+        msg.style.color = '#e11d48';
+      }
+    }
+
+    function resetProgress() {
+      localStorage.removeItem(LOCAL_KEY);
+      location.reload();
+    }
+
+    init();
+  </script>
+</body>
+</html>
