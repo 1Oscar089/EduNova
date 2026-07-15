@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plataformas de biodiversidad · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>" />
+  <style>
+    .species-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .species-card {
+      background: #f0fdfa;
+      border: 1px solid #ccfbf1;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .species-icon {
+      font-size: 24px;
+      background: #ffffff;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .step-box {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 4px solid #0d9488;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .step-num {
+      background: #0d9488;
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ccfbf1;color:#0f766e">🌍</div>
+          <div>
+            <h1>Plataformas de biodiversidad</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 3</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info mb-6">
+        <b>💡 Indagación:</b> En esta clase exploraremos cómo se clasifican los seres vivos y utilizaremos plataformas digitales para buscar los nombres científicos y las categorías taxonómicas de especies en peligro de extinción.
+      </div>
+
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0f766e">El papel de la especie en la clasificación</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:12px">
+          Las categorías taxonómicas representan un orden escalonado de relación entre los seres vivos. Hacia el nivel más general se encuentran taxones que agrupan organismos cuyo ancestro común es cada vez más lejano. Desde la más amplia a la más específica, las ocho categorías taxonómicas son: <b>dominio, reino, filo (phylum), clase, orden, familia, género y especie</b>.
+        </p>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:12px">
+          En biología, se acepta que la <b>especie</b> es «un grupo de poblaciones naturales cuyos individuos se cruzan entre sí, y que están reproductivamente aislados de otros grupos». Los dos taxones más específicos (género y especie) componen el <b>nombre científico</b>. Por ejemplo, el nombre científico del «garrobo» es <i>Ctenosaura similis</i>.
+        </p>
+        <hr style="border:none; border-top:1px solid #e2e8f0; margin:16px 0">
+        <h3 style="margin-bottom:8px; color:#0f766e">Herramientas de identificación</h3>
+        <p style="color:#4b5563; line-height:1.6">
+          Para identificar la especie a la que pertenece un individuo, se utilizan herramientas como las <b>claves dicotómicas</b> (secuencia de características opuestas) y las <b>plataformas de biodiversidad</b> (sitios web que almacenan información mundial sobre las especies, sus lugares de avistamiento y taxonomía).
+        </p>
+      </div>
+
+      <div class="item-card mb-6" style="background-color: #f8fafc; border: 2px solid #e2e8f0;">
+        <h2 style="margin-bottom:12px; color:#059669">Manos a la obra: Uso de la plataforma GBIF</h2>
+        <p style="color:#4b5563; margin-bottom:20px">
+          A continuación, utilizarás el Sistema Global de Información sobre Biodiversidad (GBIF) para completar tu <b>cuaderno de trabajo</b>. 
+          <br><b>Materiales:</b> Dispositivo con conexión a internet y tu cuaderno.
+        </p>
+
+        <div class="step-box">
+          <div class="step-num">1</div>
+          <div>
+            <h4 style="font-size:16px; color:#0f766e; margin-bottom:4px">Preparación</h4>
+            <p style="color:#4b5563; font-size:14px; line-height:1.5">Forma un equipo con un máximo de cuatro estudiantes (o trabaja individualmente si tu docente lo indica) y analiza la información leída en la sección anterior.</p>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <div class="step-num">2</div>
+          <div>
+            <h4 style="font-size:16px; color:#0f766e; margin-bottom:4px">Accede a la plataforma</h4>
+            <p style="color:#4b5563; font-size:14px; line-height:1.5">Abre una nueva pestaña en tu navegador e ingresa al sitio web: <br><a href="https://www.gbif.org/es" target="_blank" style="color:#0284c7; font-weight:bold; text-decoration:none;">🌍 www.gbif.org/es</a></p>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <div class="step-num">3</div>
+          <div style="width: 100%;">
+            <h4 style="font-size:16px; color:#0f766e; margin-bottom:4px">Búsqueda de especies amenazadas</h4>
+            <p style="color:#4b5563; font-size:14px; line-height:1.5">En la barra de búsqueda de la página de inicio de GBIF, ingresa <b>uno a uno</b> el nombre científico de las siguientes especies de nuestro país:</p>
+            
+            <div class="species-grid">
+              <div class="species-card"><div class="species-icon">🪸</div><div><i>Porites lobata</i><br><small style="color:#64748b">coral de arrecife</small></div></div>
+              <div class="species-card"><div class="species-icon">🐚</div><div><i>Lobatus galeatus</i><br><small style="color:#64748b">caracol cambute</small></div></div>
+              <div class="species-card"><div class="species-icon">🪲</div><div><i>Megasoma elephas</i><br><small style="color:#64748b">escarabajo rinoceronte</small></div></div>
+              <div class="species-card"><div class="species-icon">🪱</div><div><i>Dermophis mexicanus</i><br><small style="color:#64748b">tepelcúa</small></div></div>
+              <div class="species-card"><div class="species-icon">🐸</div><div><i>Incilius canaliferus</i><br><small style="color:#64748b">sapo</small></div></div>
+              <div class="species-card"><div class="species-icon">🦎</div><div><i>Iguana iguana</i><br><small style="color:#64748b">iguana</small></div></div>
+              <div class="species-card"><div class="species-icon">🌸</div><div><i>Epiphyllum crenatum</i><br><small style="color:#64748b">galán de noche de altura</small></div></div>
+              <div class="species-card"><div class="species-icon">🌰</div><div><i>Sterculia apetala</i><br><small style="color:#64748b">castaño</small></div></div>
+              <div class="species-card"><div class="species-icon">🥭</div><div><i>Annona glabra</i><br><small style="color:#64748b">anona de manglar</small></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <div class="step-num">4</div>
+          <div>
+            <h4 style="font-size:16px; color:#0f766e; margin-bottom:4px">Registra la taxonomía</h4>
+            <p style="color:#4b5563; font-size:14px; line-height:1.5">Accede al primer resultado de tu búsqueda. En la parte izquierda de la pantalla se desplegarán los nombres de los taxones. <b>Escríbelos en tu cuaderno de trabajo</b> en orden, desde el más incluyente (Dominio) hasta el menos incluyente (Especie).</p>
+          </div>
+        </div>
+
+        <div class="step-box" style="margin-bottom:0;">
+          <div class="step-num">5</div>
+          <div>
+            <h4 style="font-size:16px; color:#0f766e; margin-bottom:4px">Sitios de avistamiento</h4>
+            <p style="color:#4b5563; font-size:14px; line-height:1.5">Finalmente, accede a <b>«Ver galería»</b>, revisa las imágenes y consulta si han tenido avistamientos de alguna de las especies. Si es así, <b>lista los sitios de avistamiento en tu cuaderno</b>.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="item-card text-center" id="finish-section">
+        <h3 style="margin-bottom:8px; color:#0f766e">¡Has finalizado tu investigación!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Una vez hayas completado los datos en tu cuaderno de trabajo físico, marca la lección como leída.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Marcar como completada</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · Plataformas de biodiversidad</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  
+  <script>
+    const ACTIVITY_ID = '7cieu3l3c2';
+    const GRADO = 'Septimo';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // Revisar si ya había sido completada previamente
+    (async function() {
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      // Si hay cualquier nota registrada (incluyendo nuestro 10 simbólico), mostrar como completada
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      // Guardamos un "10" simbólico para indicar que se completó (no afecta evaluación real por falta de columna evaluada)
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        // En esta clase NO se otorgan puntos adicionales, tal como fue solicitado.
+        toast('¡Lección completada!', 'Has marcado esta actividad como finalizada.');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      if(btn) {
+        btn.outerHTML = '<div class="alert alert-success text-center" style="justify-content:center">✓ Lección completada.</div>';
+      }
+    }
+  </script>
+</body>
+</html>
