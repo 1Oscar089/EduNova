@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La fuente de toda onda · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>" />
+  <style>
+    .sim-container {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    canvas {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      max-width: 100%;
+    }
+    .info-box {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      border-radius: 0 12px 12px 0;
+      font-size: 14px;
+      color: #92400e;
+      margin: 12px 0;
+      text-align: left;
+      min-height: 60px;
+    }
+    .highlight-word {
+      font-weight: 800;
+      color: #059669;
+    }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#e0f2fe;color:#0284c7">🎵</div>
+          <div>
+            <h1>La fuente de toda onda</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 3</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <b>💡 Indagación:</b> ¿Por qué no escuchamos el sonido de la vibración de un péndulo, pero sí el de las cuerdas de una guitarra? ¡Descubramos el origen de las ondas sonoras!
+      </div>
+
+      <!-- TEORÍA -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0284c7">Movimiento ondulatorio del sonido</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:12px">
+          La frecuencia de los péndulos que construimos en clases anteriores andaba por debajo de <span class="highlight-word">1 Hz</span>. Nuestros oídos no están diseñados para captar vibraciones tan lentas como sonido. Sin embargo, las cuerdas de una guitarra o nuestra propia voz vibran a frecuencias mucho mayores.
+        </p>
+        <p style="color:#4b5563; line-height:1.6">
+          El efecto de las vibraciones individuales de estos elementos crea perturbaciones a lo largo del medio (como el aire o una cuerda) y origina lo que conocemos como una <b>onda</b>. 
+        </p>
+      </div>
+
+      <!-- SIMULADOR -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0284c7">Simulador: El experimento de la copa</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:16px">
+          Vamos a recrear un experimento para descubrir el fenómeno físico detrás de la creación de una onda sonora. Utilizaremos una <b>copa de vidrio invertida</b>, un <b>hilo con un botón</b> (que actuará como un pequeño péndulo tocando el borde), y un <b>lápiz</b> para golpearla.
+        </p>
+
+        <div class="sim-container">
+          <h3 style="font-size:16px; margin-bottom:8px">Interacción</h3>
+          <p style="font-size:13px; color:#64748b; margin-bottom:12px">Haz clic en el botón para golpear la copa y observa lo que sucede.</p>
+          
+          <canvas id="sim-copa" width="450" height="300"></canvas>
+          
+          <div style="margin-top:16px">
+            <button class="btn btn-amber" id="btn-golpear" onclick="golpearCopa()">✏️ Golpear Copa</button>
+          </div>
+
+          <div class="info-box" id="sim-info">
+            <b>Estado:</b> Esperando interacción...
+          </div>
+        </div>
+
+        <h3 style="margin-top:20px; margin-bottom:8px">¿Qué está sucediendo aquí?</h3>
+        <ul style="color:#4b5563; line-height:1.6; margin-left:24px;">
+          <li><b>Energía:</b> La energía cinética del lápiz se transfiere a la copa al momento del golpe.</li>
+          <li><b>Vibración:</b> El vidrio comienza a vibrar rápidamente. Si la sostuvieras con los dedos, ¡sentirías un leve cosquilleo!</li>
+          <li><b>Efecto visible:</b> El pequeño botón de metal es empujado por la vibración del vidrio, demostrando físicamente el movimiento que de otro modo sería invisible.</li>
+          <li><b>Sonido:</b> La vibración del vidrio perturba el aire a su alrededor, creando una <b>onda sonora</b> que viaja hasta nuestros oídos.</li>
+        </ul>
+      </div>
+
+      <!-- FINALIZAR -->
+      <div class="item-card text-center" id="finish-section">
+        <h3 style="margin-bottom:8px; color:#0284c7">¡Has descubierto la fuente de las ondas!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Toda fuente de vibración o perturbación es el fenómeno que origina cualquier tipo de onda. Marca esta clase como completada.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Terminar Lección</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · La fuente de toda onda</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '8cieu3l3c1';
+    const GRADO = 'Octavo';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // ==========================================
+    // SIMULADOR: COPA Y PÉNDULO
+    // ==========================================
+    const canvas = document.getElementById('sim-copa');
+    const ctx = canvas.getContext('2d');
+    const infoBox = document.getElementById('sim-info');
+    
+    let animId;
+    let isVibrating = false;
+    let vibrationTimer = 0;
+    
+    // Estado de la animación
+    let cupOffset = 0;
+    let buttonAngle = 0;
+    let pencilAngle = -Math.PI / 4; // Lápiz levantado
+    let soundWaves = [];
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const cx = canvas.width / 2;
+      const cy = 100; // Base de la copa (invertida, arriba)
+
+      // 1. Dibujar ondas sonoras (si está vibrando)
+      ctx.lineWidth = 2;
+      soundWaves.forEach((wave, index) => {
+        ctx.strokeStyle = `rgba(2, 132, 199, ${1 - wave.radius / 150})`;
+        ctx.beginPath();
+        // Dibujamos arcos a ambos lados
+        ctx.arc(cx - 50, cy + 100, wave.radius, Math.PI - 0.5, Math.PI + 0.5);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx + 50, cy + 100, wave.radius, -0.5, 0.5);
+        ctx.stroke();
+        
+        wave.radius += 2;
+        if (wave.radius > 150) {
+          soundWaves.splice(index, 1);
+        }
+      });
+
+      // 2. Dibujar la copa invertida
+      ctx.save();
+      ctx.translate(cupOffset, 0); // Aplica vibración
+      
+      // Tallo y base (ahora arriba)
+      ctx.fillStyle = "rgba(148, 163, 184, 0.3)";
+      ctx.strokeStyle = "#64748b";
+      ctx.lineWidth = 3;
+      
+      ctx.beginPath();
+      ctx.moveTo(cx - 30, cy - 40); // Base superior
+      ctx.lineTo(cx + 30, cy - 40);
+      ctx.lineTo(cx + 10, cy);
+      ctx.lineTo(cx - 10, cy);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Cuerpo de la copa
+      ctx.beginPath();
+      ctx.moveTo(cx - 10, cy);
+      ctx.quadraticCurveTo(cx - 80, cy + 50, cx - 60, cy + 140); // Lado izquierdo
+      ctx.lineTo(cx + 60, cy + 140); // Borde inferior (abierto)
+      ctx.quadraticCurveTo(cx + 80, cy + 50, cx + 10, cy); // Lado derecho
+      ctx.fill();
+      ctx.stroke();
+      
+      // Borde inferior ovalado para darle 3D
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 140, 60, 15, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      ctx.restore();
+
+      // 3. Dibujar el péndulo (botón)
+      ctx.save();
+      ctx.translate(cx, cy); // Punto de anclaje (base de la copa)
+      ctx.rotate(buttonAngle);
+      
+      // Hilo
+      ctx.beginPath();
+      ctx.strokeStyle = "#334155";
+      ctx.lineWidth = 1;
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-58, 130); // Cuelga hacia el borde izquierdo
+      ctx.stroke();
+      
+      // Botón
+      ctx.beginPath();
+      ctx.fillStyle = "#e11d48";
+      ctx.arc(-58, 130, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      
+      ctx.restore();
+
+      // 4. Dibujar el lápiz
+      ctx.save();
+      // Anclaje del lápiz a la derecha
+      ctx.translate(cx + 120, cy + 80);
+      ctx.rotate(pencilAngle);
+      
+      ctx.fillStyle = "#f59e0b"; // Naranja lápiz
+      ctx.strokeStyle = "#b45309";
+      ctx.lineWidth = 2;
+      ctx.fillRect(-60, -5, 120, 10);
+      ctx.strokeRect(-60, -5, 120, 10);
+      
+      // Punta del lápiz
+      ctx.fillStyle = "#fde68a";
+      ctx.beginPath();
+      ctx.moveTo(-60, -5);
+      ctx.lineTo(-80, 0);
+      ctx.lineTo(-60, 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      
+      // Grafito
+      ctx.fillStyle = "#334155";
+      ctx.beginPath();
+      ctx.moveTo(-74, -1.5);
+      ctx.lineTo(-80, 0);
+      ctx.lineTo(-74, 1.5);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.restore();
+
+      // Lógica de animación
+      if (isVibrating) {
+        vibrationTimer--;
+        
+        // El lápiz retrocede después del golpe
+        pencilAngle = Math.max(-Math.PI / 4, pencilAngle - 0.1);
+        
+        // Generar nuevas ondas de sonido
+        if (vibrationTimer % 15 === 0) {
+          soundWaves.push({ radius: 20 });
+        }
+
+        if (vibrationTimer > 0) {
+          // Copa vibra rápido
+          cupOffset = Math.sin(vibrationTimer) * (vibrationTimer / 20);
+          
+          // Botón rebota (es empujado por la copa)
+          // Cuando cupOffset es negativo (copa se mueve a la izq), empuja al botón
+          if (cupOffset < -1) {
+            buttonAngle = Math.min(0.2, buttonAngle + 0.05);
+          } else {
+            // Gravedad tira del botón hacia abajo
+            buttonAngle = Math.max(0, buttonAngle - 0.02);
+          }
+        } else {
+          isVibrating = false;
+          cupOffset = 0;
+          buttonAngle = 0;
+          infoBox.innerHTML = `<b>Observación:</b> La vibración se detiene. El sonido cesa y el botón vuelve a reposar contra el vidrio.`;
+          document.getElementById('btn-golpear').disabled = false;
+        }
+      }
+      
+      animId = requestAnimationFrame(draw);
+    }
+
+    function golpearCopa() {
+      if (isVibrating) return;
+      
+      document.getElementById('btn-golpear').disabled = true;
+      infoBox.innerHTML = `<b>¡Golpe!</b> El lápiz golpea el vidrio. La energía cinética se transfiere, haciendo que el vidrio vibre. Las vibraciones empujan el botón y generan ondas sonoras en el aire.`;
+      
+      // Animación del golpe
+      pencilAngle = 0; // Lápiz toca la copa
+      
+      setTimeout(() => {
+        isVibrating = true;
+        vibrationTimer = 120; // Duración de la vibración (~2 segundos)
+      }, 100);
+    }
+
+    // Iniciar el canvas
+    draw();
+
+    // ==========================================
+    // CONTROL DE LA LECCIÓN
+    // ==========================================
+    (async function() {
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        const resPts = await Auth.ajustarPuntos(u.nie, 5);
+        if (resPts.ok) { 
+          u.puntos = resPts.puntos; 
+          Auth.setCurrent(u); 
+          updateUserBarStats(); 
+        }
+        toast('¡Lección completada!', '+5 ⭐ puntos ganados');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      btn.outerHTML = '<div class="alert alert-success text-center">✓ Lección completada.</div>';
+    }
+  </script>
+</body>
+</html>
