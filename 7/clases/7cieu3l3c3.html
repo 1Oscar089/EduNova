@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Categorías taxonómicas y claves dicotómicas · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+  <style>
+    .plant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .plant-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .plant-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #f1f5f9;
+    }
+    .plant-info {
+      padding: 12px;
+    }
+    .plant-info h4 {
+      margin: 0 0 4px 0;
+      color: #0f766e;
+      font-size: 16px;
+      font-style: italic;
+    }
+    .plant-info p {
+      margin: 0;
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.4;
+    }
+    .step-box {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 4px solid #0d9488;
+    }
+    .step-num {
+      background: #0d9488;
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .book-ref {
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ccfbf1;color:#0f766e">🌿</div>
+          <div>
+            <h1>Categorías taxonómicas y claves dicotómicas</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 3</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info mb-6">
+        <b>💡 Comunicación:</b> Ya sabemos qué son las categorías taxonómicas. Ahora practicaremos cómo identificar un organismo observando sus características anatómicas y morfológicas utilizando claves dicotómicas.
+      </div>
+
+      <!-- SECCIÓN 1: TEORÍA -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0f766e">¿Qué es una clave dicotómica?</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:12px">
+          Una clave taxonómica o dicotómica consiste en una secuencia encadenada de dilemas o preguntas. Estos dilemas nos indican qué características debemos observar para identificar el grupo o la especie a la que pertenece un individuo.
+        </p>
+        <p style="color:#4b5563; line-height:1.6">
+          La clave siempre nos da dos opciones (por eso se llama "dicotómica"). Dependiendo de si la característica está presente o no, la clave nos da el nombre de la especie o nos envía al siguiente paso.
+        </p>
+      </div>
+
+      <!-- SECCIÓN 2: IDENTIFICACIÓN DE PLANTAS -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#059669">Parte 1: Identificación de Plantas</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:16px">
+          Observaremos cuatro especies de plantas distintas. Analiza sus fotografías y lee la característica que nos permite identificar a cada una según la clave taxonómica proporcionada.
+        </p>
+
+        <div class="plant-grid">
+          <!-- Ciprés -->
+          <div class="plant-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cupressus_lusitanica_branch.jpg/400px-Cupressus_lusitanica_branch.jpg" alt="Ciprés" class="plant-img">
+            <div class="plant-info">
+              <h4>Cupressus lusitanica</h4>
+              <p><b>Ciprés:</b> Hojas muy pequeñas, como escamas, de menos de 0.5 mm de largo.</p>
+            </div>
+          </div>
+          <!-- Bambú -->
+          <div class="plant-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bambusa_vulgaris_stems.jpg/400px-Bambusa_vulgaris_stems.jpg" alt="Bambú" class="plant-img">
+            <div class="plant-info">
+              <h4>Bambusa vulgaris</h4>
+              <p><b>Bambú:</b> Tronco hueco como la caña.</p>
+            </div>
+          </div>
+          <!-- Mango -->
+          <div class="plant-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mango_tree_leaves.jpg/400px-Mango_tree_leaves.jpg" alt="Mango" class="plant-img">
+            <div class="plant-info">
+              <h4>Mangifera indica</h4>
+              <p><b>Mango:</b> Planta sin tronco hueco que no exuda látex al ser cortada.</p>
+            </div>
+          </div>
+          <!-- Pascua -->
+          <div class="plant-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Euphorbia_pulcherrima_1.jpg/400px-Euphorbia_pulcherrima_1.jpg" alt="Pascua" class="plant-img">
+            <div class="plant-info">
+              <h4>Euphorbia pulcherrima</h4>
+              <p><b>Pascua:</b> Látex blanco; hojas simples de lámina entera y a menudo dentadas.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="book-ref">
+          <b>📓 Trabajo en el Cuaderno (Paso 4 y 5):</b><br>
+          En la sección 4 de tu cuaderno de trabajo, debes escribir las características de identificación para cada una de las especies de plantas anteriores. Por ejemplo, en el literal "a", para el ciprés, escribe la característica exacta mencionada arriba: <i>"Hojas muy pequeñas, como escamas, de menos de 0.5 mm de largo"</i>. Repite esto para el bambú, el mango y la pascua.
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: CREANDO UNA CLAVE PARA AVES -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#059669">Parte 2: Diseñando tu propia clave dicotómica</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:16px">
+          Ahora es tu turno de crear una clave. Tienes cuatro fichas de especies animales (aves) presentes en una isla desolada en La Unión. Lee cuidadosamente las características de cada una:
+        </p>
+
+        <div class="plant-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="plant-card" style="padding:16px;">
+            <h4>Buteo magnirostris</h4>
+            <p>Aguililla mediana (35 a 40 cm). Iris ocular amarillento, pico oscuro. Cola grisácea con tres barras anchas oscuras.</p>
+          </div>
+          <div class="plant-card" style="padding:16px;">
+            <h4>Falco sparverius</h4>
+            <p>Ave esbelta (25 y 30 cm). Lados de la cara claros con un par de manchas negras verticales muy visibles. Dorso con manchas oscuras (barrado transversal).</p>
+          </div>
+          <div class="plant-card" style="padding:16px;">
+            <h4>Sarcoramphus papa</h4>
+            <p>Ave carroñera mediana (70 a 82 cm). Ojos blancos bordeados por área rojiza. Cabeza y cuello desnudos con múltiples colores. Pico con verrugas amarillentas o naranjas.</p>
+          </div>
+          <div class="plant-card" style="padding:16px;">
+            <h4>Tyto alba</h4>
+            <p>Ave (27 y 40 cm). Patas proporcionalmente largas y no emplumadas cerca de las garras. Plumaje dorsal leonado con ocelos (manchas como ojos) blancos y negros.</p>
+          </div>
+        </div>
+
+        <div class="book-ref" style="margin-top:20px;">
+          <b>📓 Trabajo en el Cuaderno (Paso 6 y 7):</b><br>
+          En el espacio en blanco de tu cuaderno de trabajo (Paso 7), debes dibujar un esquema o diagrama de clave taxonómica para estas 4 aves. 
+          <br><br>
+          <b>¿Cómo hacerlo?</b><br>
+          Sigue el ejemplo gráfico de los vertebrados que vimos al inicio. Comienza con una característica general que divida a las 4 aves en dos grupos. Por ejemplo, el tamaño: <i>"Mayor de 50 cm"</i> (solo está el <i>Sarcoramphus papa</i>) y <i>"Menor de 50 cm"</i> (las otras tres). Luego, para las tres restantes, busca otra característica exclusiva, como <i>"Patas largas sin plumas cerca de las garras"</i> (<i>Tyto alba</i>) frente a <i>"Patas normales"</i>, y así sucesivamente hasta separar a todas las especies.
+        </div>
+      </div>
+
+      <!-- FINALIZAR -->
+      <div class="item-card text-center" id="finish-section">
+        <h3 style="margin-bottom:8px; color:#0f766e">¡Has completado el análisis!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Una vez que hayas llenado los datos y dibujado el esquema en tu cuaderno de trabajo, puedes dar por finalizada esta lectura.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Marcar como completada</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · Claves Dicotómicas</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  
+  <script>
+    const ACTIVITY_ID = '7cieu3l3c3';
+    const GRADO = 'Septimo';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // Revisar si ya había sido completada previamente
+    (async function() {
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      // Si hay cualquier nota registrada (incluyendo nuestro 10 simbólico), mostrar como completada
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      // Guardamos un "10" simbólico para indicar que se completó (no afecta evaluación real, no da puntos)
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        toast('¡Lección completada!', 'Has marcado esta actividad como finalizada.');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      if(btn) {
+        btn.outerHTML = '<div class="alert alert-success text-center" style="justify-content:center">✓ Lección completada.</div>';
+      }
+    }
+  </script>
+</body>
+</html>
