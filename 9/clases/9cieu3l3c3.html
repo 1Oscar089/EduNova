@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cálculo de concentraciones y presiones en equilibrio · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
+  <!-- MathLive Script -->
+  <script defer src="https://unpkg.com/mathlive"></script>
+  <style>
+    .math-container {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    math-field {
+      font-size: 18px;
+      background: transparent;
+      padding: 8px;
+    }
+    .book-ref {
+      background: #fffbeb;
+      border: 2px dashed #f59e0b;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 20px;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#e0f2fe;color:#0284c7">💬</div>
+          <div>
+            <h1>Cálculo de concentraciones y presiones en equilibrio</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 3</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info mb-6">
+        <b>💡 Comunicación:</b> También se puede calcular la concentración de un reactivo o producto de una reacción química a partir de la constante de equilibrio. Analicemos los siguientes ejemplos.
+      </div>
+
+      <!-- EJEMPLO 3 -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0284c7">Ejemplo 3 (Concentración Molar)</h2>
+        <p style="color:#4b5563; line-height:1.6">
+          Si K<sub>c</sub> = 2.37 &times; 10<sup>-3</sup> a 726.85 °C para N<sub>2(g)</sub> + 3H<sub>2(g)</sub> &#x21CC; 2NH<sub>3(g)</sub>, calcule la concentración de H<sub>2</sub> en un sistema en equilibrio que contiene una concentración de 0.683 M de N<sub>2</sub> y 1.05 M de NH<sub>3</sub>.
+        </p>
+        
+        <p style="color:#4b5563; line-height:1.6; margin-top:12px">Planteamos la constante de equilibrio:</p>
+        <div class="math-container">
+          <math-field readonly>K_c = \frac{[NH_3]^2}{[N_2][H_2]^3}</math-field><br>
+          <math-field readonly>2.37 \times 10^{-3} = \frac{[1.05]^2}{[0.683][H_2]^3}</math-field>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6">Se despeja la concentración de hidrógeno ([H<sub>2</sub>]):</p>
+        <div class="math-container">
+          <math-field readonly>[H_2]^3 = \frac{[1.05]^2}{[0.683] \times 2.37 \times 10^{-3}}</math-field><br><br>
+          <math-field readonly>[H_2]^3 = \frac{1.1025}{1.61871 \times 10^{-3}}</math-field><br><br>
+          <math-field readonly>[H_2] = \sqrt[3]{\frac{1.1025}{1.61871 \times 10^{-3}}}</math-field><br><br>
+          <math-field readonly>[H_2] = 8.8 \frac{mol}{L}</math-field>
+        </div>
+      </div>
+
+      <!-- EJEMPLO 4 -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0284c7">Ejemplo 4 (Presiones parciales)</h2>
+        <p style="color:#4b5563; line-height:1.6">
+          La constante de equilibrio K<sub>p</sub> obtenida para la descomposición del pentacloruro de fósforo en tricloruro de fósforo y cloro molecular PCl<sub>5(g)</sub> &#x21CC; PCl<sub>3(g)</sub> + Cl<sub>2(g)</sub> es de 1.05 a una temperatura de 250 °C. Si las presiones parciales en el equilibrio de PCl<sub>5</sub> y PCl<sub>3</sub> son 0.875 atm y 0.463 atm, respectivamente. ¿Cuál es la presión parcial en el equilibrio de Cl<sub>2(g)</sub> a esta temperatura?
+        </p>
+
+        <p style="color:#4b5563; line-height:1.6; margin-top:12px">Primero, expresemos la K<sub>p</sub> en términos de las presiones parciales de cada especie que interviene en la reacción:</p>
+        <div class="math-container">
+          <math-field readonly>K_p = \frac{[p_{PCl_3}][p_{Cl_2}]}{[p_{PCl_5}]}</math-field>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6">Luego, sustituimos los valores y despejamos:</p>
+        <div class="math-container">
+          <math-field readonly>1.05 = \frac{[0.463][p_{Cl_2}]}{[0.875]}</math-field><br><br>
+          <math-field readonly>[p_{Cl_2}] = \frac{[1.05][0.875]}{[0.463]}</math-field><br><br>
+          <math-field readonly>[p_{Cl_2}] = 1.98\text{ atm}</math-field>
+        </div>
+      </div>
+
+      <!-- INSTRUCCIONES CUADERNO DE TRABAJO -->
+      <div class="book-ref">
+        <h3 style="margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+          <span style="font-size:24px;">📓</span> B. Ejercita tu mente
+        </h3>
+        <p style="color:#92400e; font-size:15px; line-height:1.6; margin-bottom:8px;">
+          Es momento de ejercitar cómo obtener la constante de equilibrio, las concentraciones y presiones parciales de las especies que participan en una reacción química en equilibrio.
+        </p>
+        <ul style="margin-left:24px; color:#92400e; font-weight:600; line-height:1.6;">
+          <li>Abre tu <b>Cuaderno de Trabajo</b> en las páginas <b>44, 45 y 46</b>.</li>
+          <li>Resuelve los ejercicios asignados utilizando los ejemplos que acabas de revisar.</li>
+          <li>Si necesitas repasar la teoría, consulta las páginas <b>87 y 88</b> de tu <b>Libro de Texto</b>.</li>
+        </ul>
+      </div>
+
+      <!-- FINALIZAR -->
+      <div class="item-card text-center" id="finish-section" style="margin-top:20px;">
+        <h3 style="margin-bottom:8px; color:#0284c7">¡Análisis completado!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Una vez que hayas revisado los ejemplos y completado tus ejercicios en el cuaderno de trabajo, marca esta lección como completada.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Marcar como completada</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · Constante de Equilibrio</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  
+  <script>
+    const ACTIVITY_ID = '9cieu3l3c3';
+    const GRADO = 'Noveno';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // ==========================================
+    // CONTROL DE LA LECCIÓN (Sin Evaluación)
+    // ==========================================
+    (async function() {
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      // Guardar nota simbólica de 10 como completado (esta clase no da puntos)
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        toast('¡Lección completada!', 'Has marcado esta actividad como finalizada.');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      if(btn) {
+        btn.outerHTML = '<div class="alert alert-success text-center" style="justify-content:center">✓ Lección completada.</div>';
+      }
+    }
+  </script>
+</body>
+</html>
