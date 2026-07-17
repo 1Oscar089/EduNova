@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="../../css/estilos.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
   
-  <!-- MathLive Script -->
+  <!-- MathLive Script para los cuadros de respuesta -->
   <script defer src="https://unpkg.com/mathlive"></script>
-  <!-- Desmos API -->
+  <!-- Desmos API para las gráficas -->
   <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 
   <style>
@@ -17,10 +17,11 @@
       background: #ffffff;
       border: 2px solid #0d9488;
       border-radius: 8px;
-      min-width: 150px;
-      padding: 4px 8px;
+      min-width: 120px;
+      padding: 6px;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
       font-size: 18px;
+      display: inline-block;
     }
     .question-block {
       background: #fff;
@@ -34,6 +35,7 @@
       color: #0f766e;
       margin-bottom: 12px;
       font-size: 16px;
+      line-height: 1.5;
     }
     .desmos-container {
       width: 100%;
@@ -41,21 +43,32 @@
       border: 2px solid #cbd5e1;
       border-radius: 8px;
       margin: 12px 0;
+      background: #f8fafc;
     }
     table.math-table {
       width: 100%;
-      max-width: 400px;
-      margin: 12px auto;
+      margin: 12px 0;
       border-collapse: collapse;
+      background: #fff;
     }
     table.math-table th, table.math-table td {
       border: 1px solid #cbd5e1;
       padding: 8px;
       text-align: center;
+      vertical-align: middle;
     }
     table.math-table th {
       background: #f0fdfa;
       color: #0f766e;
+      font-weight: bold;
+    }
+    .grid-q5 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media(max-width: 768px) {
+      .grid-q5 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -93,7 +106,7 @@
           <b>Instrucciones:</b><br> 
           1. Resuelve en tu cuaderno y sube las fotografías de tu procedimiento.<br>
           2. Ingresa tus respuestas finales en el formulario y traza las gráficas solicitadas.<br>
-          <i>⚠️ Nota: Usa exclusivamente el teclado virtual en pantalla para escribir tus fórmulas matemáticas.</i>
+          <span style="color:#b45309; font-weight:bold;">⚠️ Nota: Usa exclusivamente el teclado virtual en pantalla para escribir tus fórmulas matemáticas.</span>
         </div>
 
         <!-- SECCIÓN DE SUBIDA DE EVIDENCIAS -->
@@ -108,12 +121,12 @@
 
         <!-- Pregunta 1 -->
         <div class="question-block">
-          <h3>1. Ana pagó $3.6 por 3 euros, y Carlos pagó $8.4 por 7 euros.</h3>
-          <div style="margin-bottom:12px;">
-            <label>a) Encuentra la ecuación de la recta que nos da el precio en euros ($y$), de $x$ dólares.</label><br>
+          <h3>1. Un determinado día, Ana pagó 3.6 dólares por 3 euros, y Carlos pagó 8.4 dólares por 7 euros.</h3>
+          <div style="margin-bottom:16px;">
+            <label>a) Encuentra la ecuación de la recta que nos da el precio en euros (<i>y</i>), de <i>x</i> dólares.</label><br>
             <math-field id="q1a" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
-          <div style="margin-bottom:12px;">
+          <div style="margin-bottom:16px;">
             <label>b) Represéntala gráficamente usando el siguiente plano:</label>
             <div id="desmos1" class="desmos-container"></div>
           </div>
@@ -125,48 +138,53 @@
 
         <!-- Pregunta 2 -->
         <div class="question-block">
-          <h3>2. Un algodonero recoge 30 kg por hora, y demora media hora preparándose. Ecuación: $y = 30x - 15$</h3>
-          <div style="margin-bottom:12px;">
-            <label>a) Realiza una tabla para la función y grafícala.</label>
-            <table class="math-table">
-              <tr><th>$x$ (horas)</th><th>$y$ (kg)</th></tr>
-              <tr><td>-3</td><td><math-field id="q2_t1" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-              <tr><td>-2</td><td><math-field id="q2_t2" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-              <tr><td>-1</td><td><math-field id="q2_t3" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-              <tr><td>0</td><td><math-field id="q2_t4" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-              <tr><td>1</td><td><math-field id="q2_t5" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-              <tr><td>2</td><td><math-field id="q2_t6" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-              <tr><td>3</td><td><math-field id="q2_t7" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-            </table>
-            <div id="desmos2" class="desmos-container"></div>
+          <h3>2. Un algodonero recoge 30 kg por hora, y demora media hora preparándose. Ecuación: <i>y</i> = 30<i>x</i> - 15</h3>
+          <div class="grid-q5">
+            <div>
+              <label>a) Realiza una tabla para la función:</label>
+              <table class="math-table">
+                <tr><th><i>x</i> (horas)</th><th><i>y</i> (kg)</th></tr>
+                <tr><td>-3</td><td><math-field id="q2_t1" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+                <tr><td>-2</td><td><math-field id="q2_t2" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+                <tr><td>-1</td><td><math-field id="q2_t3" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+                <tr><td>0</td><td><math-field id="q2_t4" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+                <tr><td>1</td><td><math-field id="q2_t5" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+                <tr><td>2</td><td><math-field id="q2_t6" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+                <tr><td>3</td><td><math-field id="q2_t7" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+              </table>
+            </div>
+            <div>
+              <label>b) Grafícala en el plano:</label>
+              <div id="desmos2" class="desmos-container" style="height:350px;"></div>
+            </div>
           </div>
-          <div style="margin-bottom:12px;">
-            <label>b) ¿Cuántos kg de algodón se recogerán en una jornada de 8 horas?</label><br>
+          <div style="margin-top:16px;">
+            <label>c) ¿Cuántos kg de algodón se recogerán en una jornada de 8 horas?</label><br>
             <math-field id="q2b" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
         </div>
 
         <!-- Pregunta 3 -->
         <div class="question-block">
-          <h3>3. Piscina: altura aumenta 15 cm por hora. Inicialmente había 12 cm de agua.</h3>
-          <div style="margin-bottom:12px;">
-            <label>a) ¿Cuál será la altura después de 3 horas?</label><br>
+          <h3>3. Piscina: la altura aumenta 15 cm por hora. Inicialmente había 12 cm de agua.</h3>
+          <div style="margin-bottom:16px;">
+            <label>a) ¿Cuál será la altura alcanzada por el agua después de 3 horas?</label><br>
             <math-field id="q3a" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
           <div style="margin-bottom:12px;">
-            <label>b) Escribe la altura $y$ del agua después de $x$ horas (Ecuación).</label><br>
+            <label>b) Escribe la altura <i>y</i> del agua después de <i>x</i> horas (La ecuación de la función).</label><br>
             <math-field id="q3b" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
         </div>
 
         <!-- Pregunta 4 -->
         <div class="question-block">
-          <h3>4. Para la función de la gráfica de tu libro (Pasa por (0,-1) y (-1, 1)), realiza:</h3>
-          <div style="margin-bottom:12px;">
-            <label>a) Identifica el intercepto (valor de $y$).</label><br>
+          <h3>4. Para la función de la gráfica de tu libro (que pasa por los puntos (0, -1) y (-1, 1)), realiza lo siguiente:</h3>
+          <div style="margin-bottom:16px;">
+            <label>a) Identifica el intercepto (el valor en <i>y</i>).</label><br>
             <math-field id="q4a" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
-          <div style="margin-bottom:12px;">
+          <div style="margin-bottom:16px;">
             <label>b) Determina la razón de cambio.</label><br>
             <math-field id="q4b" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
@@ -178,19 +196,69 @@
 
         <!-- Pregunta 5 -->
         <div class="question-block">
-          <h3>5. Grafica $y=3x$ y $y=3x+5$ en el mismo plano y responde:</h3>
-          <div id="desmos5" class="desmos-container"></div>
-          <div style="margin-bottom:12px;">
-            <label>I. Identifica el intercepto de $y=3x+5$.</label><br>
-            <math-field id="q5_1" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+          <h3>5. Grafica las siguientes 8 funciones en el <b>mismo plano</b>, luego identifica el intercepto y la razón de cambio de cada una.</h3>
+          
+          <div class="grid-q5">
+            <div>
+              <label>Traza las 8 rectas aquí:</label>
+              <div id="desmos5" class="desmos-container" style="height: 500px;"></div>
+            </div>
+            
+            <div style="overflow-x:auto;">
+              <label>Completa la tabla:</label>
+              <table class="math-table" style="font-size:14px;">
+                <tr>
+                  <th>Función</th>
+                  <th>I. Intercepto</th>
+                  <th>II. Razón de cambio</th>
+                </tr>
+                <tr>
+                  <td>a) <i>y</i> = 3<i>x</i></td>
+                  <td><math-field id="q5_a_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_a_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+                <tr>
+                  <td>b) <i>y</i> = 3<i>x</i> + 1</td>
+                  <td><math-field id="q5_b_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_b_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+                <tr>
+                  <td>c) <i>y</i> = 3<i>x</i> - 1</td>
+                  <td><math-field id="q5_c_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_c_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+                <tr>
+                  <td>d) <i>y</i> = -3<i>x</i> + 1</td>
+                  <td><math-field id="q5_d_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_d_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+                <tr>
+                  <td>e) <i>y</i> = -3<i>x</i> - 1</td>
+                  <td><math-field id="q5_e_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_e_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+                <tr>
+                  <td>f) <i>y</i> = 3<i>x</i> + 2</td>
+                  <td><math-field id="q5_f_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_f_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+                <tr>
+                  <td>g) <i>y</i> = 3<i>x</i> + 3</td>
+                  <td><math-field id="q5_g_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_g_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+                <tr>
+                  <td>h) <i>y</i> = 3<i>x</i> + 5</td>
+                  <td><math-field id="q5_h_i" class="math-field-box" style="min-width:60px;"></math-field></td>
+                  <td><math-field id="q5_h_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
+                </tr>
+              </table>
+            </div>
           </div>
-          <div style="margin-bottom:12px;">
-            <label>II. Determina la razón de cambio.</label><br>
-            <math-field id="q5_2" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
-          </div>
-          <div style="margin-bottom:12px;">
-            <label>III. ¿Qué concluyes sobre estas dos líneas? (Escribe brevemente)</label><br>
-            <textarea id="q5_3" rows="3" style="width:100%; padding:8px; border:2px solid #cbd5e1; border-radius:8px; outline:none;"></textarea>
+          
+          <div style="margin-top:16px;">
+            <label>III. ¿Qué concluyes al observar las rectas con la misma razón de cambio? (Escribe brevemente)</label><br>
+            <textarea id="q5_conclusion" rows="3" style="width:100%; padding:10px; border:2px solid #cbd5e1; border-radius:8px; outline:none; font-family:inherit; margin-top:8px;"></textarea>
           </div>
         </div>
 
@@ -207,16 +275,19 @@
   <script src="../../js/userbar.js"></script>
   
   <script>
-    const ACTIVITY_ID = '8matt121'; // ID Corregido
-    const GRADO = 'Octavo'; // Grado Corregido
+    const ACTIVITY_ID = '8matt121';
+    const GRADO = 'Octavo';
     const MATERIA = 'Matematica';
     const TIPO = 'tarea';
     
     const u = requireLogin();
     renderUserBar(document.getElementById('userbar'));
 
-    // Configurar Teclados de MathLive para evitar teclado físico (anti-trampas/distorsión)
-    document.addEventListener("DOMContentLoaded", () => {
+    // Variables globales para las calculadoras
+    let calc1, calc2, calc5;
+
+    // Inicializar Desmos cuando el DOM esté completamente listo
+    window.addEventListener('load', () => {
       document.querySelectorAll('math-field').forEach(mf => {
         mf.addEventListener('keydown', (e) => {
           if(!['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(e.key)){
@@ -225,20 +296,18 @@
           }
         });
       });
+
+      const desmosOpts = { expressions: true, settingsMenu: false, zoomButtons: true };
+      
+      calc1 = Desmos.GraphingCalculator(document.getElementById('desmos1'), desmosOpts);
+      calc1.setMathBounds({ left: -5, right: 25, bottom: -5, top: 25 }); // Ajustado para valores en USD/Euros
+
+      calc2 = Desmos.GraphingCalculator(document.getElementById('desmos2'), desmosOpts);
+      calc2.setMathBounds({ left: -5, right: 10, bottom: -120, top: 120 }); // Ajustado para los kg de algodón
+
+      calc5 = Desmos.GraphingCalculator(document.getElementById('desmos5'), desmosOpts);
+      calc5.setMathBounds({ left: -10, right: 10, bottom: -10, top: 10 });
     });
-
-    // Inicializar calculadoras Desmos
-    const desmosOpts = { expressions: true, settingsMenu: false, zoomButtons: true };
-    const bounds = { left: -10, right: 10, bottom: -20, top: 20 };
-
-    const calc1 = Desmos.GraphingCalculator(document.getElementById('desmos1'), desmosOpts);
-    calc1.setMathBounds(bounds);
-
-    const calc2 = Desmos.GraphingCalculator(document.getElementById('desmos2'), desmosOpts);
-    calc2.setMathBounds(bounds);
-
-    const calc5 = Desmos.GraphingCalculator(document.getElementById('desmos5'), desmosOpts);
-    calc5.setMathBounds(bounds);
 
     // Comprobar si ya la entregó
     (async function checkStatus() {
@@ -252,7 +321,6 @@
       }
     })();
 
-    // Lógica de Subida de Archivos a Drive
     const readFileAsBase64 = (file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -274,57 +342,76 @@
       const restore = btnLoading(btn, 'Evaluando respuestas...');
 
       try {
-        // --- 1. EVALUAR RESPUESTAS DEL FORMULARIO ---
         let notaFinal = 0;
-
         const cleanLatex = (str) => str.replace(/\s/g, '').toLowerCase();
 
-        // P1 (2 pts: a=0.5, b=0.5, c=1.0)
+        // P1 (2.0 pts)
         let q1a = cleanLatex(document.getElementById('q1a').value);
-        if (q1a.includes('y=5/6x') || q1a.includes('y=\\frac{5}{6}x')) notaFinal += 0.5;
+        if (q1a.includes('y=5/6x') || q1a.includes('y=\\frac{5}{6}x') || q1a.includes('y=0.83x')) notaFinal += 0.5;
         
         let d1_exprs = calc1.getExpressions();
-        if (d1_exprs.some(e => e.latex && e.latex.includes('5') && e.latex.includes('6') && e.latex.includes('x'))) notaFinal += 0.5;
+        if (d1_exprs.some(e => e.latex && e.latex.includes('x') && (e.latex.includes('5/6') || e.latex.includes('\\frac{5}{6}') || e.latex.includes('1.2')))) notaFinal += 0.5;
 
         let q1c = cleanLatex(document.getElementById('q1c').value);
-        if (q1c === '18') notaFinal += 1.0;
+        if (q1c === '18' || q1c.includes('18dolares')) notaFinal += 1.0;
 
-        // P2 (2 pts: tabla=0.7, desmos=0.3, b=1.0)
+        // P2 (2.0 pts)
         const tAns = ['-105', '-75', '-45', '-15', '15', '45', '75'];
-        let tPts = 0;
         for(let i=1; i<=7; i++) {
-          if (cleanLatex(document.getElementById(`q2_t${i}`).value) === tAns[i-1]) tPts += 0.1;
+          if (cleanLatex(document.getElementById(`q2_t${i}`).value) === tAns[i-1]) notaFinal += 0.1;
         }
-        notaFinal += tPts;
 
         let d2_exprs = calc2.getExpressions();
-        if (d2_exprs.some(e => e.latex && e.latex.includes('30') && e.latex.includes('15'))) notaFinal += 0.3;
+        if (d2_exprs.some(e => e.latex && e.latex.includes('30x') && e.latex.includes('15'))) notaFinal += 0.3;
 
         let q2b = cleanLatex(document.getElementById('q2b').value);
         if (q2b === '225') notaFinal += 1.0;
 
-        // P3 (2 pts: a=1.0, b=1.0)
+        // P3 (2.0 pts)
         if (cleanLatex(document.getElementById('q3a').value) === '57') notaFinal += 1.0;
         let q3b = cleanLatex(document.getElementById('q3b').value);
         if (q3b.includes('15x+12') || q3b.includes('12+15x')) notaFinal += 1.0;
 
-        // P4 (2 pts: a=0.5, b=0.5, c=1.0)
+        // P4 (2.0 pts)
         if (cleanLatex(document.getElementById('q4a').value) === '-1') notaFinal += 0.5;
         if (cleanLatex(document.getElementById('q4b').value) === '-2') notaFinal += 0.5;
         let q4c = cleanLatex(document.getElementById('q4c').value);
         if (q4c.includes('-2x-1') || q4c.includes('-1-2x')) notaFinal += 1.0;
 
-        // P5 (2 pts: graph=0.5, I=0.5, II=0.5, III=0.5)
-        let d5_exprs = calc5.getExpressions();
-        let has3x = d5_exprs.some(e => e.latex && e.latex.replace(/\s/g,'').includes('3x') && !e.latex.includes('5'));
-        let has3x5 = d5_exprs.some(e => e.latex && e.latex.replace(/\s/g,'').includes('3x+5'));
-        if (has3x && has3x5) notaFinal += 0.5;
+        // P5 (2.0 pts)
+        // A. Revisión de las 8 gráficas (0.8 pts -> 0.1 por c/u)
+        const d5_exprs = calc5.getExpressions().map(e => e.latex ? cleanLatex(e.latex) : '');
+        const graphsExpected = ['3x', '3x+1', '3x-1', '-3x+1', '-3x-1', '3x+2', '3x+3', '3x+5'];
+        graphsExpected.forEach(g => {
+          if (d5_exprs.some(expr => expr.includes(g))) notaFinal += 0.1;
+        });
 
-        if (cleanLatex(document.getElementById('q5_1').value) === '5') notaFinal += 0.5;
-        if (cleanLatex(document.getElementById('q5_2').value) === '3') notaFinal += 0.5;
-        if (document.getElementById('q5_3').value.trim().length > 5) notaFinal += 0.5; // Solo verificar si escribió algo coherente
+        // B. Revisión de la Tabla (0.8 pts -> 0.05 por celda, 16 celdas)
+        const tableAnswers = [
+          { i: '0',  r: '3' },   // a
+          { i: '1',  r: '3' },   // b
+          { i: '-1', r: '3' },   // c
+          { i: '1',  r: '-3' },  // d
+          { i: '-1', r: '-3' },  // e
+          { i: '2',  r: '3' },   // f
+          { i: '3',  r: '3' },   // g
+          { i: '5',  r: '3' }    // h
+        ];
+        
+        ['a','b','c','d','e','f','g','h'].forEach((letter, index) => {
+          let ansI = cleanLatex(document.getElementById(`q5_${letter}_i`).value);
+          let ansII = cleanLatex(document.getElementById(`q5_${letter}_ii`).value);
+          if (ansI === tableAnswers[index].i) notaFinal += 0.05;
+          if (ansII === tableAnswers[index].r) notaFinal += 0.05;
+        });
 
-        // --- 2. SUBIR IMÁGENES A DRIVE ---
+        // C. Conclusión (0.4 pts)
+        if (document.getElementById('q5_conclusion').value.trim().length > 10) notaFinal += 0.4;
+
+        // Limitar la nota máxima a 10 por si hay flotantes rebeldes
+        notaFinal = Math.min(10, Math.max(0, notaFinal));
+
+        // --- SUBIR IMÁGENES ---
         const files = fileInput.files;
         for (let i = 0; i < files.length; i++) {
           btn.innerHTML = `<span class="spinner"></span> Subiendo imagen ${i + 1} de ${files.length}...`;
@@ -339,17 +426,15 @@
             fileName: files[i].name,
             contentType: files[i].type
           });
-
-          if (!resUp.ok) throw new Error('Falló la subida a Drive: ' + resUp.error);
+          if (!resUp.ok) throw new Error('Falló la subida de imagen: ' + resUp.error);
         }
 
-        // --- 3. GUARDAR CALIFICACIÓN EN GOOGLE SHEETS ---
+        // --- GUARDAR NOTA ---
         btn.innerHTML = `<span class="spinner"></span> Guardando nota...`;
         const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, notaFinal);
 
-        if (!resNota.ok) throw new Error('No se pudo guardar la nota.');
+        if (!resNota.ok) throw new Error('No se pudo guardar la calificación.');
 
-        // ÉXITO
         document.getElementById('task-container').classList.add('hidden');
         document.getElementById('status-screen').classList.remove('hidden');
         document.getElementById('final-grade').innerText = `Tu calificación: ${notaFinal.toFixed(1)} / 10`;
