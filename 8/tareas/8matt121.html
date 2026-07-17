@@ -9,8 +9,8 @@
   
   <!-- MathLive Script -->
   <script defer src="https://unpkg.com/mathlive"></script>
-  <!-- GeoGebra API -->
-  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+  <!-- Desmos API (Más rápido y ligero que GeoGebra, ideal para funciones lineales) -->
+  <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 
   <style>
     .math-field-box {
@@ -37,21 +37,21 @@
       font-size: 16px;
       line-height: 1.5;
     }
-    .ggb-container {
+    .desmos-container {
       width: 100%;
-      margin: 16px 0;
+      height: 350px;
       border: 2px solid #cbd5e1;
       border-radius: 8px;
-      overflow: hidden;
+      margin: 12px 0;
+      background: #f8fafc;
     }
-    /* Estilos para que las tablas sean responsivas y horizontales */
     .table-responsive {
       overflow-x: auto;
       margin-bottom: 16px;
     }
     table.math-table {
       width: 100%;
-      min-width: 500px; /* Asegura que no se aplaste en móviles */
+      min-width: 500px;
       border-collapse: collapse;
       background: #fff;
     }
@@ -83,7 +83,7 @@
         </div>
       </div>
 
-      <!-- Pantalla de Estado -->
+      <!-- Pantalla de Estado (Si ya fue enviada) -->
       <div id="status-screen" class="hidden">
         <div class="alert alert-success" style="font-size:18px; padding:24px; text-align:center;">
           <div style="font-size:48px; margin-bottom:12px;">✅</div>
@@ -96,13 +96,13 @@
         </div>
       </div>
 
-      <!-- Contenedor de la Tarea -->
+      <!-- Contenedor Principal de la Tarea -->
       <div id="task-container">
         <div class="alert alert-info mb-6">
           <b>Instrucciones:</b><br> 
           1. Resuelve en tu cuaderno y sube las fotografías de tu procedimiento.<br>
           2. Ingresa tus respuestas finales en el formulario y traza las gráficas solicitadas.<br>
-          <span style="color:#b45309; font-weight:bold;">⚠️ Nota: El teclado de tu dispositivo está bloqueado. Usa exclusivamente el teclado virtual en pantalla para escribir tus fórmulas matemáticas.</span>
+          <span style="color:#b45309; font-weight:bold;">⚠️ Nota: Usa exclusivamente el teclado virtual en pantalla para escribir tus fórmulas matemáticas.</span>
         </div>
 
         <div class="item-card mb-6" style="background:#f8fafc; border-color:#cbd5e1;">
@@ -121,8 +121,8 @@
             <math-field id="q1a" class="math-field-box"></math-field>
           </div>
           <div style="margin-bottom:16px;">
-            <label>b) Represéntala gráficamente usando GeoGebra:</label>
-            <div id="ggb-element1" class="ggb-container"></div>
+            <label>b) Represéntala gráficamente:</label>
+            <div id="desmos1" class="desmos-container"></div>
           </div>
           <div style="margin-bottom:12px;">
             <label>c) ¿Cuántos dólares habrían pagado por 15 euros?</label><br>
@@ -154,7 +154,7 @@
               </table>
             </div>
             <label>Grafícala en el plano:</label>
-            <div id="ggb-element2" class="ggb-container"></div>
+            <div id="desmos2" class="desmos-container"></div>
           </div>
           <div style="margin-bottom:12px;">
             <label>b) ¿Cuántos kg de algodón se recogerán en una jornada de 8 horas?</label><br>
@@ -173,11 +173,19 @@
             <label>b) Escribe la altura <i>y</i> del agua después de <i>x</i> horas (La ecuación de la función).</label><br>
             <math-field id="q3b" class="math-field-box"></math-field>
           </div>
+          <div style="margin-bottom:12px;">
+            <label>c) Represéntala gráficamente:</label>
+            <div id="desmos3" class="desmos-container"></div>
+          </div>
         </div>
 
         <!-- Pregunta 4 -->
         <div class="question-block">
-          <h3>4. Para la función de la gráfica de tu libro (que pasa por los puntos (0, -1) y (-1, 1)), realiza lo siguiente:</h3>
+          <h3>4. Para la función de la gráfica, realiza lo siguiente:</h3>
+          <div style="margin-bottom:16px;">
+            <label>Gráfica de referencia (Solo lectura):</label>
+            <div id="desmos4" class="desmos-container" style="background:#e2e8f0;"></div>
+          </div>
           <div style="margin-bottom:16px;">
             <label>a) Identifica el intercepto (el valor en <i>y</i>).</label><br>
             <math-field id="q4a" class="math-field-box"></math-field>
@@ -197,7 +205,7 @@
           <h3>5. Grafica las siguientes 8 funciones en el <b>mismo plano</b>, luego identifica el intercepto y la razón de cambio de cada una.</h3>
           
           <label>Traza las 8 rectas aquí:</label>
-          <div id="ggb-element5" class="ggb-container" style="height: 500px;"></div>
+          <div id="desmos5" class="desmos-container" style="height: 450px;"></div>
           
           <label>Completa la tabla:</label>
           <div class="table-responsive">
@@ -262,82 +270,76 @@
     const MATERIA = 'Matematica';
     const TIPO = 'tarea';
     
-    // Inicializar lógica de login y UI
+    // Require login
     const u = requireLogin();
     if(u) { renderUserBar(document.getElementById('userbar')); }
 
-    // ==========================================
-    // BLOQUEO ESTRICTO DEL TECLADO FÍSICO
-    // ==========================================
-    function applyKeyboardBlock() {
+    // Variables globales de las calculadoras Desmos
+    let calc1, calc2, calc3, calc4, calc5;
+
+    // Inicializar todo una vez que la página carga
+    window.onload = function() {
+      if(!u) return;
+
+      // 1. Bloqueo estricto del teclado físico en MathLive
       document.querySelectorAll('math-field').forEach(mf => {
-        // Activamos siempre el modo teclado virtual
         mf.setOptions({ virtualKeyboardMode: "onfocus" });
-        
         mf.addEventListener('keydown', (e) => {
-          // Bloqueamos TODO excepto las teclas esenciales de control/borrado
           if(!['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(e.key)){
             e.preventDefault();
             e.stopPropagation();
           }
         });
       });
-    }
 
-    // ==========================================
-    // INICIALIZACIÓN DE GEOGEBRA
-    // ==========================================
-    window.onload = function() {
-      // Aplicamos el bloqueo del teclado justo al cargar la página
-      applyKeyboardBlock();
+      // 2. Opciones de Desmos (Interactivas)
+      const optsInteract = { expressions: true, settingsMenu: false, zoomButtons: true };
+      
+      // 3. Opción Desmos Bloqueada (Para Pregunta 4)
+      const optsBlocked = { expressions: false, settingsMenu: false, zoomButtons: false, lockViewport: true, expressionsTopbar: false };
 
-      function initGGB(idElement, appletId, height) {
-        const container = document.getElementById(idElement);
-        if(!container) return;
-        
-        let w = container.clientWidth || 600;
-        
-        var params = {
-          "id": appletId,
-          "appName": "graphing",
-          "width": w,
-          "height": height,
-          "showToolBar": true,
-          "showAlgebraInput": true,
-          "showMenuBar": false,
-          "useBrowserForJS": false,
-          "language": "es"
-        };
-        var applet = new GGBApplet(params, true);
-        applet.inject(idElement);
-      }
+      // Inicializar calculadoras
+      calc1 = Desmos.GraphingCalculator(document.getElementById('desmos1'), optsInteract);
+      calc1.setMathBounds({ left: -5, right: 25, bottom: -5, top: 25 });
 
-      initGGB('ggb-element1', 'ggbApplet1', 400);
-      initGGB('ggb-element2', 'ggbApplet2', 400);
-      initGGB('ggb-element5', 'ggbApplet5', 500);
+      calc2 = Desmos.GraphingCalculator(document.getElementById('desmos2'), optsInteract);
+      calc2.setMathBounds({ left: -5, right: 10, bottom: -120, top: 120 });
+
+      calc3 = Desmos.GraphingCalculator(document.getElementById('desmos3'), optsInteract);
+      calc3.setMathBounds({ left: -2, right: 10, bottom: -10, top: 100 });
+
+      // Pregunta 4: Calculadora Bloqueada con la gráfica dibujada
+      calc4 = Desmos.GraphingCalculator(document.getElementById('desmos4'), optsBlocked);
+      calc4.setMathBounds({ left: -5, right: 5, bottom: -5, top: 5 });
+      calc4.setExpression({ id: 'line4', latex: 'y = -2x - 1', color: Desmos.Colors.BLUE, lineWidth: 3 });
+      calc4.setExpression({ id: 'pt1', latex: '(0, -1)', color: Desmos.Colors.BLACK, showLabel: true });
+      calc4.setExpression({ id: 'pt2', latex: '(-1, 1)', color: Desmos.Colors.BLACK, showLabel: true });
+
+      calc5 = Desmos.GraphingCalculator(document.getElementById('desmos5'), optsInteract);
+      calc5.setMathBounds({ left: -10, right: 10, bottom: -10, top: 10 });
     };
 
-    // FUNCIÓN PARA VERIFICAR GRÁFICAS DE GEOGEBRA
-    function chequearEcuacionGGB(appletName, targetStrings) {
-      const app = window[appletName];
-      if (!app) return 0;
-      
-      let objNames = app.getAllObjectNames();
+    // Función para revisar Desmos
+    function chequearEcuacionDesmos(calc, targetStrings) {
+      if(!calc) return 0;
+      let exprs = calc.getExpressions();
       let aciertos = 0;
       
-      objNames.forEach(obj => {
-        let ec = app.getValueString(obj).replace(/\s/g, '').toLowerCase();
-        for (let target of targetStrings) {
-          if (ec.includes(target)) {
-            aciertos++;
-            break; 
+      exprs.forEach(expr => {
+        if(expr.latex) {
+          let ec = expr.latex.replace(/\s/g, '').toLowerCase();
+          for (let target of targetStrings) {
+            if (ec.includes(target)) {
+              aciertos++;
+              break; 
+            }
           }
         }
       });
       return aciertos;
     }
 
-    // Comprobar estado previo
+    // Comprobar estado de la entrega
     (async function checkStatus() {
       if(!u) return;
       showLoader('Verificando estado...');
@@ -378,7 +380,7 @@
         let q1a = cleanLatex(document.getElementById('q1a').value);
         if (q1a.includes('y=5/6x') || q1a.includes('y=\\frac{5}{6}x') || q1a.includes('y=0.83x')) notaFinal += 0.5;
         
-        if (chequearEcuacionGGB('ggbApplet1', ['5/6x', '0.83x', '5x/6']) > 0) notaFinal += 0.5;
+        if (chequearEcuacionDesmos(calc1, ['5/6x', '0.83x', '5x/6']) > 0) notaFinal += 0.5;
 
         let q1c = cleanLatex(document.getElementById('q1c').value);
         if (q1c === '18' || q1c.includes('18dolares')) notaFinal += 1.0;
@@ -389,15 +391,16 @@
           if (cleanLatex(document.getElementById(`q2_t${i}`).value) === tAns[i-1]) notaFinal += 0.1;
         }
 
-        if (chequearEcuacionGGB('ggbApplet2', ['30x-15']) > 0) notaFinal += 0.3;
+        if (chequearEcuacionDesmos(calc2, ['30x-15']) > 0) notaFinal += 0.3;
 
         let q2b = cleanLatex(document.getElementById('q2b').value);
         if (q2b === '225') notaFinal += 1.0;
 
         // P3 (2.0 pts)
-        if (cleanLatex(document.getElementById('q3a').value) === '57') notaFinal += 1.0;
+        if (cleanLatex(document.getElementById('q3a').value) === '57') notaFinal += 0.5;
         let q3b = cleanLatex(document.getElementById('q3b').value);
         if (q3b.includes('15x+12') || q3b.includes('12+15x')) notaFinal += 1.0;
+        if (chequearEcuacionDesmos(calc3, ['15x+12', '12+15x']) > 0) notaFinal += 0.5;
 
         // P4 (2.0 pts)
         if (cleanLatex(document.getElementById('q4a').value) === '-1') notaFinal += 0.5;
@@ -407,8 +410,8 @@
 
         // P5 (2.0 pts)
         const targetsQ5 = ['3x', '3x+1', '3x-1', '-3x+1', '-3x-1', '3x+2', '3x+3', '3x+5'];
-        let aciertosGGB5 = chequearEcuacionGGB('ggbApplet5', targetsQ5);
-        notaFinal += Math.min(8, aciertosGGB5) * 0.1;
+        let aciertosGGB5 = chequearEcuacionDesmos(calc5, targetsQ5);
+        notaFinal += Math.min(8, aciertosGGB5) * 0.1; // Max 0.8 pts por las gráficas
 
         const tableAnswers = [
           { i: '0',  r: '3' }, { i: '1',  r: '3' }, { i: '-1', r: '3' }, { i: '1',  r: '-3' },
