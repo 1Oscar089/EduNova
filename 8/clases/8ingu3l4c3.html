@@ -87,6 +87,13 @@
     }
     .writing-area:focus { border-color: #0d9488; }
 
+    /* ===== Tables ===== */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 10px; text-align: left; border: 1px solid #cbd5e1; }
+    th { background: #0d9488; color: #fff; }
+    tr:nth-child(even) { background: #f8fafc; }
+    .td-highlight { color: #e11d48; font-weight: bold; }
+
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
   </style>
 </head>
@@ -121,9 +128,27 @@
       <!-- ============ PRE ============ -->
       <div id="phase-pre" class="phase">
         <div class="section-card">
-          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="¡El juego de la cadena!">The Chain Game!</span> 🔗</h2>
+          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="Repaso y Juego">Review & The Chain Game!</span> 🔗</h2>
+          
+          <div class="alert alert-warn" style="margin-bottom:16px;">
+            <b>📓 <span class="tt" data-es="Trabajo en el cuaderno:">Notebook work:</span></b>
+            <span class="tt" data-es="Copia este repaso de ortografía en tu cuaderno antes de hacer el ejercicio.">Please copy this spelling review in your notebook before doing the exercise.</span>
+          </div>
+
+          <div style="background:#f0fdfa; border-left:4px solid #0d9488; padding:16px; border-radius:0 12px 12px 0; margin-bottom:20px;">
+            <h3 style="color:#0f766e; margin-bottom:8px;"><span class="tt" data-es="Reglas de ortografía para He, She, It (Afirmativo)">Spelling Rules for He, She, It (Affirmative)</span></h3>
+            <p style="color:#4b5563; margin-bottom:12px;">
+              <span class="tt" data-es="En el presente simple, cuando hablamos de una tercera persona (él, ella, eso), el verbo cambia:">In the simple present tense, when we talk about a third person (he, she, it), the verb changes:</span>
+            </p>
+            <ul>
+              <li style="margin-bottom:6px;"><span class="tt" data-es="A la mayoría de los verbos se les agrega -s">Most verbs add <b>-s</b></span> (play → play<b>s</b>, read → read<b>s</b>).</li>
+              <li style="margin-bottom:6px;"><span class="tt" data-es="Verbos que terminan en -ch, -sh, -s, -x, -o agregan -es">Verbs ending in -ch, -sh, -s, -x, -o add <b>-es</b></span> (watch → watch<b>es</b>, go → go<b>es</b>).</li>
+              <li style="margin-bottom:6px;"><span class="tt" data-es="Verbos que terminan en consonante + y cambian la 'y' por -ies">Verbs ending in consonant + y change to <b>-ies</b></span> (study → stud<b>ies</b>).</li>
+            </ul>
+          </div>
+
           <p style="color:#6b7280;margin-bottom:16px">
-            <span class="tt" data-es="Escribe oraciones usando las indicaciones. Imagina que se las dirás a un compañero de clase.">Create sentences using the prompts. Imagine you are saying them to a classmate.</span>
+            <span class="tt" data-es="Ahora, escribe oraciones usando las indicaciones. Imagina que se las dirás a un compañero de clase.">Now, create sentences using the prompts. Imagine you are saying them to a classmate.</span>
           </p>
 
           <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; line-height:2.5;">
@@ -132,13 +157,13 @@
           </div>
 
           <div id="pre-feedback" class="hidden" style="margin-top:16px; background:#fffbeb; border-left:4px solid #f59e0b; padding:12px; border-radius:0 8px 8px 0;">
-            <p style="color:#b45309; font-weight:bold; margin-bottom:4px;"><span class="tt" data-es="Tu compañero reportaría tus respuestas así:">Your classmate would report your answers like this:</span></p>
-            <p style="color:#4b5563; font-style:italic;" id="pre-feedback-text"></p>
+            <p style="color:#b45309; font-weight:bold; margin-bottom:4px;"><span class="tt" data-es="Tu compañero aplicaría las reglas y reportaría tus respuestas así:">Your classmate would apply the rules and report your answers like this:</span></p>
+            <p style="color:#4b5563; font-style:italic; font-size:16px;" id="pre-feedback-text"></p>
           </div>
           
           <div style="text-align:center; margin-top:20px;">
             <button class="btn btn-primary" id="btn-pre-check" onclick="validatePre()">🗣️ <span class="tt" data-es="Compartir oraciones">Share sentences</span></button>
-            <button class="btn btn-emerald hidden" id="btn-pre-next" onclick="finishPre()">➡️ <span class="tt" data-es="Continuar">Continue</span></button>
+            <button class="btn btn-emerald hidden" id="btn-pre-next" onclick="finishPre()">➡️ <span class="tt" data-es="Continuar a During">Continue to During</span></button>
           </div>
           <p id="pre-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px; color:#e11d48;"></p>
         </div>
@@ -147,9 +172,51 @@
       <!-- ============ DURING ============ -->
       <div id="phase-during" class="phase hidden">
         <div class="section-card">
-          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="Las actividades favoritas de mi mejor amigo">My Best Friend's Favorite Free-time Activities</span> 🧑‍🏫</h2>
+          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="Oraciones negativas">Negative Statements</span> 🚫</h2>
+          
+          <div class="alert alert-warn" style="margin-bottom:16px;">
+            <b>📓 <span class="tt" data-es="Trabajo en el cuaderno:">Notebook work:</span></b>
+            <span class="tt" data-es="Copia la estructura de las oraciones negativas en tu cuaderno. ¡Es muy importante!">Please copy the negative statement structure in your notebook. It is very important!</span>
+          </div>
+
+          <div style="background:#fffbeb; border-left:4px solid #f59e0b; padding:16px; border-radius:0 12px 12px 0; margin-bottom:20px;">
+            <h3 style="color:#b45309; margin-bottom:8px;"><span class="tt" data-es="Estructura de oraciones negativas">Negative Statements Structure</span></h3>
+            <p style="color:#4b5563; margin-bottom:12px;">
+              <span class="tt" data-es="Para formar oraciones negativas, usamos un verbo auxiliar.">To make negative statements, we use an auxiliary verb.</span> 
+              <span class="tt" data-es="Con he, she, it usamos 'doesn't' (does not). Con I, you, we, they usamos 'don't' (do not).">With <b>he, she, it</b> we use <b>doesn't</b> (does not). With <b>I, you, we, they</b> we use <b>don't</b> (do not).</span>
+              <br><br>
+              <span class="tt" data-es="¡Súper importante! El verbo principal después de 'doesn't' se mantiene en su forma base (no le agregamos la 's')."><b>Super important!</b> The main verb after 'doesn't' remains in its <b>base form</b> (we do NOT add the 's').</span>
+            </p>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="tt" data-es="Sujeto">Subject</span></th>
+                  <th><span class="tt" data-es="Auxiliar">Auxiliary</span></th>
+                  <th><span class="tt" data-es="Verbo Base">Base Verb</span></th>
+                  <th><span class="tt" data-es="Complemento">Complement</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>I / You / We / They</td>
+                  <td><b>don't</b></td>
+                  <td>play</td>
+                  <td>chess.</td>
+                </tr>
+                <tr>
+                  <td>He / She / It</td>
+                  <td><span class="td-highlight">doesn't</span></td>
+                  <td><span class="td-highlight">play</span> (not plays!)</td>
+                  <td>chess.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="color:#0f766e; margin-bottom:8px;"><span class="tt" data-es="Las actividades favoritas de mi mejor amigo">My Best Friend's Favorite Free-time Activities</span></h3>
           <p style="color:#6b7280;margin-bottom:16px">
-            <span class="tt" data-es="Lee el texto en la pizarra. Luego, marca las oraciones como Verdaderas (T) o Falsas (F).">Read the text on the board. Then, mark the statements as True (T) or False (F).</span>
+            <span class="tt" data-es="Lee el texto en la pizarra prestando atención a los verbos. Luego, marca las oraciones de abajo como Verdaderas (T) o Falsas (F).">Read the text on the board paying attention to the verbs. Then, mark the statements below as True (T) or False (F).</span>
           </p>
           
           <div class="whiteboard" style="margin-bottom:24px;">
@@ -161,7 +228,7 @@
               In his leisure time, Marvin <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">watches series</u>, <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">does exercise</u>, and <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">plays the guitar</u>.
             </p>
             <p style="color:#334155; line-height:1.8;">
-              Marvin <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">doesn't play baseball</u>, but he <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">plays volleyball when he goes to the beach with his friends and pets</u>.
+              Marvin <u style="text-decoration-color:#ef4444; text-decoration-thickness:2px;">doesn't play baseball</u>, but he <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">plays volleyball when he goes to the beach with his friends and pets</u>.
             </p>
           </div>
 
@@ -212,7 +279,7 @@
           </p>
 
           <div style="background:#fffbeb; border-left:4px solid #f59e0b; padding:12px; border-radius:0 8px 8px 0; margin-bottom:16px;">
-            <span class="tt" data-es="Recuerda usar el presente simple para la tercera persona del singular (agrega -s o -es a los verbos) y 'doesn't' para oraciones negativas.">Remember to use the simple present tense for the third person singular (add <b>-s</b> or <b>-es</b>) and <b>doesn't</b> for negative statements!</span>
+            <span class="tt" data-es="Recuerda usar las reglas que copiaste para la tercera persona afirmativa (agrega -s o -es) y la estructura negativa (doesn't + verbo base).">Remember to use the rules you copied for affirmative 3rd person (add <b>-s</b> or <b>-es</b>) and negative structure (<b>doesn't + base verb</b>)!</span>
           </div>
 
           <textarea id="post-writing" class="writing-area" placeholder="My best friend's name is... In his/her leisure time, he/she... He/she doesn't..."></textarea>
@@ -230,7 +297,7 @@
           <div style="font-size:64px; margin-bottom:12px;">🏆</div>
           <h2 style="color:#059669; margin-bottom:8px;"><span class="tt" data-es="¡Excelente trabajo!">Excellent job!</span></h2>
           <p style="color:#4b5563; margin-bottom:20px;">
-            <span class="tt" data-es="Has practicado cómo producir oraciones afirmativas y negativas en presente simple.">You have practiced producing affirmative and negative statements in the simple present tense.</span>
+            <span class="tt" data-es="Has dominado las oraciones negativas y copiado los apuntes en tu cuaderno.">You have mastered negative statements and copied the notes in your notebook.</span>
           </p>
           <button class="btn btn-outline" onclick="resetProgress()">🔄 <span class="tt" data-es="Reiniciar lección">Restart lesson</span></button>
           <a href="../../estudiante.html" class="btn btn-primary">🏠 <span class="tt" data-es="Volver al inicio">Back home</span></a>
@@ -313,11 +380,13 @@
 
       msg.innerHTML = '';
       
-      // Simple logic to add 's' if needed for the simulation (not perfect, but illustrative)
+      // Simple logic to add 's' if needed for the simulation
       let verb1 = inp1.split(' ')[0];
       let rest1 = inp1.substring(verb1.length);
       let verb3rd = verb1 + (verb1.endsWith('o') || verb1.endsWith('ch') || verb1.endsWith('sh') || verb1.endsWith('s') || verb1.endsWith('x') ? 'es' : 's');
-      if(verb1.endsWith('y')) verb3rd = verb1.slice(0,-1) + 'ies';
+      if(verb1.endsWith('y') && !['a','e','i','o','u'].includes(verb1.charAt(verb1.length-2))) {
+        verb3rd = verb1.slice(0,-1) + 'ies';
+      }
 
       document.getElementById('pre-feedback-text').innerHTML = `
         "In his/her leisure time, my classmate <b>${verb3rd}${rest1}</b>. He/She <b>doesn't ${inp2}</b> in his/her free time."
