@@ -7,17 +7,17 @@
   <link rel="stylesheet" href="../../css/estilos.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
   
-  <!-- MathLive Script para los cuadros de respuesta -->
+  <!-- MathLive Script -->
   <script defer src="https://unpkg.com/mathlive"></script>
-  <!-- Desmos API para las gráficas -->
-  <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  <!-- GeoGebra API -->
+  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
 
   <style>
     .math-field-box {
       background: #ffffff;
       border: 2px solid #0d9488;
       border-radius: 8px;
-      min-width: 120px;
+      min-width: 60px;
       padding: 6px;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
       font-size: 18px;
@@ -30,6 +30,7 @@
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      overflow-x: auto;
     }
     .question-block h3 {
       color: #0f766e;
@@ -37,19 +38,20 @@
       font-size: 16px;
       line-height: 1.5;
     }
-    .desmos-container {
+    /* Contenedores para GeoGebra */
+    .ggb-container {
       width: 100%;
-      height: 400px;
+      margin: 16px 0;
       border: 2px solid #cbd5e1;
       border-radius: 8px;
-      margin: 12px 0;
-      background: #f8fafc;
+      overflow: hidden;
     }
     table.math-table {
       width: 100%;
       margin: 12px 0;
       border-collapse: collapse;
       background: #fff;
+      min-width: 600px;
     }
     table.math-table th, table.math-table td {
       border: 1px solid #cbd5e1;
@@ -61,14 +63,6 @@
       background: #f0fdfa;
       color: #0f766e;
       font-weight: bold;
-    }
-    .grid-q5 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    @media(max-width: 768px) {
-      .grid-q5 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -106,7 +100,7 @@
           <b>Instrucciones:</b><br> 
           1. Resuelve en tu cuaderno y sube las fotografías de tu procedimiento.<br>
           2. Ingresa tus respuestas finales en el formulario y traza las gráficas solicitadas.<br>
-          <span style="color:#b45309; font-weight:bold;">⚠️ Nota: Usa exclusivamente el teclado virtual en pantalla para escribir tus fórmulas matemáticas.</span>
+          <span style="color:#b45309; font-weight:bold;">⚠️ Nota: El teclado de tu dispositivo está bloqueado. Usa exclusivamente el teclado virtual en pantalla para escribir tus fórmulas matemáticas.</span>
         </div>
 
         <!-- SECCIÓN DE SUBIDA DE EVIDENCIAS -->
@@ -127,8 +121,8 @@
             <math-field id="q1a" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
           <div style="margin-bottom:16px;">
-            <label>b) Represéntala gráficamente usando el siguiente plano:</label>
-            <div id="desmos1" class="desmos-container"></div>
+            <label>b) Represéntala gráficamente usando GeoGebra:</label>
+            <div id="ggb-element1" class="ggb-container"></div>
           </div>
           <div style="margin-bottom:12px;">
             <label>c) ¿Cuántos dólares habrían pagado por 15 euros?</label><br>
@@ -139,27 +133,30 @@
         <!-- Pregunta 2 -->
         <div class="question-block">
           <h3>2. Un algodonero recoge 30 kg por hora, y demora media hora preparándose. Ecuación: <i>y</i> = 30<i>x</i> - 15</h3>
-          <div class="grid-q5">
-            <div>
-              <label>a) Realiza una tabla para la función:</label>
+          <div style="margin-bottom:12px;">
+            <label>a) Realiza una tabla para la función y grafícala:</label>
+            <div style="overflow-x:auto;">
               <table class="math-table">
-                <tr><th><i>x</i> (horas)</th><th><i>y</i> (kg)</th></tr>
-                <tr><td>-3</td><td><math-field id="q2_t1" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-                <tr><td>-2</td><td><math-field id="q2_t2" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-                <tr><td>-1</td><td><math-field id="q2_t3" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-                <tr><td>0</td><td><math-field id="q2_t4" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-                <tr><td>1</td><td><math-field id="q2_t5" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-                <tr><td>2</td><td><math-field id="q2_t6" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
-                <tr><td>3</td><td><math-field id="q2_t7" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field></td></tr>
+                <tr>
+                  <th><i>x</i> (horas)</th>
+                  <td>-3</td><td>-2</td><td>-1</td><td>0</td><td>1</td><td>2</td><td>3</td>
+                </tr>
+                <tr>
+                  <th><i>y</i> (kg)</th>
+                  <td><math-field id="q2_t1" class="math-field-box"></math-field></td>
+                  <td><math-field id="q2_t2" class="math-field-box"></math-field></td>
+                  <td><math-field id="q2_t3" class="math-field-box"></math-field></td>
+                  <td><math-field id="q2_t4" class="math-field-box"></math-field></td>
+                  <td><math-field id="q2_t5" class="math-field-box"></math-field></td>
+                  <td><math-field id="q2_t6" class="math-field-box"></math-field></td>
+                  <td><math-field id="q2_t7" class="math-field-box"></math-field></td>
+                </tr>
               </table>
             </div>
-            <div>
-              <label>b) Grafícala en el plano:</label>
-              <div id="desmos2" class="desmos-container" style="height:350px;"></div>
-            </div>
+            <div id="ggb-element2" class="ggb-container"></div>
           </div>
-          <div style="margin-top:16px;">
-            <label>c) ¿Cuántos kg de algodón se recogerán en una jornada de 8 horas?</label><br>
+          <div style="margin-bottom:12px;">
+            <label>b) ¿Cuántos kg de algodón se recogerán en una jornada de 8 horas?</label><br>
             <math-field id="q2b" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
           </div>
         </div>
@@ -198,62 +195,46 @@
         <div class="question-block">
           <h3>5. Grafica las siguientes 8 funciones en el <b>mismo plano</b>, luego identifica el intercepto y la razón de cambio de cada una.</h3>
           
-          <div class="grid-q5">
-            <div>
-              <label>Traza las 8 rectas aquí:</label>
-              <div id="desmos5" class="desmos-container" style="height: 500px;"></div>
-            </div>
-            
-            <div style="overflow-x:auto;">
-              <label>Completa la tabla:</label>
-              <table class="math-table" style="font-size:14px;">
-                <tr>
-                  <th>Función</th>
-                  <th>I. Intercepto</th>
-                  <th>II. Razón de cambio</th>
-                </tr>
-                <tr>
-                  <td>a) <i>y</i> = 3<i>x</i></td>
-                  <td><math-field id="q5_a_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_a_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-                <tr>
-                  <td>b) <i>y</i> = 3<i>x</i> + 1</td>
-                  <td><math-field id="q5_b_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_b_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-                <tr>
-                  <td>c) <i>y</i> = 3<i>x</i> - 1</td>
-                  <td><math-field id="q5_c_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_c_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-                <tr>
-                  <td>d) <i>y</i> = -3<i>x</i> + 1</td>
-                  <td><math-field id="q5_d_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_d_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-                <tr>
-                  <td>e) <i>y</i> = -3<i>x</i> - 1</td>
-                  <td><math-field id="q5_e_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_e_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-                <tr>
-                  <td>f) <i>y</i> = 3<i>x</i> + 2</td>
-                  <td><math-field id="q5_f_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_f_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-                <tr>
-                  <td>g) <i>y</i> = 3<i>x</i> + 3</td>
-                  <td><math-field id="q5_g_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_g_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-                <tr>
-                  <td>h) <i>y</i> = 3<i>x</i> + 5</td>
-                  <td><math-field id="q5_h_i" class="math-field-box" style="min-width:60px;"></math-field></td>
-                  <td><math-field id="q5_h_ii" class="math-field-box" style="min-width:60px;"></math-field></td>
-                </tr>
-              </table>
-            </div>
+          <label>Traza las 8 rectas aquí:</label>
+          <div id="ggb-element5" class="ggb-container" style="height: 500px;"></div>
+          
+          <label>Completa la tabla (horizontal):</label>
+          <div style="overflow-x:auto;">
+            <table class="math-table" style="font-size:14px; min-width:800px;">
+              <tr>
+                <th>Función</th>
+                <td><b>a)</b> <i>y</i> = 3<i>x</i></td>
+                <td><b>b)</b> <i>y</i> = 3<i>x</i> + 1</td>
+                <td><b>c)</b> <i>y</i> = 3<i>x</i> - 1</td>
+                <td><b>d)</b> <i>y</i> = -3<i>x</i> + 1</td>
+                <td><b>e)</b> <i>y</i> = -3<i>x</i> - 1</td>
+                <td><b>f)</b> <i>y</i> = 3<i>x</i> + 2</td>
+                <td><b>g)</b> <i>y</i> = 3<i>x</i> + 3</td>
+                <td><b>h)</b> <i>y</i> = 3<i>x</i> + 5</td>
+              </tr>
+              <tr>
+                <th>I. Intercepto</th>
+                <td><math-field id="q5_a_i" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_b_i" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_c_i" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_d_i" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_e_i" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_f_i" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_g_i" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_h_i" class="math-field-box"></math-field></td>
+              </tr>
+              <tr>
+                <th>II. Razón de cambio</th>
+                <td><math-field id="q5_a_ii" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_b_ii" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_c_ii" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_d_ii" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_e_ii" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_f_ii" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_g_ii" class="math-field-box"></math-field></td>
+                <td><math-field id="q5_h_ii" class="math-field-box"></math-field></td>
+              </tr>
+            </table>
           </div>
           
           <div style="margin-top:16px;">
@@ -283,31 +264,71 @@
     const u = requireLogin();
     renderUserBar(document.getElementById('userbar'));
 
-    // Variables globales para las calculadoras
-    let calc1, calc2, calc5;
-
-    // Inicializar Desmos cuando el DOM esté completamente listo
-    window.addEventListener('load', () => {
+    // BLOQUEO ESTRICTO DE TECLADO FÍSICO EN MATHLIVE
+    document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll('math-field').forEach(mf => {
         mf.addEventListener('keydown', (e) => {
+          // Permitimos solo teclas de navegación y borrado. Letras, números y símbolos se bloquean.
           if(!['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(e.key)){
             e.preventDefault();
-            toast('Usa el teclado virtual', 'Escribe usando los botones en pantalla.', 'warn');
+            e.stopPropagation();
+            toast('Teclado Bloqueado', 'Usa los botones del teclado en pantalla.', 'warn');
           }
         });
       });
-
-      const desmosOpts = { expressions: true, settingsMenu: false, zoomButtons: true };
-      
-      calc1 = Desmos.GraphingCalculator(document.getElementById('desmos1'), desmosOpts);
-      calc1.setMathBounds({ left: -5, right: 25, bottom: -5, top: 25 }); // Ajustado para valores en USD/Euros
-
-      calc2 = Desmos.GraphingCalculator(document.getElementById('desmos2'), desmosOpts);
-      calc2.setMathBounds({ left: -5, right: 10, bottom: -120, top: 120 }); // Ajustado para los kg de algodón
-
-      calc5 = Desmos.GraphingCalculator(document.getElementById('desmos5'), desmosOpts);
-      calc5.setMathBounds({ left: -10, right: 10, bottom: -10, top: 10 });
     });
+
+    // INICIALIZACIÓN DE GEOGEBRA
+    window.onload = function() {
+      // Función para inicializar un applet de forma responsiva
+      function initGGB(idElement, appletId, height) {
+        const container = document.getElementById(idElement);
+        if(!container) return;
+        
+        let width = container.clientWidth || 800; // Tomar ancho del contenedor
+        
+        var params = {
+          "id": appletId,
+          "appName": "graphing",
+          "width": width,
+          "height": height,
+          "showToolBar": true,
+          "showAlgebraInput": true,
+          "showMenuBar": false,
+          "useBrowserForJS": false,
+          "language": "es"
+        };
+        var applet = new GGBApplet(params, true);
+        applet.inject(idElement);
+      }
+
+      initGGB('ggb-element1', 'ggbApplet1', 400);
+      initGGB('ggb-element2', 'ggbApplet2', 400);
+      initGGB('ggb-element5', 'ggbApplet5', 500);
+    };
+
+    // FUNCIÓN AUXILIAR PARA EVALUAR GEOGEBRA
+    function chequearEcuacionGGB(appletName, targetStrings) {
+      const app = window[appletName];
+      if (!app) return 0;
+      
+      let objNames = app.getAllObjectNames();
+      let aciertos = 0;
+      
+      objNames.forEach(obj => {
+        // Obtenemos el string de la ecuación, quitamos espacios y pasamos a minúsculas
+        let ec = app.getValueString(obj).replace(/\s/g, '').toLowerCase();
+        
+        // Revisamos si la ecuación coincide con alguno de nuestros targets
+        for (let target of targetStrings) {
+          if (ec.includes(target)) {
+            aciertos++;
+            break; // Si encontró uno, pasamos al siguiente objeto de GeoGebra
+          }
+        }
+      });
+      return aciertos;
+    }
 
     // Comprobar si ya la entregó
     (async function checkStatus() {
@@ -349,8 +370,8 @@
         let q1a = cleanLatex(document.getElementById('q1a').value);
         if (q1a.includes('y=5/6x') || q1a.includes('y=\\frac{5}{6}x') || q1a.includes('y=0.83x')) notaFinal += 0.5;
         
-        let d1_exprs = calc1.getExpressions();
-        if (d1_exprs.some(e => e.latex && e.latex.includes('x') && (e.latex.includes('5/6') || e.latex.includes('\\frac{5}{6}') || e.latex.includes('1.2')))) notaFinal += 0.5;
+        // Verificar en GeoGebra 1
+        if (chequearEcuacionGGB('ggbApplet1', ['5/6x', '0.83x', '5x/6']) > 0) notaFinal += 0.5;
 
         let q1c = cleanLatex(document.getElementById('q1c').value);
         if (q1c === '18' || q1c.includes('18dolares')) notaFinal += 1.0;
@@ -361,8 +382,8 @@
           if (cleanLatex(document.getElementById(`q2_t${i}`).value) === tAns[i-1]) notaFinal += 0.1;
         }
 
-        let d2_exprs = calc2.getExpressions();
-        if (d2_exprs.some(e => e.latex && e.latex.includes('30x') && e.latex.includes('15'))) notaFinal += 0.3;
+        // Verificar en GeoGebra 2
+        if (chequearEcuacionGGB('ggbApplet2', ['30x-15']) > 0) notaFinal += 0.3;
 
         let q2b = cleanLatex(document.getElementById('q2b').value);
         if (q2b === '225') notaFinal += 1.0;
@@ -379,14 +400,12 @@
         if (q4c.includes('-2x-1') || q4c.includes('-1-2x')) notaFinal += 1.0;
 
         // P5 (2.0 pts)
-        // A. Revisión de las 8 gráficas (0.8 pts -> 0.1 por c/u)
-        const d5_exprs = calc5.getExpressions().map(e => e.latex ? cleanLatex(e.latex) : '');
-        const graphsExpected = ['3x', '3x+1', '3x-1', '-3x+1', '-3x-1', '3x+2', '3x+3', '3x+5'];
-        graphsExpected.forEach(g => {
-          if (d5_exprs.some(expr => expr.includes(g))) notaFinal += 0.1;
-        });
+        // A. Revisión de las 8 gráficas en GeoGebra 5 (0.8 pts -> 0.1 por c/u)
+        const targetsQ5 = ['3x', '3x+1', '3x-1', '-3x+1', '-3x-1', '3x+2', '3x+3', '3x+5'];
+        let aciertosGGB5 = chequearEcuacionGGB('ggbApplet5', targetsQ5);
+        notaFinal += Math.min(8, aciertosGGB5) * 0.1;
 
-        // B. Revisión de la Tabla (0.8 pts -> 0.05 por celda, 16 celdas)
+        // B. Revisión de la Tabla Horizontal (0.8 pts -> 0.05 por celda, 16 celdas)
         const tableAnswers = [
           { i: '0',  r: '3' },   // a
           { i: '1',  r: '3' },   // b
@@ -408,7 +427,7 @@
         // C. Conclusión (0.4 pts)
         if (document.getElementById('q5_conclusion').value.trim().length > 10) notaFinal += 0.4;
 
-        // Limitar la nota máxima a 10 por si hay flotantes rebeldes
+        // Limitar la nota máxima a 10
         notaFinal = Math.min(10, Math.max(0, notaFinal));
 
         // --- SUBIR IMÁGENES ---
