@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I Produce · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍎</text></svg>" />
+  <style>
+    * { box-sizing: border-box; }
+    /* ===== Tooltip ===== */
+    .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; color: inherit; }
+    .tt:hover::after {
+      content: attr(data-es); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+    .tt:hover::before {
+      content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
+    }
+
+    /* ===== Phase tabs ===== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
+      border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
+      color: #9ca3af; transition: all .2s; text-align: center; font-family: inherit;
+    }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,.3); }
+    .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
+    .phase-tab.done::after { content: ' ✓'; }
+    .phase-tab.locked { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    /* ===== Elements ===== */
+    .section-card { background: #fff; border-radius: 16px; border: 1px solid #d1fae5; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .phase { animation: fadeIn .3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .theory-box { background: #f0fdfa; border-left: 4px solid #0d9488; padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+    .theory-box h3 { color: #0f766e; margin-bottom: 8px; }
+    .theory-box p { color: #4b5563; margin-bottom: 8px; line-height: 1.5; }
+    
+    .interactive-box { background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 16px; }
+    .mystery-card { font-size: 24px; font-weight: 800; color: #b45309; margin: 16px 0; padding: 16px; background: #fff; border: 2px solid #fcd34d; border-radius: 12px; display: inline-block; min-width: 150px; }
+    
+    .input-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; text-align: left; }
+    .input-row label { font-weight: bold; color: #0f766e; }
+    .input-field { padding: 10px; border: 2px solid #d1fae5; border-radius: 8px; font-family: inherit; font-size: 15px; outline: none; }
+    .input-field:focus { border-color: #0d9488; }
+    
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin: 16px 0; }
+    .drawn-card { background: #fff; border: 2px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; font-weight: bold; color: #334155; }
+    .drawn-card .emoji { font-size: 32px; margin-bottom: 8px; }
+
+    .question-btn { display: block; width: 100%; text-align: left; padding: 12px; margin-bottom: 8px; border: 2px solid #e2e8f0; border-radius: 8px; background: #f8fafc; color: #334155; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .question-btn:hover { background: #e2e8f0; }
+    .question-btn.asked { background: #d1fae5; border-color: #059669; color: #064e3b; pointer-events: none; }
+    
+    .chat-bubble { background: #ffffff; border: 2px solid #0d9488; border-radius: 16px; padding: 12px; margin-bottom: 16px; position: relative; color: #0f766e; font-weight: bold; }
+    .chat-bubble::after { content: ''; position: absolute; bottom: -10px; left: 20px; border-width: 10px 10px 0; border-style: solid; border-color: #0d9488 transparent transparent transparent; }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#fef3c7;color:#d97706">🍎</div>
+          <div>
+            <h1>I Produce</h1>
+            <p>📘 English · <span class="tt" data-es="Unidad 2 o 3">Unit</span> · <span class="tt" data-es="Lección">Lesson</span> (Class 3)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</b>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span> —
+        <b>1️⃣ Pre</b>, <b>2️⃣ During</b>, <b>3️⃣ Post</b>.
+        <span class="tt" data-es="Completa cada parte para avanzar.">Complete each phase to move forward.</span>
+      </div>
+
+      <div class="phase-tabs">
+        <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
+        <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')">2️⃣ During</button>
+        <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')">3️⃣ Post</button>
+      </div>
+
+      <!-- ============ PRE ============ -->
+      <div id="phase-pre" class="phase">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="¡Caja Misteriosa!">Mystery Box!</span> 🎁</h2>
+          
+          <div class="theory-box">
+            <h3><span class="tt" data-es="Repaso de Teoría">Theory Review</span></h3>
+            <p><span class="tt" data-es="Los sustantivos contables pueden contarse y tienen forma singular y plural (ej. una manzana, dos manzanas)."><b>Countable nouns</b> can be counted and have both singular and plural forms (e.g., an apple, two apples).</span></p>
+            <p><span class="tt" data-es="Los sustantivos incontables no se pueden contar individualmente y usualmente solo tienen forma singular (ej. agua, dinero)."><b>Uncountable nouns</b> cannot be counted individually and usually only have a singular form (e.g., water, money).</span></p>
+          </div>
+
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Haz clic para sacar una tarjeta. Di si representa un sustantivo contable o incontable.">Take one flashcard from the bag/box, show it to your classmates, and say if it represents a countable or uncountable noun.</span>
+            <span class="tt" data-es="Si es contable, di su forma plural. Luego escribe una oración original.">If the noun is countable, you will also have to say its plural form. Finally, write an original sentence using the noun.</span>
+          </p>
+
+          <div class="interactive-box" id="mystery-area">
+            <button class="btn btn-amber" onclick="drawMysteryCard()">🎲 <span class="tt" data-es="Sacar una tarjeta">Draw a card</span></button>
+            <div id="mystery-result" class="hidden">
+              <div class="mystery-card" id="mystery-word">???</div>
+              
+              <div class="input-row">
+                <label>1. Is it Countable or Uncountable?</label>
+                <select id="pre-type" class="input-field" onchange="togglePluralInput()">
+                  <option value="">- Select -</option>
+                  <option value="C">Countable</option>
+                  <option value="U">Uncountable</option>
+                </select>
+              </div>
+              
+              <div class="input-row">
+                <label>2. Plural form (if Countable):</label>
+                <input type="text" id="pre-plural" class="input-field" placeholder="Type the plural..." autocomplete="off">
+              </div>
+
+              <div class="input-row">
+                <label>3. Write an original sentence (e.g., I eat strawberries twice a week):</label>
+                <input type="text" id="pre-sentence" class="input-field" placeholder="Your sentence..." autocomplete="off">
+              </div>
+
+              <button class="btn btn-primary" style="margin-top:12px;" onclick="validatePre()">✅ <span class="tt" data-es="Comprobar">Check & Share</span></button>
+              <p id="pre-msg" style="font-weight:bold; margin-top:8px;"></p>
+            </div>
+          </div>
+          
+          <div style="text-align:center;">
+            <button class="btn btn-emerald hidden" id="btn-pre-next" onclick="finishPre()">➡️ <span class="tt" data-es="Continuar a During">Continue to During</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ DURING ============ -->
+      <div id="phase-during" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="Haciendo Tarjetas">Making Cards</span> ✂️</h2>
+          
+          <div class="theory-box" style="border-left-color:#3b82f6;">
+            <h3><span class="tt" data-es="Trabajo en tu cuaderno o páginas de papel">Work in your notebook or sheets of paper</span></h3>
+            <ul style="color:#4b5563; line-height:1.6; margin-left:20px;">
+              <li><span class="tt" data-es="Usa tus tijeras para obtener 4 cuadrados por página.">Use your scissors to get 4 squares per page.</span></li>
+              <li><span class="tt" data-es="Ilustra sustantivos contables e incontables en las tarjetas.">Illustrate countable and uncountable nouns on the cards.</span></li>
+              <li><span class="tt" data-es="Dibuja algunos sustantivos en su forma plural (regular e irregular).">Draw some nouns in their plural form (regular and irregular).</span></li>
+              <li><span class="tt" data-es="Etiqueta cada tarjeta de acuerdo a la imagen que has dibujado.">Label each card according to the picture you have drawn on it.</span></li>
+            </ul>
+          </div>
+
+          <p style="color:#6b7280;margin-bottom:16px; text-align:center;">
+            <span class="tt" data-es="Tus tarjetas se verán similares a las siguientes imágenes:">Your cards will look similar to the following images:</span>
+          </p>
+
+          <div class="card-grid">
+            <div class="drawn-card"><div class="emoji">🍎🍎</div>apples</div>
+            <div class="drawn-card"><div class="emoji">💧</div>water</div>
+            <div class="drawn-card"><div class="emoji">🧍</div>person</div>
+            <div class="drawn-card"><div class="emoji">🐑🐑</div>sheep</div>
+          </div>
+
+          <div style="text-align:center; margin-top:24px;">
+            <button class="btn btn-primary" onclick="finishDuring()">✅ <span class="tt" data-es="Ya hice mis tarjetas">I finished my cards</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ POST ============ -->
+      <div id="phase-post" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">3️⃣ Post: <span class="tt" data-es="¡Adivina el sustantivo!">Guess the Noun!</span> 🤔</h2>
+          
+          <div class="theory-box" style="border-left-color:#f59e0b; background:#fffbeb;">
+            <p><span class="tt" data-es="En clase, jugaríamos con una diadema de cartón. Sacarías una tarjeta sin mirar y harías preguntas de sí/no para adivinarla.">In class, you would elaborate a cardboard headband for each team. You would draw one card from the stack without looking at it so that a partner can stick it on the headband. Then, you ask yes/no questions to try to guess the noun on the card.</span></p>
+            <p><b><span class="tt" data-es="¡Juguemos contra la computadora!">Let's play against the computer!</span></b> <span class="tt" data-es="La computadora ha elegido una carta secreta. Haz preguntas para adivinarla.">The computer has picked a secret card. Ask questions to guess it!</span></p>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:20px;">
+            <!-- Opciones de preguntas -->
+            <div style="flex:1; min-width:250px;">
+              <h3 style="color:#0f766e; margin-bottom:12px;"><span class="tt" data-es="Haz una pregunta">Ask a question:</span></h3>
+              <button class="question-btn" onclick="askQuestion(1, 'Is my noun countable?')">1. Is my noun countable/uncountable?</button>
+              <button class="question-btn" onclick="askQuestion(2, 'Is it in singular or plural form?')">2. Is it in singular/plural form?</button>
+              <button class="question-btn" onclick="askQuestion(3, 'Is it an irregular plural noun?')">3. Is it an irregular plural noun?</button>
+              <button class="question-btn" onclick="askQuestion(4, 'Can I eat or drink it?')">4. Can I eat it?</button>
+              <button class="question-btn" onclick="askQuestion(5, 'Is it a living thing?')">5. Is it a living thing?</button>
+            </div>
+            
+            <!-- Interfaz del juego -->
+            <div style="flex:1; min-width:250px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f8fafc; border:2px solid #e2e8f0; border-radius:12px; padding:20px;">
+              <div class="chat-bubble" id="comp-reply">
+                I have a secret card on my head!<br>Ask me questions.
+              </div>
+              <div style="font-size:64px; margin-bottom:16px;">🤖</div>
+              
+              <select id="guess-select" class="input-field" style="width:100%; margin-bottom:8px;">
+                <option value="">-- Make a guess! --</option>
+                <option value="apples">Apples</option>
+                <option value="water">Water</option>
+                <option value="person">Person</option>
+                <option value="sheep">Sheep</option>
+              </select>
+              <button class="btn btn-amber" style="width:100%;" onclick="makeGuess()">🎯 Guess!</button>
+              <p id="guess-msg" style="font-weight:bold; margin-top:8px;"></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============ FINISH ============ -->
+      <div id="phase-finish" class="phase hidden text-center">
+        <div class="section-card" style="background:#f0fdf4; border-color:#059669;">
+          <div style="font-size:64px; margin-bottom:12px;">🏆</div>
+          <h2 style="color:#059669; margin-bottom:8px;"><span class="tt" data-es="¡Excelente trabajo!">Excellent job!</span></h2>
+          <p style="color:#4b5563; margin-bottom:20px;">
+            <span class="tt" data-es="Has practicado sustantivos contables e incontables maravillosamente.">You have practiced countable and uncountable nouns wonderfully.</span>
+          </p>
+          <button class="btn btn-outline" onclick="resetProgress()">🔄 <span class="tt" data-es="Terminar clase y reiniciar">Finish Class & Restart</span></button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · English · I Produce</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '9ingl2c3';
+    const LOCAL_KEY = 'edunova_' + ACTIVITY_ID + '_progress';
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    let progress = parseInt(localStorage.getItem(LOCAL_KEY) || '0');
+
+    // --- PRE PHASE DATA ---
+    const mysteryWords = [
+      { word: "Strawberry", type: "C", plural: "Strawberries" },
+      { word: "Money", type: "U", plural: "" },
+      { word: "Child", type: "C", plural: "Children" }
+    ];
+    let currentMystery = null;
+
+    // --- POST PHASE DATA (Secret Game) ---
+    // The computer will pick one of these 4
+    const gameDatabase = {
+      "apples": { countable: "It is Countable.", form: "It is in Plural form.", irregular: "No, it is a regular plural.", eat: "Yes, you can eat it!", living: "No, it's a fruit." },
+      "water":  { countable: "It is Uncountable.", form: "It is in Singular form.", irregular: "No, uncountable nouns don't have plurals.", eat: "Yes, you can drink it!", living: "No." },
+      "person": { countable: "It is Countable.", form: "It is in Singular form.", irregular: "Yes, its plural is irregular (people).", eat: "No, you cannot eat it!", living: "Yes, it is a living thing." },
+      "sheep":  { countable: "It is Countable.", form: "It can be Singular or Plural (they are the same).", irregular: "Yes, it's an irregular plural.", eat: "No.", living: "Yes, it is an animal." }
+    };
+    const secretKeys = Object.keys(gameDatabase);
+    let secretWord = secretKeys[Math.floor(Math.random() * secretKeys.length)];
+
+    function init() {
+      applyProgress();
+    }
+
+    function applyProgress() {
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active', 'done'));
+      
+      if (progress >= 1) {
+        document.getElementById('tab-pre').classList.add('done');
+        document.getElementById('tab-during').classList.remove('locked');
+      }
+      if (progress >= 2) {
+        document.getElementById('tab-during').classList.add('done');
+        document.getElementById('tab-post').classList.remove('locked');
+      }
+      if (progress >= 3) {
+        document.getElementById('tab-post').classList.add('done');
+        document.getElementById('phase-finish').classList.remove('hidden');
+        document.getElementById('phase-pre').classList.add('hidden');
+        document.getElementById('phase-during').classList.add('hidden');
+        document.getElementById('phase-post').classList.add('hidden');
+        return; 
+      }
+
+      if (progress === 0) showPhase('pre');
+      else if (progress === 1) showPhase('during');
+      else if (progress === 2) showPhase('post');
+    }
+
+    window.showPhase = function(phase) {
+      if (progress === 3) return; 
+      document.querySelectorAll('.phase-tab').forEach(t => {
+        if (!t.classList.contains('done')) t.classList.remove('active');
+      });
+      document.querySelectorAll('.phase').forEach(p => {
+        if (p.id !== 'phase-finish') p.classList.add('hidden');
+      });
+      document.getElementById('phase-' + phase).classList.remove('hidden');
+      const tab = document.getElementById('tab-' + phase);
+      if(tab) tab.classList.add('active');
+    };
+
+    // --- PRE PHASE LOGIC ---
+    window.drawMysteryCard = function() {
+      currentMystery = mysteryWords[Math.floor(Math.random() * mysteryWords.length)];
+      document.getElementById('mystery-word').innerText = currentMystery.word;
+      document.getElementById('mystery-result').classList.remove('hidden');
+      // Reset fields
+      document.getElementById('pre-type').value = "";
+      document.getElementById('pre-plural').value = "";
+      document.getElementById('pre-sentence').value = "";
+      document.getElementById('pre-msg').innerText = "";
+      togglePluralInput();
+    };
+
+    window.togglePluralInput = function() {
+      const type = document.getElementById('pre-type').value;
+      const plInput = document.getElementById('pre-plural');
+      if (type === 'U') {
+        plInput.disabled = true;
+        plInput.value = "";
+        plInput.placeholder = "Uncountable (No plural)";
+      } else {
+        plInput.disabled = false;
+        plInput.placeholder = "Type the plural...";
+      }
+    };
+
+    window.validatePre = function() {
+      const type = document.getElementById('pre-type').value;
+      const plural = document.getElementById('pre-plural').value.trim().toLowerCase();
+      const sentence = document.getElementById('pre-sentence').value.trim();
+      const msg = document.getElementById('pre-msg');
+
+      if (!type || !sentence) {
+        msg.innerText = "Please fill all fields!";
+        msg.style.color = "#e11d48";
+        return;
+      }
+      if (type !== currentMystery.type) {
+        msg.innerText = "Incorrect Type (Countable/Uncountable). Try again.";
+        msg.style.color = "#e11d48";
+        return;
+      }
+      if (type === 'C' && plural !== currentMystery.plural.toLowerCase()) {
+        msg.innerText = "Incorrect plural form. Try again.";
+        msg.style.color = "#e11d48";
+        return;
+      }
+
+      msg.innerText = "Perfect! Great sentence.";
+      msg.style.color = "#059669";
+      document.getElementById('btn-pre-next').classList.remove('hidden');
+    };
+
+    window.finishPre = function() {
+      progress = Math.max(progress, 1);
+      localStorage.setItem(LOCAL_KEY, progress);
+      applyProgress();
+      showPhase('during');
+    };
+
+    // --- DURING PHASE LOGIC ---
+    window.finishDuring = function() {
+      progress = Math.max(progress, 2);
+      localStorage.setItem(LOCAL_KEY, progress);
+      applyProgress();
+      showPhase('post');
+    };
+
+    // --- POST PHASE LOGIC (Mini Game) ---
+    window.askQuestion = function(qNum, qText) {
+      // Find the button and mark as asked
+      const btn = event.target;
+      btn.classList.add('asked');
+      
+      const replyBox = document.getElementById('comp-reply');
+      let answer = "";
+      
+      if(qNum === 1) answer = gameDatabase[secretWord].countable;
+      if(qNum === 2) answer = gameDatabase[secretWord].form;
+      if(qNum === 3) answer = gameDatabase[secretWord].irregular;
+      if(qNum === 4) answer = gameDatabase[secretWord].eat;
+      if(qNum === 5) answer = gameDatabase[secretWord].living;
+
+      replyBox.innerHTML = `<i>You asked: ${qText}</i><br><br><b>🤖 Answer:</b> ${answer}`;
+    };
+
+    window.makeGuess = function() {
+      const guess = document.getElementById('guess-select').value;
+      const msg = document.getElementById('guess-msg');
+      
+      if(!guess) {
+        msg.innerText = "Select an option first!";
+        msg.style.color = "#e11d48";
+        return;
+      }
+
+      if(guess === secretWord) {
+        msg.innerText = "🎉 YES! You guessed it!";
+        msg.style.color = "#059669";
+        document.getElementById('comp-reply').innerHTML = "<b>Congratulations!</b> You found my secret word.";
+        
+        // Finish class
+        progress = 3;
+        localStorage.setItem(LOCAL_KEY, progress);
+        setTimeout(() => applyProgress(), 1500);
+      } else {
+        msg.innerText = "❌ Nope, that's not it. Keep asking questions!";
+        msg.style.color = "#e11d48";
+      }
+    };
+
+    window.resetProgress = function() {
+      localStorage.removeItem(LOCAL_KEY);
+      location.reload(); 
+    };
+
+    init();
+  </script>
+</body>
+</html>
