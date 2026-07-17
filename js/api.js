@@ -198,3 +198,12 @@ function showLoader(text) {
 function hideLoader() {
   if (_globalLoader) { _globalLoader.remove(); _globalLoader = null; }
 }
+const Tareas = {
+  async list(grado, materia) { return api('getTareas', { grado, materia }); },
+  async crear(t) { return api('crearTarea', t); },
+  async editar(t) { return api('editarTarea', t); },
+  async eliminar(id) { return api('eliminarTarea', { id }); },
+  
+  // ¡AÑADE ESTA LÍNEA AQUÍ!
+  async uploadEvidence(data) { return api('uploadTarea', data); }
+};
