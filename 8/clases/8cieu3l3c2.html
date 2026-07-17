@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El sonido en las cuerdas · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎸</text></svg>" />
+  <style>
+    .sim-container {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .sim-tabs {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .sim-tab {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .sim-tab.active {
+      background: #fff;
+      color: #0f766e;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .sim-visual {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      height: 150px;
+      position: relative;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .table-top {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      right: 50px;
+      height: 20px;
+      background: #d4d4d8;
+      border-bottom: 4px solid #a1a1aa;
+    }
+    .clamp {
+      position: absolute;
+      top: 30px;
+      left: 10px;
+      font-size: 32px;
+    }
+    .pulley {
+      position: absolute;
+      top: 35px;
+      right: 30px;
+      font-size: 32px;
+    }
+    .string {
+      position: absolute;
+      top: 48px;
+      left: 30px;
+      right: 45px;
+      height: 2px;
+      background: #475569;
+      transform-origin: left center;
+    }
+    .string-vibrate {
+      animation: vibrate 0.1s linear infinite;
+    }
+    @keyframes vibrate {
+      0% { transform: translateY(0); }
+      25% { transform: translateY(-2px); }
+      50% { transform: translateY(0); }
+      75% { transform: translateY(2px); }
+      100% { transform: translateY(0); }
+    }
+    .bottle {
+      position: absolute;
+      top: 25px;
+      font-size: 24px;
+      transition: left 0.3s;
+    }
+    .weight {
+      position: absolute;
+      top: 70px;
+      right: 35px;
+      font-size: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: top 0.3s;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .control-group label {
+      display: block;
+      font-weight: 700;
+      color: #0f766e;
+      margin-bottom: 8px;
+    }
+    .control-group input[type=range] {
+      width: 100%;
+      accent-color: #0d9488;
+    }
+    .data-output {
+      background: #f0fdfa;
+      border-left: 4px solid #0d9488;
+      padding: 12px;
+      margin-top: 16px;
+      border-radius: 0 8px 8px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    .data-item {
+      font-size: 14px;
+      color: #4b5563;
+    }
+    .data-item span {
+      display: block;
+      font-weight: 900;
+      color: #0f766e;
+      font-size: 18px;
+    }
+    .book-ref {
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ccfbf1;color:#0f766e">🎸</div>
+          <div>
+            <h1>El sonido en las cuerdas</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 3</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEORÍA -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0f766e">Frecuencias Altas y Bajas</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:12px">
+          El sonido que sale de una bocina o de un instrumento musical se propaga por el aire mediante vibraciones. El oído humano es capaz de escuchar un rango de frecuencias sonoras que se encuentran entre los <b>20 Hz y los 20 kHz (20,000 Hz)</b>. Un Hertz (Hz) equivale a una vibración por segundo.
+        </p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+          <div style="background:#f0fdf4; padding:12px; border-radius:8px; border:1px solid #d1fae5;">
+            <h4 style="color:#059669; margin-bottom:8px;">🔊 Tonos Altos (Alta Frecuencia)</h4>
+            <p style="font-size:13px; color:#4b5563;">
+              Las vibraciones rápidas producen tonos agudos. Ejemplos de estos sonidos son el chirrido de los frenos de un vehículo al detenerse bruscamente o el sonido que sale de un altavoz pequeño llamado <i>tweeter</i>.
+            </p>
+          </div>
+          <div style="background:#fefce8; padding:12px; border-radius:8px; border:1px solid #fef08a;">
+            <h4 style="color:#d97706; margin-bottom:8px;">🔉 Tonos Bajos (Baja Frecuencia)</h4>
+            <p style="font-size:13px; color:#4b5563;">
+              Las vibraciones lentas producen tonos graves. Ejemplos de estos sonidos son el retumbar de un trueno en una tormenta o el sonido de un altavoz grande conocido como <i>woofer</i>.
+            </p>
+          </div>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6">
+          En los instrumentos de cuerda, como la guitarra, la <b>tensión</b> influye directamente en la rapidez de las vibraciones. A mayor tensión, la frecuencia aumenta y el tono es más alto (agudo). Por el contrario, a menor tensión, las vibraciones son más lentas y el tono es más bajo (grave). Los guitarristas también cambian la longitud de la cuerda usando un <b>capotraste</b> para lograr una transposición de tonalidad.
+        </p>
+      </div>
+
+      <!-- SIMULADOR -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#059669">Simulador de Laboratorio</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:16px">
+          Vamos a recrear el experimento de las cuerdas usando una abrazadera, una cuerda, una polea, una botella como puente y bolsas de alpiste de <b>0.454 kg</b> cada una para generar tensión. 
+          <br>Asegúrate de tener el <b>volumen encendido</b> y haz clic en "Puntear Cuerda" en cada cambio que hagas.
+        </p>
+
+        <div class="sim-container">
+          <div class="sim-header">
+            <div class="sim-tabs">
+              <button class="sim-tab active" id="tab-p1" onclick="setMode('P1')">Parte I: Longitud Variable</button>
+              <button class="sim-tab" id="tab-p2" onclick="setMode('P2')">Parte II: Tensión Variable</button>
+            </div>
+            <button class="btn btn-amber" onclick="puntearCuerda()">👆 Puntear Cuerda</button>
+          </div>
+
+          <!-- Representación Visual -->
+          <div class="sim-visual">
+            <div class="table-top"></div>
+            <div class="clamp">🗜️</div>
+            <div class="string" id="sim-string"></div>
+            <div class="bottle" id="sim-bottle" style="left: 150px;">🍾</div>
+            <div class="pulley">⚙️</div>
+            <div class="weight" id="sim-weight">
+              <!-- Bolsas -->
+              <span style="font-size:12px; font-weight:bold; color:#475569" id="bag-count-label">1 Bolsa</span>
+              <span>🛍️</span>
+            </div>
+          </div>
+
+          <!-- Controles -->
+          <div class="controls">
+            <div class="control-group" id="ctrl-length">
+              <label>Longitud de la cuerda: <span id="lbl-length">100</span> cm</label>
+              <input type="range" id="inp-length" min="20" max="100" step="20" value="100" oninput="updateSim()">
+              <small style="color:#64748b; font-size:11px;">Mueve la botella para cambiar la longitud vibrante.</small>
+            </div>
+            <div class="control-group" id="ctrl-mass" style="opacity: 0.5; pointer-events: none;">
+              <label>Masa suspendida: <span id="lbl-mass">1</span> Bolsa(s)</label>
+              <input type="range" id="inp-mass" min="1" max="4" step="1" value="1" oninput="updateSim()">
+              <small style="color:#64748b; font-size:11px;">Añade bolsas de alpiste (0.454 kg c/u).</small>
+            </div>
+          </div>
+
+          <!-- Salida de Datos -->
+          <div class="data-output">
+            <div class="data-item">Tensión calculada ($T = m \times 9.8$) <span id="out-tension">4.45 N</span></div>
+            <div class="data-item">Frecuencia aprox. <span id="out-freq">220 Hz</span></div>
+            <div class="data-item">Tono Relativo <span id="out-tone" style="color:#d97706">Más bajo</span></div>
+          </div>
+        </div>
+
+        <div class="book-ref">
+          <b>📓 Trabajo en el Cuaderno:</b><br>
+          Utiliza los datos que aparecen en el recuadro verde de arriba para llenar las tablas de las páginas 90 y 91 de tu libro. 
+          <ul>
+            <li>En la <b>Parte I</b>, mueve el deslizador de longitud a 100, 80, 60, 40 y 20 cm, anota el "Tono Relativo" y observa qué pasa al puntear la cuerda.</li>
+            <li>En la <b>Parte II</b>, selecciona la pestaña superior, añade bolsas (1, 2, 3 y 4), anota la tensión calculada ($T_1, T_2...$) y su Tono Relativo.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- FINALIZAR -->
+      <div class="item-card text-center" id="finish-section">
+        <h3 style="margin-bottom:8px; color:#0f766e">¡Has completado el laboratorio!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Una vez que hayas llenado las tablas y escrito tus conclusiones en el cuaderno, puedes dar por finalizada esta clase.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Marcar como completada</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · El sonido en las cuerdas</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  
+  <script>
+    const ACTIVITY_ID = '8cieu3l3c2';
+    const GRADO = 'Octavo';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // ==========================================
+    // LÓGICA DEL SIMULADOR Y AUDIO
+    // ==========================================
+    let mode = 'P1'; // 'P1' o 'P2'
+    let audioCtx = null;
+
+    function setMode(newMode) {
+      mode = newMode;
+      document.getElementById('tab-p1').classList.toggle('active', mode === 'P1');
+      document.getElementById('tab-p2').classList.toggle('active', mode === 'P2');
+      
+      const ctrlLen = document.getElementById('ctrl-length');
+      const ctrlMass = document.getElementById('ctrl-mass');
+      const inpLen = document.getElementById('inp-length');
+      const inpMass = document.getElementById('inp-mass');
+
+      if (mode === 'P1') {
+        ctrlLen.style.opacity = '1';
+        ctrlLen.style.pointerEvents = 'auto';
+        ctrlMass.style.opacity = '0.5';
+        ctrlMass.style.pointerEvents = 'none';
+        inpMass.value = 1; // Fija a 1 bolsa
+        inpLen.value = 100; // Reset length
+      } else {
+        ctrlLen.style.opacity = '0.5';
+        ctrlLen.style.pointerEvents = 'none';
+        ctrlMass.style.opacity = '1';
+        ctrlMass.style.pointerEvents = 'auto';
+        inpLen.value = 80; // Fija a longitud constante
+        inpMass.value = 1; // Reset mass
+      }
+      updateSim();
+    }
+
+    function getRelativeTone(freq) {
+      if (freq <= 250) return "Más bajo";
+      if (freq <= 320) return "Bajo";
+      if (freq <= 450) return "Medio";
+      if (freq <= 650) return "Alto";
+      return "Más alto";
+    }
+
+    function updateSim() {
+      const lenCm = parseInt(document.getElementById('inp-length').value);
+      const bags = parseInt(document.getElementById('inp-mass').value);
+      
+      document.getElementById('lbl-length').innerText = lenCm;
+      document.getElementById('lbl-mass').innerText = bags;
+      document.getElementById('bag-count-label').innerText = bags + (bags === 1 ? ' Bolsa' : ' Bolsas');
+
+      // Visual updates
+      const maxVisualLength = 260; // px aprox to pulley
+      const bottlePos = 30 + (maxVisualLength * (1 - (lenCm/100)));
+      document.getElementById('sim-bottle').style.left = bottlePos + 'px';
+      
+      const weightTop = 70 + (bags * 10);
+      document.getElementById('sim-weight').style.top = weightTop + 'px';
+
+      // Physics Math
+      const massKg = bags * 0.454;
+      const tension = massKg * 9.8;
+      
+      // Base frequency logic: f = (1/2L) * sqrt(T/u)
+      // Let's create a representative audible frequency
+      // At L=100cm (1m) and 1 bag (T=4.45N), let's set base frequency to ~220 Hz (A3)
+      const baseFreq = 220;
+      const baseL = 100;
+      const baseT = 0.454 * 9.8;
+      
+      let currentFreq = baseFreq * (baseL / lenCm) * Math.sqrt(tension / baseT);
+      
+      document.getElementById('out-tension').innerText = tension.toFixed(2) + ' N';
+      document.getElementById('out-freq').innerText = Math.round(currentFreq) + ' Hz';
+      document.getElementById('out-tone').innerText = getRelativeTone(currentFreq);
+    }
+
+    function puntearCuerda() {
+      // Init Audio Context on user gesture
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const freqText = document.getElementById('out-freq').innerText;
+      const freq = parseInt(freqText.replace(' Hz', ''));
+
+      // Visual vibration
+      const stringEl = document.getElementById('sim-string');
+      stringEl.classList.remove('string-vibrate');
+      void stringEl.offsetWidth; // trigger reflow
+      stringEl.classList.add('string-vibrate');
+      setTimeout(() => { stringEl.classList.remove('string-vibrate'); }, 500);
+
+      // Play Sound
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.type = 'triangle'; // Sounds a bit like a plucked string
+      oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      
+      // Envelope (Attack, Decay)
+      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.8, audioCtx.currentTime + 0.05); // Attack
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5); // Decay
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 1.5);
+    }
+
+    // Initialize
+    updateSim();
+
+    // ==========================================
+    // CONTROL DE LA LECCIÓN (Sin Evaluación)
+    // ==========================================
+    (async function() {
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      // Guardar nota simbólica de 10 como completado (esta clase no da puntos)
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        toast('¡Lección completada!', 'Has marcado esta actividad como finalizada.');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      if(btn) {
+        btn.outerHTML = '<div class="alert alert-success text-center" style="justify-content:center">✓ Lección completada.</div>';
+      }
+    }
+  </script>
+</body>
+</html>
