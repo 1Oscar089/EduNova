@@ -30,7 +30,6 @@
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      overflow-x: auto;
     }
     .question-block h3 {
       color: #0f766e;
@@ -38,7 +37,6 @@
       font-size: 16px;
       line-height: 1.5;
     }
-    /* Contenedores para GeoGebra */
     .ggb-container {
       width: 100%;
       margin: 16px 0;
@@ -46,12 +44,16 @@
       border-radius: 8px;
       overflow: hidden;
     }
+    /* Estilos para que las tablas sean responsivas y horizontales */
+    .table-responsive {
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
     table.math-table {
       width: 100%;
-      margin: 12px 0;
+      min-width: 500px; /* Asegura que no se aplaste en móviles */
       border-collapse: collapse;
       background: #fff;
-      min-width: 600px;
     }
     table.math-table th, table.math-table td {
       border: 1px solid #cbd5e1;
@@ -81,7 +83,7 @@
         </div>
       </div>
 
-      <!-- Pantalla de Estado (Si ya fue enviada) -->
+      <!-- Pantalla de Estado -->
       <div id="status-screen" class="hidden">
         <div class="alert alert-success" style="font-size:18px; padding:24px; text-align:center;">
           <div style="font-size:48px; margin-bottom:12px;">✅</div>
@@ -94,7 +96,7 @@
         </div>
       </div>
 
-      <!-- Contenedor Principal de la Tarea -->
+      <!-- Contenedor de la Tarea -->
       <div id="task-container">
         <div class="alert alert-info mb-6">
           <b>Instrucciones:</b><br> 
@@ -103,14 +105,12 @@
           <span style="color:#b45309; font-weight:bold;">⚠️ Nota: El teclado de tu dispositivo está bloqueado. Usa exclusivamente el teclado virtual en pantalla para escribir tus fórmulas matemáticas.</span>
         </div>
 
-        <!-- SECCIÓN DE SUBIDA DE EVIDENCIAS -->
         <div class="item-card mb-6" style="background:#f8fafc; border-color:#cbd5e1;">
           <h2 style="margin-bottom:12px; color:#334155;">📸 1. Evidencias del Cuaderno</h2>
-          <p style="color:#64748b; font-size:14px; margin-bottom:12px;">Sube aquí las fotos de tu procedimiento. Puedes seleccionar varias imágenes a la vez.</p>
+          <p style="color:#64748b; font-size:14px; margin-bottom:12px;">Sube aquí las fotos de tu procedimiento.</p>
           <input type="file" id="tarea-file" accept="image/*" multiple style="width:100%; padding:10px; background:#fff; border:2px dashed #94a3b8; border-radius:8px;" />
         </div>
 
-        <!-- SECCIÓN DEL FORMULARIO -->
         <h2 style="margin-bottom:16px; color:#0f766e;">💻 2. Formulario Digital</h2>
 
         <!-- Pregunta 1 -->
@@ -118,7 +118,7 @@
           <h3>1. Un determinado día, Ana pagó 3.6 dólares por 3 euros, y Carlos pagó 8.4 dólares por 7 euros.</h3>
           <div style="margin-bottom:16px;">
             <label>a) Encuentra la ecuación de la recta que nos da el precio en euros (<i>y</i>), de <i>x</i> dólares.</label><br>
-            <math-field id="q1a" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q1a" class="math-field-box"></math-field>
           </div>
           <div style="margin-bottom:16px;">
             <label>b) Represéntala gráficamente usando GeoGebra:</label>
@@ -126,7 +126,7 @@
           </div>
           <div style="margin-bottom:12px;">
             <label>c) ¿Cuántos dólares habrían pagado por 15 euros?</label><br>
-            <math-field id="q1c" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q1c" class="math-field-box"></math-field>
           </div>
         </div>
 
@@ -134,8 +134,8 @@
         <div class="question-block">
           <h3>2. Un algodonero recoge 30 kg por hora, y demora media hora preparándose. Ecuación: <i>y</i> = 30<i>x</i> - 15</h3>
           <div style="margin-bottom:12px;">
-            <label>a) Realiza una tabla para la función y grafícala:</label>
-            <div style="overflow-x:auto;">
+            <label>a) Realiza una tabla para la función:</label>
+            <div class="table-responsive">
               <table class="math-table">
                 <tr>
                   <th><i>x</i> (horas)</th>
@@ -153,11 +153,12 @@
                 </tr>
               </table>
             </div>
+            <label>Grafícala en el plano:</label>
             <div id="ggb-element2" class="ggb-container"></div>
           </div>
           <div style="margin-bottom:12px;">
             <label>b) ¿Cuántos kg de algodón se recogerán en una jornada de 8 horas?</label><br>
-            <math-field id="q2b" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q2b" class="math-field-box"></math-field>
           </div>
         </div>
 
@@ -166,11 +167,11 @@
           <h3>3. Piscina: la altura aumenta 15 cm por hora. Inicialmente había 12 cm de agua.</h3>
           <div style="margin-bottom:16px;">
             <label>a) ¿Cuál será la altura alcanzada por el agua después de 3 horas?</label><br>
-            <math-field id="q3a" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q3a" class="math-field-box"></math-field>
           </div>
           <div style="margin-bottom:12px;">
             <label>b) Escribe la altura <i>y</i> del agua después de <i>x</i> horas (La ecuación de la función).</label><br>
-            <math-field id="q3b" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q3b" class="math-field-box"></math-field>
           </div>
         </div>
 
@@ -179,15 +180,15 @@
           <h3>4. Para la función de la gráfica de tu libro (que pasa por los puntos (0, -1) y (-1, 1)), realiza lo siguiente:</h3>
           <div style="margin-bottom:16px;">
             <label>a) Identifica el intercepto (el valor en <i>y</i>).</label><br>
-            <math-field id="q4a" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q4a" class="math-field-box"></math-field>
           </div>
           <div style="margin-bottom:16px;">
             <label>b) Determina la razón de cambio.</label><br>
-            <math-field id="q4b" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q4b" class="math-field-box"></math-field>
           </div>
           <div style="margin-bottom:12px;">
             <label>c) Escribe la ecuación de la función.</label><br>
-            <math-field id="q4c" class="math-field-box" virtual-keyboard-mode="onfocus"></math-field>
+            <math-field id="q4c" class="math-field-box"></math-field>
           </div>
         </div>
 
@@ -198,9 +199,9 @@
           <label>Traza las 8 rectas aquí:</label>
           <div id="ggb-element5" class="ggb-container" style="height: 500px;"></div>
           
-          <label>Completa la tabla (horizontal):</label>
-          <div style="overflow-x:auto;">
-            <table class="math-table" style="font-size:14px; min-width:800px;">
+          <label>Completa la tabla:</label>
+          <div class="table-responsive">
+            <table class="math-table" style="font-size:14px;">
               <tr>
                 <th>Función</th>
                 <td><b>a)</b> <i>y</i> = 3<i>x</i></td>
@@ -261,36 +262,45 @@
     const MATERIA = 'Matematica';
     const TIPO = 'tarea';
     
+    // Inicializar lógica de login y UI
     const u = requireLogin();
-    renderUserBar(document.getElementById('userbar'));
+    if(u) { renderUserBar(document.getElementById('userbar')); }
 
-    // BLOQUEO ESTRICTO DE TECLADO FÍSICO EN MATHLIVE
-    document.addEventListener("DOMContentLoaded", () => {
+    // ==========================================
+    // BLOQUEO ESTRICTO DEL TECLADO FÍSICO
+    // ==========================================
+    function applyKeyboardBlock() {
       document.querySelectorAll('math-field').forEach(mf => {
+        // Activamos siempre el modo teclado virtual
+        mf.setOptions({ virtualKeyboardMode: "onfocus" });
+        
         mf.addEventListener('keydown', (e) => {
-          // Permitimos solo teclas de navegación y borrado. Letras, números y símbolos se bloquean.
+          // Bloqueamos TODO excepto las teclas esenciales de control/borrado
           if(!['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(e.key)){
             e.preventDefault();
             e.stopPropagation();
-            toast('Teclado Bloqueado', 'Usa los botones del teclado en pantalla.', 'warn');
           }
         });
       });
-    });
+    }
 
+    // ==========================================
     // INICIALIZACIÓN DE GEOGEBRA
+    // ==========================================
     window.onload = function() {
-      // Función para inicializar un applet de forma responsiva
+      // Aplicamos el bloqueo del teclado justo al cargar la página
+      applyKeyboardBlock();
+
       function initGGB(idElement, appletId, height) {
         const container = document.getElementById(idElement);
         if(!container) return;
         
-        let width = container.clientWidth || 800; // Tomar ancho del contenedor
+        let w = container.clientWidth || 600;
         
         var params = {
           "id": appletId,
           "appName": "graphing",
-          "width": width,
+          "width": w,
           "height": height,
           "showToolBar": true,
           "showAlgebraInput": true,
@@ -307,7 +317,7 @@
       initGGB('ggb-element5', 'ggbApplet5', 500);
     };
 
-    // FUNCIÓN AUXILIAR PARA EVALUAR GEOGEBRA
+    // FUNCIÓN PARA VERIFICAR GRÁFICAS DE GEOGEBRA
     function chequearEcuacionGGB(appletName, targetStrings) {
       const app = window[appletName];
       if (!app) return 0;
@@ -316,22 +326,20 @@
       let aciertos = 0;
       
       objNames.forEach(obj => {
-        // Obtenemos el string de la ecuación, quitamos espacios y pasamos a minúsculas
         let ec = app.getValueString(obj).replace(/\s/g, '').toLowerCase();
-        
-        // Revisamos si la ecuación coincide con alguno de nuestros targets
         for (let target of targetStrings) {
           if (ec.includes(target)) {
             aciertos++;
-            break; // Si encontró uno, pasamos al siguiente objeto de GeoGebra
+            break; 
           }
         }
       });
       return aciertos;
     }
 
-    // Comprobar si ya la entregó
+    // Comprobar estado previo
     (async function checkStatus() {
+      if(!u) return;
       showLoader('Verificando estado...');
       const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
       hideLoader();
@@ -370,7 +378,6 @@
         let q1a = cleanLatex(document.getElementById('q1a').value);
         if (q1a.includes('y=5/6x') || q1a.includes('y=\\frac{5}{6}x') || q1a.includes('y=0.83x')) notaFinal += 0.5;
         
-        // Verificar en GeoGebra 1
         if (chequearEcuacionGGB('ggbApplet1', ['5/6x', '0.83x', '5x/6']) > 0) notaFinal += 0.5;
 
         let q1c = cleanLatex(document.getElementById('q1c').value);
@@ -382,7 +389,6 @@
           if (cleanLatex(document.getElementById(`q2_t${i}`).value) === tAns[i-1]) notaFinal += 0.1;
         }
 
-        // Verificar en GeoGebra 2
         if (chequearEcuacionGGB('ggbApplet2', ['30x-15']) > 0) notaFinal += 0.3;
 
         let q2b = cleanLatex(document.getElementById('q2b').value);
@@ -400,21 +406,13 @@
         if (q4c.includes('-2x-1') || q4c.includes('-1-2x')) notaFinal += 1.0;
 
         // P5 (2.0 pts)
-        // A. Revisión de las 8 gráficas en GeoGebra 5 (0.8 pts -> 0.1 por c/u)
         const targetsQ5 = ['3x', '3x+1', '3x-1', '-3x+1', '-3x-1', '3x+2', '3x+3', '3x+5'];
         let aciertosGGB5 = chequearEcuacionGGB('ggbApplet5', targetsQ5);
         notaFinal += Math.min(8, aciertosGGB5) * 0.1;
 
-        // B. Revisión de la Tabla Horizontal (0.8 pts -> 0.05 por celda, 16 celdas)
         const tableAnswers = [
-          { i: '0',  r: '3' },   // a
-          { i: '1',  r: '3' },   // b
-          { i: '-1', r: '3' },   // c
-          { i: '1',  r: '-3' },  // d
-          { i: '-1', r: '-3' },  // e
-          { i: '2',  r: '3' },   // f
-          { i: '3',  r: '3' },   // g
-          { i: '5',  r: '3' }    // h
+          { i: '0',  r: '3' }, { i: '1',  r: '3' }, { i: '-1', r: '3' }, { i: '1',  r: '-3' },
+          { i: '-1', r: '-3' }, { i: '2',  r: '3' }, { i: '3',  r: '3' }, { i: '5',  r: '3' }
         ];
         
         ['a','b','c','d','e','f','g','h'].forEach((letter, index) => {
@@ -424,10 +422,8 @@
           if (ansII === tableAnswers[index].r) notaFinal += 0.05;
         });
 
-        // C. Conclusión (0.4 pts)
         if (document.getElementById('q5_conclusion').value.trim().length > 10) notaFinal += 0.4;
 
-        // Limitar la nota máxima a 10
         notaFinal = Math.min(10, Math.max(0, notaFinal));
 
         // --- SUBIR IMÁGENES ---

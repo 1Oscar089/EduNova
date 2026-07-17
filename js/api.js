@@ -1,10 +1,5 @@
 // EduNova — Cliente API (habla con Google Apps Script)
 // =====================================================
-// La URL del Apps Script se define en config.js (variable global
-// APPS_SCRIPT_URL). Como config.js viaja con la web en GitHub Pages,
-// todos los dispositivos (celular, tablet, PC) leen la misma URL.
-// Si la variable no existe o esta vacia, las llamadas fallaran con
-// un mensaje claro.
 
 function getApiUrl() {
   try {
@@ -23,7 +18,7 @@ async function api(action, params) {
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // evita preflight CORS
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(params)
     });
     const data = await res.json();
@@ -64,7 +59,8 @@ const Tareas = {
   async list(grado, materia) { return api('getTareas', { grado, materia }); },
   async crear(t) { return api('crearTarea', t); },
   async editar(t) { return api('editarTarea', t); },
-  async eliminar(id) { return api('eliminarTarea', { id }); }
+  async eliminar(id) { return api('eliminarTarea', { id }); },
+  async uploadEvidence(data) { return api('uploadTarea', data); }
 };
 
 // ===== Examenes =====
@@ -115,19 +111,16 @@ const Notas = {
   async get(grado, materia, tipo, nie, activityId) { return api('getNota', { grado, materia, tipo, nie, activityId }); }
 };
 
-// ===== Juegos (reporte de puntos desde el HTML del juego) =====
+// ===== Juegos (API) =====
 const JuegosAPI = {
   async registrarPuntos(nie, puntos) { return api('registrarPuntosJuego', { nie, puntos }); }
 };
 
 // ===== Utilidades =====
-// Normaliza el nombre: MAYÚSCULAS, sin tildes, Ñ permitida, espacios permitidos.
-// NO hace trim() aqui para no borrar el espacio mientras el usuario escribe.
-// El trim se hace al validar/guardar (ver isValidNombre y doRegister).
 function normalizeNombre(v) {
-  return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-ZÑ\s]/g, '').replace(/\s+/g, ' ');
+  return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z \s]/g, '').replace(/\s+/g, ' ');
 }
-function isValidNombre(v) { return /^[A-ZÑ]+( [A-ZÑ]+)+$/.test(v.trim()); }
+function isValidNombre(v) { return /^[A-Z ]+( [A-Z ]+)+$/.test(v.trim()); }
 function isValidNie(v) { return /^\d{6,}$/.test(v.trim()); }
 function primerasDosPalabras(n) { return String(n || '').trim().split(/\s+/).slice(0, 2).join(' '); }
 function iniciales(n) { return String(n || '').trim().split(/\s+/).slice(0, 2).map(w => w[0] || '').join(''); }
@@ -137,7 +130,7 @@ function toast(title, desc, type) {
   let wrap = document.querySelector('.toast-wrap');
   if (!wrap) { wrap = document.createElement('div'); wrap.className = 'toast-wrap'; document.body.appendChild(wrap); }
   const t = document.createElement('div');
-  t.className = 'toast' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : '');
+  t.className = 'toast' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : type === 'success' ? ' success' : '');
   t.innerHTML = '<div class="t">' + escapeHtml(title) + '</div>' + (desc ? '<div class="d">' + escapeHtml(desc) + '</div>' : '');
   wrap.appendChild(t);
   setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 300); }, 3500);
@@ -165,13 +158,11 @@ function openModal(html, opts) {
 
 function requireLogin() {
   const u = Auth.getCurrent();
-  if (!u) { window.location.href = 'index.html'; return null; }
+  if (!u) { window.location.href = '../../index.html'; return null; }
   return u;
 }
 
 // ===== Loading helpers =====
-// Pone un boton en estado "cargando": lo deshabilita y le pone un spinner.
-// Devuelve una funcion para restaurar el boton al estado original.
 function btnLoading(btn, loadingText) {
   if (!btn) return () => {};
   const original = btn.innerHTML;
@@ -186,7 +177,6 @@ function btnLoading(btn, loadingText) {
   };
 }
 
-// Muestra un overlay de carga global (para cuando se navega entre vistas)
 let _globalLoader = null;
 function showLoader(text) {
   hideLoader();
@@ -198,12 +188,3 @@ function showLoader(text) {
 function hideLoader() {
   if (_globalLoader) { _globalLoader.remove(); _globalLoader = null; }
 }
-const Tareas = {
-  async list(grado, materia) { return api('getTareas', { grado, materia }); },
-  async crear(t) { return api('crearTarea', t); },
-  async editar(t) { return api('editarTarea', t); },
-  async eliminar(id) { return api('eliminarTarea', { id }); },
-  
-  // ¡AÑADE ESTA LÍNEA AQUÍ!
-  async uploadEvidence(data) { return api('uploadTarea', data); }
-};
