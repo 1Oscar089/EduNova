@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I Produce · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗣️</text></svg>" />
+  <style>
+    * { box-sizing: border-box; }
+    /* ===== Tooltip ===== */
+    .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; color: inherit; }
+    .tt:hover::after {
+      content: attr(data-es); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+    .tt:hover::before {
+      content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
+    }
+
+    /* ===== Phase tabs ===== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
+      border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
+      color: #9ca3af; transition: all .2s; text-align: center; font-family: inherit;
+    }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,.3); }
+    .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
+    .phase-tab.done::after { content: ' ✓'; }
+    .phase-tab.locked { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    /* ===== Inputs & Elements ===== */
+    .section-card { background: #fff; border-radius: 16px; border: 1px solid #d1fae5; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .phase { animation: fadeIn .3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .input-line { 
+      border: none; 
+      border-bottom: 2px solid #0d9488; 
+      background: transparent; 
+      font-family: inherit; 
+      font-size: 16px; 
+      color: #0f766e; 
+      font-weight: 600; 
+      padding: 4px 8px; 
+      outline: none; 
+      width: 250px; 
+    }
+    .input-line:focus { border-bottom-color: #f59e0b; }
+    
+    .whiteboard {
+      background: #ffffff;
+      border: 4px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .whiteboard::before {
+      content: ''; position: absolute; bottom: 8px; right: 20px;
+      width: 40px; height: 8px; border-radius: 4px; background: #ef4444; box-shadow: 50px 0 0 #22c55e;
+    }
+    
+    .tf-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; }
+    .tf-row:last-child { border-bottom: none; }
+    .tf-options { display: flex; gap: 8px; }
+    .tf-btn { padding: 6px 12px; border: 2px solid #d1fae5; border-radius: 8px; background: #fff; color: #0f766e; font-weight: 700; cursor: pointer; }
+    .tf-btn.selected { background: #0d9488; color: #fff; border-color: #0d9488; }
+    .tf-btn.correct { background: #059669; color: #fff; border-color: #059669; pointer-events: none; }
+    .tf-btn.wrong { background: #e11d48; color: #fff; border-color: #e11d48; animation: shake .3s; }
+
+    .writing-area {
+      width: 100%;
+      height: 150px;
+      border: 2px solid #d1fae5;
+      border-radius: 12px;
+      padding: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      resize: vertical;
+      outline: none;
+      color: #334155;
+    }
+    .writing-area:focus { border-color: #0d9488; }
+
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ede9fe;color:#7c3aed">🗣️</div>
+          <div>
+            <h1>I Produce</h1>
+            <p>📘 English · <span class="tt" data-es="Unidad 3">Unit 3</span> · <span class="tt" data-es="Lección 4 (Clase 3)">Lesson 4 (Class 3)</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</b>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span> —
+        <b>1️⃣ Pre</b>, <b>2️⃣ During</b>, <b>3️⃣ Post</b>.
+        <span class="tt" data-es="Completa cada parte para desbloquear la siguiente. Tu progreso se guardará.">Complete each phase to unlock the next one. Your progress will be saved.</span>
+      </div>
+
+      <div class="phase-tabs">
+        <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
+        <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')">2️⃣ During</button>
+        <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')">3️⃣ Post</button>
+      </div>
+
+      <!-- ============ PRE ============ -->
+      <div id="phase-pre" class="phase">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="¡El juego de la cadena!">The Chain Game!</span> 🔗</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Escribe oraciones usando las indicaciones. Imagina que se las dirás a un compañero de clase.">Create sentences using the prompts. Imagine you are saying them to a classmate.</span>
+          </p>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; line-height:2.5;">
+            <b>1.</b> In my leisure time, I <input type="text" id="pre-input-1" class="input-line" placeholder="e.g. read comics" /> . <br>
+            <b>2.</b> I don't <input type="text" id="pre-input-2" class="input-line" placeholder="e.g. play chess" /> in my free time.
+          </div>
+
+          <div id="pre-feedback" class="hidden" style="margin-top:16px; background:#fffbeb; border-left:4px solid #f59e0b; padding:12px; border-radius:0 8px 8px 0;">
+            <p style="color:#b45309; font-weight:bold; margin-bottom:4px;"><span class="tt" data-es="Tu compañero reportaría tus respuestas así:">Your classmate would report your answers like this:</span></p>
+            <p style="color:#4b5563; font-style:italic;" id="pre-feedback-text"></p>
+          </div>
+          
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-primary" id="btn-pre-check" onclick="validatePre()">🗣️ <span class="tt" data-es="Compartir oraciones">Share sentences</span></button>
+            <button class="btn btn-emerald hidden" id="btn-pre-next" onclick="finishPre()">➡️ <span class="tt" data-es="Continuar">Continue</span></button>
+          </div>
+          <p id="pre-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px; color:#e11d48;"></p>
+        </div>
+      </div>
+
+      <!-- ============ DURING ============ -->
+      <div id="phase-during" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="Las actividades favoritas de mi mejor amigo">My Best Friend's Favorite Free-time Activities</span> 🧑‍🏫</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Lee el texto en la pizarra. Luego, marca las oraciones como Verdaderas (T) o Falsas (F).">Read the text on the board. Then, mark the statements as True (T) or False (F).</span>
+          </p>
+          
+          <div class="whiteboard" style="margin-bottom:24px;">
+            <h3 style="color:#7c3aed; text-align:center; margin-bottom:16px;">My Best Friend's Favorite Free-time Activities</h3>
+            <p style="color:#334155; line-height:1.8; margin-bottom:12px;">
+              My best friend's name is <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">Marvin</u>. He is 29 years old and he is <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">a teacher</u>.
+            </p>
+            <p style="color:#334155; line-height:1.8; margin-bottom:12px;">
+              In his leisure time, Marvin <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">watches series</u>, <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">does exercise</u>, and <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">plays the guitar</u>.
+            </p>
+            <p style="color:#334155; line-height:1.8;">
+              Marvin <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">doesn't play baseball</u>, but he <u style="text-decoration-color:#7c3aed; text-decoration-thickness:2px;">plays volleyball when he goes to the beach with his friends and pets</u>.
+            </p>
+          </div>
+
+          <div id="tf-quiz">
+            <div class="tf-row">
+              <span style="color:#4b5563; font-weight:600;">1. Marvin does exercise in his free time.</span>
+              <div class="tf-options" data-q="1">
+                <button class="tf-btn" onclick="selectTF(1, 'T')">T (True)</button>
+                <button class="tf-btn" onclick="selectTF(1, 'F')">F (False)</button>
+              </div>
+            </div>
+            <div class="tf-row">
+              <span style="color:#4b5563; font-weight:600;">2. He can play a musical instrument.</span>
+              <div class="tf-options" data-q="2">
+                <button class="tf-btn" onclick="selectTF(2, 'T')">T (True)</button>
+                <button class="tf-btn" onclick="selectTF(2, 'F')">F (False)</button>
+              </div>
+            </div>
+            <div class="tf-row">
+              <span style="color:#4b5563; font-weight:600;">3. He plays baseball with his friends and pets.</span>
+              <div class="tf-options" data-q="3">
+                <button class="tf-btn" onclick="selectTF(3, 'T')">T (True)</button>
+                <button class="tf-btn" onclick="selectTF(3, 'F')">F (False)</button>
+              </div>
+            </div>
+            <div class="tf-row">
+              <span style="color:#4b5563; font-weight:600;">4. He plays volleyball at the beach.</span>
+              <div class="tf-options" data-q="4">
+                <button class="tf-btn" onclick="selectTF(4, 'T')">T (True)</button>
+                <button class="tf-btn" onclick="selectTF(4, 'F')">F (False)</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:center; margin-top:24px;">
+            <button class="btn btn-primary" onclick="validateDuring()">✅ <span class="tt" data-es="Comprobar respuestas">Check answers</span></button>
+          </div>
+          <p id="during-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ POST ============ -->
+      <div id="phase-post" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">3️⃣ Post: <span class="tt" data-es="¡Ahora hazlo tú!">Now You Do It!</span> ✍️</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Crea una descripción similar sobre las actividades de tiempo libre favoritas de tu mejor amigo(a).">Create a similar description of your best friend's favorite free-time activities.</span>
+          </p>
+
+          <div style="background:#fffbeb; border-left:4px solid #f59e0b; padding:12px; border-radius:0 8px 8px 0; margin-bottom:16px;">
+            <span class="tt" data-es="Recuerda usar el presente simple para la tercera persona del singular (agrega -s o -es a los verbos) y 'doesn't' para oraciones negativas.">Remember to use the simple present tense for the third person singular (add <b>-s</b> or <b>-es</b>) and <b>doesn't</b> for negative statements!</span>
+          </div>
+
+          <textarea id="post-writing" class="writing-area" placeholder="My best friend's name is... In his/her leisure time, he/she... He/she doesn't..."></textarea>
+
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-primary" onclick="validatePost()">✅ <span class="tt" data-es="Finalizar escritura">Finish writing</span></button>
+          </div>
+          <p id="post-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ FINISH ============ -->
+      <div id="phase-finish" class="phase hidden text-center">
+        <div class="section-card" style="background:#f0fdf4; border-color:#059669;">
+          <div style="font-size:64px; margin-bottom:12px;">🏆</div>
+          <h2 style="color:#059669; margin-bottom:8px;"><span class="tt" data-es="¡Excelente trabajo!">Excellent job!</span></h2>
+          <p style="color:#4b5563; margin-bottom:20px;">
+            <span class="tt" data-es="Has practicado cómo producir oraciones afirmativas y negativas en presente simple.">You have practiced producing affirmative and negative statements in the simple present tense.</span>
+          </p>
+          <button class="btn btn-outline" onclick="resetProgress()">🔄 <span class="tt" data-es="Reiniciar lección">Restart lesson</span></button>
+          <a href="../../estudiante.html" class="btn btn-primary">🏠 <span class="tt" data-es="Volver al inicio">Back home</span></a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · English · I Produce</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '8ingu3l4c3';
+    const LOCAL_KEY = 'edunova_' + ACTIVITY_ID + '_progress';
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    let progress = parseInt(localStorage.getItem(LOCAL_KEY) || '0');
+
+    // Answers for During Phase (T, T, F, T)
+    const tfAnswers = { 1: 'T', 2: 'T', 3: 'F', 4: 'T' };
+    let userTfAnswers = {};
+
+    function init() {
+      applyProgress();
+    }
+
+    function applyProgress() {
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active', 'done'));
+      
+      if (progress >= 1) {
+        document.getElementById('tab-pre').classList.add('done');
+        document.getElementById('tab-during').classList.remove('locked');
+      }
+      if (progress >= 2) {
+        document.getElementById('tab-during').classList.add('done');
+        document.getElementById('tab-post').classList.remove('locked');
+      }
+      if (progress >= 3) {
+        document.getElementById('tab-post').classList.add('done');
+        document.getElementById('phase-finish').classList.remove('hidden');
+        document.getElementById('phase-pre').classList.add('hidden');
+        document.getElementById('phase-during').classList.add('hidden');
+        document.getElementById('phase-post').classList.add('hidden');
+        return; 
+      }
+
+      if (progress === 0) showPhase('pre');
+      else if (progress === 1) showPhase('during');
+      else if (progress === 2) showPhase('post');
+    }
+
+    window.showPhase = function(phase) {
+      if (progress === 3) return; 
+      
+      document.querySelectorAll('.phase-tab').forEach(t => {
+        if (!t.classList.contains('done')) t.classList.remove('active');
+      });
+      document.querySelectorAll('.phase').forEach(p => {
+        if (p.id !== 'phase-finish') p.classList.add('hidden');
+      });
+      
+      document.getElementById('phase-' + phase).classList.remove('hidden');
+      const tab = document.getElementById('tab-' + phase);
+      if(tab) tab.classList.add('active');
+    };
+
+    // --- PRE PHASE ---
+    window.validatePre = function() {
+      const inp1 = document.getElementById('pre-input-1').value.trim();
+      const inp2 = document.getElementById('pre-input-2').value.trim();
+      const msg = document.getElementById('pre-msg');
+
+      if (!inp1 || !inp2) {
+        msg.innerHTML = '<span class="tt" data-es="Por favor, completa ambos espacios.">Please fill in both blanks.</span>';
+        return;
+      }
+
+      msg.innerHTML = '';
+      
+      // Simple logic to add 's' if needed for the simulation (not perfect, but illustrative)
+      let verb1 = inp1.split(' ')[0];
+      let rest1 = inp1.substring(verb1.length);
+      let verb3rd = verb1 + (verb1.endsWith('o') || verb1.endsWith('ch') || verb1.endsWith('sh') || verb1.endsWith('s') || verb1.endsWith('x') ? 'es' : 's');
+      if(verb1.endsWith('y')) verb3rd = verb1.slice(0,-1) + 'ies';
+
+      document.getElementById('pre-feedback-text').innerHTML = `
+        "In his/her leisure time, my classmate <b>${verb3rd}${rest1}</b>. He/She <b>doesn't ${inp2}</b> in his/her free time."
+      `;
+      
+      document.getElementById('pre-feedback').classList.remove('hidden');
+      document.getElementById('btn-pre-check').classList.add('hidden');
+      document.getElementById('btn-pre-next').classList.remove('hidden');
+    };
+
+    window.finishPre = function() {
+      progress = Math.max(progress, 1);
+      localStorage.setItem(LOCAL_KEY, progress);
+      applyProgress();
+      showPhase('during');
+    };
+
+    // --- DURING PHASE ---
+    window.selectTF = function(q, val) {
+      const container = document.querySelector(`.tf-options[data-q="${q}"]`);
+      container.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('selected'));
+      event.target.classList.add('selected');
+      userTfAnswers[q] = val;
+    };
+
+    window.validateDuring = function() {
+      let allCorrect = true;
+      const msg = document.getElementById('during-msg');
+
+      if (Object.keys(userTfAnswers).length < 4) {
+        msg.innerHTML = '❌ <span class="tt" data-es="Por favor, responde todas las preguntas.">Please answer all questions.</span>';
+        msg.style.color = '#e11d48';
+        return;
+      }
+
+      for (let i = 1; i <= 4; i++) {
+        const container = document.querySelector(`.tf-options[data-q="${i}"]`);
+        const selectedBtn = container.querySelector('.selected');
+        
+        if (userTfAnswers[i] === tfAnswers[i]) {
+          selectedBtn.classList.remove('wrong');
+          selectedBtn.classList.add('correct');
+        } else {
+          selectedBtn.classList.add('wrong');
+          setTimeout(() => selectedBtn.classList.remove('wrong'), 400);
+          allCorrect = false;
+        }
+      }
+
+      if (allCorrect) {
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Perfecto! Has desbloqueado la siguiente sección.">Perfect! You unlocked the next section.</span>';
+        msg.style.color = '#059669';
+        progress = Math.max(progress, 2);
+        localStorage.setItem(LOCAL_KEY, progress);
+        setTimeout(() => {
+          applyProgress();
+          showPhase('post');
+        }, 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Revisa el texto de nuevo e intenta otra vez.">Check the text again and try again.</span>';
+        msg.style.color = '#e11d48';
+      }
+    };
+
+    // --- POST PHASE ---
+    window.validatePost = function() {
+      const text = document.getElementById('post-writing').value.trim();
+      const msg = document.getElementById('post-msg');
+
+      if (text.split(' ').length < 10) {
+        msg.innerHTML = '❌ <span class="tt" data-es="Por favor, escribe un poco más. Intenta usar al menos 10 palabras.">Please write a bit more. Try to use at least 10 words.</span>';
+        msg.style.color = '#e11d48';
+        return;
+      }
+
+      msg.innerHTML = '✅ <span class="tt" data-es="¡Gran trabajo!">Great job!</span>';
+      msg.style.color = '#059669';
+      progress = 3;
+      localStorage.setItem(LOCAL_KEY, progress);
+      setTimeout(() => applyProgress(), 1000);
+    };
+
+    window.resetProgress = function() {
+      localStorage.removeItem(LOCAL_KEY);
+      location.reload(); 
+    };
+
+    init();
+  </script>
+</body>
+</html>
