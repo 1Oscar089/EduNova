@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistemática y cladística · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌳</text></svg>" />
+  <style>
+    .concept-box {
+      background: #f8fafc;
+      border-left: 4px solid #0d9488;
+      padding: 16px;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 16px;
+    }
+    .concept-title {
+      font-weight: 800;
+      color: #0f766e;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    .cladogram-container {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      overflow-x: auto;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .book-ref {
+      background: #fffbeb;
+      border: 2px dashed #f59e0b;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+    .book-ref h3 {
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .book-ref ul {
+      margin-left: 24px;
+      color: #92400e;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ccfbf1;color:#0f766e">🌳</div>
+          <div>
+            <h1>Sistemática y cladística</h1>
+            <p>🔬 Ciencia y Tecnología · Unidad 3 · Lección 4</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-warn mb-6">
+        <b>📝 Instrucción importante:</b> Lee detenidamente la siguiente información y <b>copia todos los conceptos y esquemas en tu cuaderno</b>. Te servirán para resolver tu cuaderno de trabajo al final de la clase.
+      </div>
+
+      <!-- SECCIÓN 1: SISTEMÁTICA Y CLADÍSTICA -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#0f766e">Sistemas de clasificación filogenética</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:16px">
+          Los sistemas de clasificación filogenética buscan reflejar las relaciones evolutivas de los seres vivos. Para lograr esto, los científicos utilizan una herramienta analítica muy importante:
+        </p>
+
+        <div class="concept-box">
+          <div class="concept-title">🔍 Cladística</div>
+          <p style="color:#4b5563; line-height:1.5; margin:0">
+            Es un enfoque de clasificación que busca agrupar a los organismos basándose en su ancestro común más reciente. Los grupos formados mediante este método se llaman <b>clados</b>.
+          </p>
+        </div>
+
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:16px">
+          El propósito de la cladística es que los grupos taxonómicos reflejen a estos clados y mostrar sus relaciones evolutivas en diagramas de árbol, los cuales reciben el nombre de <b>cladogramas</b>.
+        </p>
+
+        <div class="concept-box" style="border-left-color: #3b82f6;">
+          <div class="concept-title" style="color: #1d4ed8;">🌲 Dendrogramas y Árboles Filogenéticos</div>
+          <p style="color:#4b5563; line-height:1.5; margin:0">
+            Los <b>dendrogramas</b> o diagramas de árbol son gráficos que organizan los datos en categorías que se van dividiendo. En sistemática, estos diagramas se conocen como <b>árboles filogenéticos</b>, pues muestran filogenias (la historia evolutiva y conexiones entre linajes).
+          </p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: ANATOMÍA DE UN CLADOGRAMA -->
+      <div class="item-card mb-6">
+        <h2 style="margin-bottom:12px; color:#059669">Estructura de un Cladograma</h2>
+        <p style="color:#4b5563; line-height:1.6; margin-bottom:12px">
+          La sistemática filogenética se sustenta en que todos los seres vivos tienen un origen común. En un cladograma, cada parte del dibujo tiene un significado evolutivo:
+        </p>
+        
+        <ul style="color:#4b5563; line-height:1.6; margin-left:24px; margin-bottom:16px">
+          <li><b>Nodo:</b> Es el sitio de donde surge cada rama del árbol. Representa un ancestro común entre el individuo que surge de esa rama y el resto de individuos que están más arriba en el árbol.</li>
+          <li><b>Raíz:</b> Es la línea de donde comienza el árbol. Representa el ancestro común entre todos los individuos del diagrama.</li>
+          <li><b>Clado:</b> Cada rama termina en un clado, un grupo que incluye a un ancestro y todos sus descendientes.</li>
+        </ul>
+
+        <div class="cladogram-container">
+          <h3 style="color:#0f766e; margin-bottom:16px; font-size:16px;">Cladograma simplificado de los animales</h3>
+          <p style="font-size:12px; color:#64748b; margin-bottom:16px;">Este diagrama muestra el parentesco y algunos rasgos clave evolutivos.</p>
+          
+          <!-- Cladogram SVG representation -->
+          <svg viewBox="0 0 600 300" width="100%" style="max-width: 600px;">
+            <!-- Eje principal (Raíz a extremo superior derecho) -->
+            <line x1="50" y1="250" x2="500" y2="100" stroke="#1e293b" stroke-width="4" />
+            
+            <!-- Ramas -->
+            <line x1="150" y1="216" x2="100" y2="100" stroke="#1e293b" stroke-width="4" /> <!-- Hongo -->
+            <line x1="250" y1="183" x2="200" y2="100" stroke="#1e293b" stroke-width="4" /> <!-- Mariposa -->
+            <line x1="350" y1="150" x2="300" y2="100" stroke="#1e293b" stroke-width="4" /> <!-- Pez -->
+            <line x1="450" y1="116" x2="400" y2="100" stroke="#1e293b" stroke-width="4" /> <!-- Lagartija -->
+            
+            <!-- Emojis (Organismos) -->
+            <text x="35" y="80" font-size="28">🦠</text>
+            <text x="25" y="100" font-size="12" fill="#475569" font-weight="bold">Bacteria</text>
+
+            <text x="85" y="80" font-size="28">🍄</text>
+            <text x="80" y="100" font-size="12" fill="#475569" font-weight="bold">Hongo</text>
+
+            <text x="185" y="80" font-size="28">🦋</text>
+            <text x="175" y="100" font-size="12" fill="#475569" font-weight="bold">Mariposa</text>
+
+            <text x="285" y="80" font-size="28">🐟</text>
+            <text x="290" y="100" font-size="12" fill="#475569" font-weight="bold">Pez</text>
+
+            <text x="385" y="80" font-size="28">🦎</text>
+            <text x="380" y="100" font-size="12" fill="#475569" font-weight="bold">Lagartija</text>
+
+            <text x="485" y="80" font-size="28">🐁</text>
+            <text x="485" y="100" font-size="12" fill="#475569" font-weight="bold">Ratón</text>
+
+            <!-- Marcas de características (Rasgos derivados) -->
+            <rect x="90" y="230" width="30" height="6" fill="#e11d48" transform="rotate(-18 105 233)" />
+            <text x="90" y="260" font-size="12" fill="#e11d48" font-weight="bold">Célula eucariota</text>
+
+            <rect x="190" y="197" width="30" height="6" fill="#e11d48" transform="rotate(-18 205 200)" />
+            <text x="180" y="225" font-size="12" fill="#e11d48" font-weight="bold">Tejidos animales</text>
+
+            <rect x="290" y="163" width="30" height="6" fill="#e11d48" transform="rotate(-18 305 166)" />
+            <text x="290" y="195" font-size="12" fill="#e11d48" font-weight="bold">Cráneo</text>
+
+            <rect x="390" y="130" width="30" height="6" fill="#e11d48" transform="rotate(-18 405 133)" />
+            <text x="385" y="160" font-size="12" fill="#e11d48" font-weight="bold">Pulmones</text>
+
+            <rect x="475" y="101" width="30" height="6" fill="#e11d48" transform="rotate(-18 490 104)" />
+            <text x="490" y="130" font-size="12" fill="#e11d48" font-weight="bold">Pelo</text>
+
+            <!-- Indicador de Raíz y Nodo -->
+            <circle cx="50" cy="250" r="6" fill="#0d9488" />
+            <text x="10" y="270" font-size="12" fill="#0d9488" font-weight="bold">Raíz</text>
+
+            <circle cx="250" cy="183" r="6" fill="#0d9488" />
+            <text x="235" y="170" font-size="12" fill="#0d9488" font-weight="bold">Nodo</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: ACTIVIDAD CUADERNO DE TRABAJO -->
+      <div class="book-ref">
+        <h3><span>📓</span> Trabajo en el Cuaderno (Página 57)</h3>
+        <p style="color:#92400e; font-size:15px; margin-bottom:12px;">
+          Ahora que has copiado los conceptos en tu cuaderno, dirígete a la <b>página 57 de tu Cuaderno de Trabajo</b> y completa la actividad "A. Dendrograma y cladograma" siguiendo estos pasos:
+        </p>
+        <ul>
+          <li>Observa detenidamente el árbol filogenético que aparece en tu libro (construido a partir de secuencias de ADN).</li>
+          <li>Utiliza la base de datos de GBIF (<a href="https://www.gbif.org/es" target="_blank" style="color:#b45309; text-decoration:underline;">www.gbif.org/es</a>) para buscar los nombres científicos de los organismos del árbol.</li>
+          <li>Identifica a qué <b>reinos de la naturaleza</b> pertenecen esos organismos y anótalo.</li>
+          <li>Responde las preguntas de tu Cuaderno de Trabajo utilizando la información que acabas de aprender sobre nodos, clados y relaciones evolutivas.</li>
+        </ul>
+      </div>
+
+      <!-- FINALIZAR -->
+      <div class="item-card text-center" id="finish-section" style="margin-top:24px;">
+        <h3 style="margin-bottom:8px; color:#0f766e">¡Clase completada!</h3>
+        <p style="color:#64748b; margin-bottom:16px">Una vez que hayas copiado todo en tu cuaderno y completado la página 57, marca esta lección como terminada.</p>
+        <button class="btn btn-primary btn-lg" onclick="completarClase()" id="btn-completar">✅ Marcar como completada</button>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · Ciencia · Sistemática y cladística</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  
+  <script>
+    const ACTIVITY_ID = '7cieu3l4c1';
+    const GRADO = 'Septimo';
+    const MATERIA = 'Ciencia';
+    const TIPO = 'clase';
+    
+    const u = requireLogin();
+    renderUserBar(document.getElementById('userbar'));
+
+    // Revisar si ya había sido completada previamente
+    (async function() {
+      const res = await Notas.get(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID);
+      // Validamos si hay registro (nota simbólica)
+      if (res.ok && res.nota !== null) {
+        marcarCompletadaUI();
+      }
+    })();
+
+    async function completarClase() {
+      const btn = document.getElementById('btn-completar');
+      const restore = btnLoading(btn, 'Registrando...');
+      
+      // Guardamos un "10" simbólico para indicar que se completó (no da puntos ni evalúa)
+      const resNota = await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10);
+      
+      if (resNota.ok) {
+        toast('¡Lección completada!', 'Has marcado esta actividad como finalizada.');
+        marcarCompletadaUI();
+      } else {
+        restore();
+        toast('Error', resNota.error, 'error');
+      }
+    }
+
+    function marcarCompletadaUI() {
+      const btn = document.getElementById('btn-completar');
+      if(btn) {
+        btn.outerHTML = '<div class="alert alert-success text-center" style="justify-content:center">✓ Lección completada.</div>';
+      }
+    }
+  </script>
+</body>
+</html>
