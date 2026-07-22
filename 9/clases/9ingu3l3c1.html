@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indefinite Articles · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🅰️</text></svg>" />
+  <style>
+    * { box-sizing: border-box; }
+    /* ===== Tooltip ===== */
+    .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; color: inherit; }
+    .tt:hover::after {
+      content: attr(data-es); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+    .tt:hover::before {
+      content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
+    }
+
+    /* ===== Phase tabs ===== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
+      border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
+      color: #9ca3af; transition: all .2s; text-align: center; font-family: inherit;
+    }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,.3); }
+    .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
+    .phase-tab.done::after { content: ' ✓'; }
+    .phase-tab.locked { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    /* ===== Elements ===== */
+    .section-card { background: #fff; border-radius: 16px; border: 1px solid #d1fae5; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .phase { animation: fadeIn .3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- Theory Box --- */
+    .theory-box { background: #f0fdfa; border-left: 4px solid #0d9488; padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+    .theory-box h3 { color: #0f766e; margin-bottom: 12px; }
+    .theory-box ul { margin-left: 20px; color: #334155; line-height: 1.6; }
+    .theory-box li { margin-bottom: 8px; }
+    .highlight { font-weight: bold; color: #0f766e; }
+    .exception { background: #fef08a; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #92400e; }
+
+    /* --- Interactive Games --- */
+    .game-area { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 12px; padding: 30px 20px; text-align: center; margin-bottom: 20px; position: relative; }
+    .big-word { font-size: 32px; font-weight: 900; color: #0f766e; margin-bottom: 24px; letter-spacing: 1px; }
+    .btn-group { display: flex; justify-content: center; gap: 16px; }
+    .btn-choice { background: #fff; border: 3px solid #0d9488; color: #0d9488; font-size: 24px; font-weight: bold; padding: 12px 32px; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+    .btn-choice:hover { background: #f0fdfa; transform: translateY(-2px); }
+    .btn-choice:active { transform: translateY(2px); }
+    .progress-dots { margin-top: 20px; display: flex; justify-content: center; gap: 8px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #cbd5e1; }
+    .dot.active { background: #0d9488; }
+    .dot.wrong { background: #e11d48; }
+
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+    .shake { animation: shake .3s; }
+
+    /* --- Worksheet Grid --- */
+    .ws-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .ws-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 15px; color: #334155; }
+    .ws-item select { padding: 4px 8px; border-radius: 6px; border: 2px solid #cbd5e1; font-weight: bold; color: #0f766e; outline: none; font-size: 15px; cursor: pointer; }
+    .ws-item select:focus { border-color: #0d9488; }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#fce7f3;color:#db2777">🅰️</div>
+          <div>
+            <h1>Indefinite Articles ("a" and "an")</h1>
+            <p>📘 English · <span class="tt" data-es="Unidad">Unit</span> 3 · <span class="tt" data-es="Lección">Lesson</span> 3 (Class 1)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</b>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span> —
+        <b>1️⃣ Pre</b>, <b>2️⃣ During</b>, <b>3️⃣ Post</b>.
+        <span class="tt" data-es="Completa cada parte para avanzar. Tu progreso se guardará.">Complete each phase to move forward. Your progress will be saved.</span>
+      </div>
+
+      <div class="phase-tabs">
+        <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
+        <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')">2️⃣ During</button>
+        <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')">3️⃣ Post</button>
+      </div>
+
+      <!-- ============ PRE ============ -->
+      <div id="phase-pre" class="phase">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="Reglas de los Artículos Indefinidos">Indefinite Articles Rules!</span> 📖</h2>
+          
+          <div class="theory-box">
+            <h3><span class="tt" data-es="¿Cuándo usamos 'a' o 'an'?">When do we use "a" or "an"?</span></h3>
+            <p style="color:#334155; margin-bottom:12px;">We use indefinite articles only with <b>singular countable nouns</b>.</p>
+            <ul>
+              <li>We use <span class="highlight">"a"</span> before words that start with a <b>consonant sound</b> (e.g., <i>a strawberry, a car, a dog</i>).</li>
+              <li>We use <span class="highlight">"an"</span> before words that start with a <b>vowel sound</b> (e.g., <i>an avocado, an airplane, an elephant</i>).</li>
+            </ul>
+            <p style="color:#b45309; font-weight:bold; margin-top:12px;">⚠️ <span class="tt" data-es="¡Importante!">Important!</span> The rule is based on SOUND, not just the letter!</p>
+            <ul>
+              <li><span class="exception">an hour</span> (Because the "h" is silent, it starts with an "o" sound).</li>
+              <li><span class="exception">a university</span> (Because it starts with a "y" sound, like "you").</li>
+            </ul>
+          </div>
+
+          <p style="color:#6b7280;margin-bottom:16px; text-align:center;">
+            <b><span class="tt" data-es="Clasifica estas palabras.">Sort these words into the correct box.</span></b>
+          </p>
+
+          <div class="game-area" id="pre-game">
+            <div class="big-word" id="pre-word">apple</div>
+            <div class="btn-group">
+              <button class="btn-choice" onclick="checkPre('a')">A</button>
+              <button class="btn-choice" onclick="checkPre('an')">An</button>
+            </div>
+            <div class="progress-dots" id="pre-dots">
+              <!-- Dots generated by JS -->
+            </div>
+          </div>
+          
+          <div style="text-align:center;">
+            <button class="btn btn-emerald hidden" id="btn-pre-next" onclick="finishPre()">➡️ <span class="tt" data-es="Continuar a During">Continue to During</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ DURING ============ -->
+      <div id="phase-during" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="¡Reacción Rápida!">Quick Decide!</span> ⚡</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="En clase jugaríamos al 'Baile de los Estatuas'. Aquí, deberás decidir rápido.">In class we would play Freeze Dance. Here, you must decide quickly! Select the correct article for the word shown.</span>
+          </p>
+
+          <div class="game-area" id="during-game">
+            <div class="big-word" id="during-word">Ready?</div>
+            <div class="btn-group">
+              <button class="btn-choice" onclick="checkDuring('a')">A</button>
+              <button class="btn-choice" onclick="checkDuring('an')">An</button>
+            </div>
+            <div class="progress-dots" id="during-dots">
+              <!-- Dots generated by JS -->
+            </div>
+          </div>
+
+          <div style="text-align:center;">
+            <button class="btn btn-emerald hidden" id="btn-during-next" onclick="finishDuring()">➡️ <span class="tt" data-es="Continuar a Post">Continue to Post</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ POST ============ -->
+      <div id="phase-post" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">3️⃣ Post: <span class="tt" data-es="Hoja de Trabajo 3 (Parte I)">Worksheet 3 (Part I)</span> ✍️</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Completa las oraciones con 'a' o 'an'. ¡Presta atención a los sonidos!">Complete the sentences (1-15) with <b>a</b> or <b>an</b> accordingly. Pay attention to the sounds!</span>
+          </p>
+
+          <div class="ws-grid">
+            <div class="ws-item">1. There is <select id="ws-1"><option value=""></option><option value="a">a</option><option value="an">an</option></select> apple.</div>
+            <div class="ws-item">2. There is <select id="ws-2"><option value=""></option><option value="a">a</option><option value="an">an</option></select> book.</div>
+            <div class="ws-item">3. There isn't <select id="ws-3"><option value=""></option><option value="a">a</option><option value="an">an</option></select> elephant.</div>
+            <div class="ws-item">4. There is <select id="ws-4"><option value=""></option><option value="a">a</option><option value="an">an</option></select> giraffe.</div>
+            <div class="ws-item">5. There isn't <select id="ws-5"><option value=""></option><option value="a">a</option><option value="an">an</option></select> airplane.</div>
+            <div class="ws-item">6. There is <select id="ws-6"><option value=""></option><option value="a">a</option><option value="an">an</option></select> key.</div>
+            <div class="ws-item">7. There isn't <select id="ws-7"><option value=""></option><option value="a">a</option><option value="an">an</option></select> orange.</div>
+            <div class="ws-item">8. There isn't <select id="ws-8"><option value=""></option><option value="a">a</option><option value="an">an</option></select> pencil.</div>
+            <div class="ws-item">9. There is <select id="ws-9"><option value=""></option><option value="a">a</option><option value="an">an</option></select> umbrella.</div>
+            <div class="ws-item">10. There is <select id="ws-10"><option value=""></option><option value="a">a</option><option value="an">an</option></select> person.</div>
+            <div class="ws-item">11. There is <select id="ws-11"><option value=""></option><option value="a">a</option><option value="an">an</option></select> eye.</div>
+            <div class="ws-item">12. There isn't <select id="ws-12"><option value=""></option><option value="a">a</option><option value="an">an</option></select> uniform.</div>
+            <div class="ws-item">13. There is <select id="ws-13"><option value=""></option><option value="a">a</option><option value="an">an</option></select> eraser.</div>
+            <div class="ws-item">14. There is <select id="ws-14"><option value=""></option><option value="a">a</option><option value="an">an</option></select> dog.</div>
+            <div class="ws-item">15. There is <select id="ws-15"><option value=""></option><option value="a">a</option><option value="an">an</option></select> university.</div>
+          </div>
+
+          <div style="text-align:center; margin-top:24px;">
+            <button class="btn btn-primary" id="btn-post-check" onclick="validatePost()">✅ <span class="tt" data-es="Comprobar respuestas">Check answers</span></button>
+          </div>
+          <p id="post-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ FINISH ============ -->
+      <div id="phase-finish" class="phase hidden text-center">
+        <div class="section-card" style="background:#f0fdf4; border-color:#059669;">
+          <div style="font-size:64px; margin-bottom:12px;">🏆</div>
+          <h2 style="color:#059669; margin-bottom:8px;"><span class="tt" data-es="¡Excelente trabajo!">Excellent job!</span></h2>
+          <p style="color:#4b5563; margin-bottom:20px;">
+            <span class="tt" data-es="Has dominado el uso de los artículos indefinidos 'a' y 'an'.">You have mastered the use of indefinite articles "a" and "an"!</span>
+          </p>
+          <button class="btn btn-outline" onclick="resetProgress()">🔄 <span class="tt" data-es="Reiniciar lección">Restart lesson</span></button>
+          <a href="../../estudiante.html" class="btn btn-primary" style="margin-left:8px;">🏠 <span class="tt" data-es="Volver al inicio">Back home</span></a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · English · Indefinite Articles</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '9ingu3l3c1';
+    const GRADO = 'Noveno';
+    const MATERIA = 'Ingles';
+    const TIPO = 'clase';
+    const LOCAL_KEY = 'edunova_' + ACTIVITY_ID + '_progress';
+    const u = requireLogin();
+    if(u) { renderUserBar(document.getElementById('userbar')); }
+
+    let progress = parseInt(localStorage.getItem(LOCAL_KEY) || '0');
+
+    // --- GAME DATA ---
+    const preWords = [
+      { w: 'carrot', a: 'a' },
+      { w: 'apple', a: 'an' },
+      { w: 'orange', a: 'an' },
+      { w: 'car', a: 'a' },
+      { w: 'hour', a: 'an' },
+      { w: 'university', a: 'a' }
+    ];
+    let preIndex = 0;
+
+    const duringWords = [
+      { w: 'elephant', a: 'an' },
+      { w: 'book', a: 'a' },
+      { w: 'airplane', a: 'an' },
+      { w: 'ice cream', a: 'an' },
+      { w: 'key', a: 'a' },
+      { w: 'hat', a: 'a' }
+    ];
+    let duringIndex = 0;
+
+    // Worksheet answers
+    const wsAnswers = {
+      1: 'an', 2: 'a', 3: 'an', 4: 'a', 5: 'an',
+      6: 'a', 7: 'an', 8: 'a', 9: 'an', 10: 'a',
+      11: 'an', 12: 'a', 13: 'an', 14: 'a', 15: 'a'
+    };
+
+    function init() {
+      applyProgress();
+      setupGame('pre', preWords);
+      setupGame('during', duringWords);
+    }
+
+    function applyProgress() {
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active', 'done'));
+      
+      if (progress >= 1) {
+        document.getElementById('tab-pre').classList.add('done');
+        document.getElementById('tab-during').classList.remove('locked');
+      }
+      if (progress >= 2) {
+        document.getElementById('tab-during').classList.add('done');
+        document.getElementById('tab-post').classList.remove('locked');
+      }
+      if (progress >= 3) {
+        document.getElementById('tab-post').classList.add('done');
+        document.getElementById('phase-finish').classList.remove('hidden');
+        document.getElementById('phase-pre').classList.add('hidden');
+        document.getElementById('phase-during').classList.add('hidden');
+        document.getElementById('phase-post').classList.add('hidden');
+        return; 
+      }
+
+      if (progress === 0) showPhase('pre');
+      else if (progress === 1) showPhase('during');
+      else if (progress === 2) showPhase('post');
+    }
+
+    window.showPhase = function(phase) {
+      if (progress === 3) return; 
+      document.querySelectorAll('.phase-tab').forEach(t => {
+        if (!t.classList.contains('done')) t.classList.remove('active');
+      });
+      document.querySelectorAll('.phase').forEach(p => {
+        if (p.id !== 'phase-finish') p.classList.add('hidden');
+      });
+      document.getElementById('phase-' + phase).classList.remove('hidden');
+      const tab = document.getElementById('tab-' + phase);
+      if(tab) tab.classList.add('active');
+    };
+
+    // --- GAME LOGIC (Pre & During) ---
+    function setupGame(phase, words) {
+      const dotContainer = document.getElementById(`${phase}-dots`);
+      dotContainer.innerHTML = '';
+      words.forEach(() => {
+        const d = document.createElement('div');
+        d.className = 'dot';
+        dotContainer.appendChild(d);
+      });
+      if(phase === 'pre') updatePreUI();
+      if(phase === 'during') updateDuringUI();
+    }
+
+    function updatePreUI() {
+      if(preIndex >= preWords.length) {
+        document.getElementById('pre-word').innerText = "🎉 All sorted!";
+        document.getElementById('pre-game').querySelector('.btn-group').style.display = 'none';
+        document.getElementById('btn-pre-next').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('pre-word').innerText = preWords[preIndex].w;
+      updateDots('pre', preIndex, preWords.length);
+    }
+
+    window.checkPre = function(choice) {
+      if(preIndex >= preWords.length) return;
+      if(choice === preWords[preIndex].a) {
+        preIndex++;
+        updatePreUI();
+      } else {
+        const wordEl = document.getElementById('pre-word');
+        wordEl.classList.add('shake');
+        setTimeout(() => wordEl.classList.remove('shake'), 300);
+      }
+    };
+
+    window.finishPre = function() {
+      progress = Math.max(progress, 1);
+      localStorage.setItem(LOCAL_KEY, progress);
+      applyProgress();
+      showPhase('during');
+    };
+
+    function updateDuringUI() {
+      if(duringIndex >= duringWords.length) {
+        document.getElementById('during-word').innerText = "🎉 Great job!";
+        document.getElementById('during-game').querySelector('.btn-group').style.display = 'none';
+        document.getElementById('btn-during-next').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('during-word').innerText = duringWords[duringIndex].w;
+      updateDots('during', duringIndex, duringWords.length);
+    }
+
+    window.checkDuring = function(choice) {
+      if(duringIndex >= duringWords.length) return;
+      if(choice === duringWords[duringIndex].a) {
+        duringIndex++;
+        updateDuringUI();
+      } else {
+        const wordEl = document.getElementById('during-word');
+        wordEl.classList.add('shake');
+        setTimeout(() => wordEl.classList.remove('shake'), 300);
+      }
+    };
+
+    window.finishDuring = function() {
+      progress = Math.max(progress, 2);
+      localStorage.setItem(LOCAL_KEY, progress);
+      applyProgress();
+      showPhase('post');
+    };
+
+    function updateDots(phase, currentIndex, total) {
+      const dots = document.getElementById(`${phase}-dots`).children;
+      for(let i = 0; i < total; i++) {
+        if (i < currentIndex) dots[i].className = 'dot active';
+        else dots[i].className = 'dot';
+      }
+    }
+
+    // --- POST LOGIC (Worksheet) ---
+    window.validatePost = async function() {
+      let correct = true;
+      let emptyCount = 0;
+
+      for(let i=1; i<=15; i++) {
+        const el = document.getElementById(`ws-${i}`);
+        if(el.value === '') {
+          emptyCount++;
+          el.style.borderColor = '#cbd5e1';
+        } else if (el.value === wsAnswers[i]) {
+          el.style.borderColor = '#059669';
+        } else {
+          el.style.borderColor = '#e11d48';
+          correct = false;
+        }
+      }
+
+      const msg = document.getElementById('post-msg');
+      if (emptyCount > 0) {
+        msg.innerHTML = '❌ <span class="tt" data-es="Por favor completa todas las oraciones.">Please complete all sentences.</span>';
+        msg.style.color = '#e11d48';
+        return;
+      }
+
+      if (correct) {
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Todas las respuestas son correctas!">All answers are correct!</span>';
+        msg.style.color = '#059669';
+        document.getElementById('btn-post-check').disabled = true;
+        
+        progress = 3;
+        localStorage.setItem(LOCAL_KEY, progress);
+        
+        // Symbolic registration of completion (No grade/points)
+        if(u) { await Notas.set(GRADO, MATERIA, TIPO, u.nie, ACTIVITY_ID, 10); }
+
+        setTimeout(() => { applyProgress(); }, 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Hay errores. Recuerda las excepciones como uniform/university.">There are mistakes. Remember exceptions like uniform/university!</span>';
+        msg.style.color = '#e11d48';
+      }
+    };
+
+    window.resetProgress = function() {
+      localStorage.removeItem(LOCAL_KEY);
+      location.reload(); 
+    };
+
+    init();
+  </script>
+</body>
+</html>
