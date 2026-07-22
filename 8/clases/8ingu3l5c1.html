@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questions with He/She/It · EduNova</title>
+  <link rel="stylesheet" href="../../css/estilos.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❓</text></svg>" />
+  <style>
+    * { box-sizing: border-box; }
+    /* ===== Tooltip ===== */
+    .tt { border-bottom: 2px dotted #0d9488; cursor: help; position: relative; font-weight: 600; color: inherit; }
+    .tt:hover::after {
+      content: attr(data-es); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      background: #064e3b; color: #fff; padding: 5px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; white-space: nowrap; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+    .tt:hover::before {
+      content: ''; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #064e3b; z-index: 100;
+    }
+
+    /* ===== Phase tabs ===== */
+    .phase-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .phase-tab {
+      flex: 1; padding: 14px 8px; border: 2px solid #d1fae5; background: #fff;
+      border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 15px;
+      color: #9ca3af; transition: all .2s; text-align: center; font-family: inherit;
+    }
+    .phase-tab.active { background: #059669; color: #fff; border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,.3); }
+    .phase-tab.done { background: #d1fae5; color: #059669; border-color: #059669; }
+    .phase-tab.done::after { content: ' ✓'; }
+    .phase-tab.locked { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    /* ===== Elements ===== */
+    .section-card { background: #fff; border-radius: 16px; border: 1px solid #d1fae5; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .phase { animation: fadeIn .3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- Pre Phase (Reading/Matching) --- */
+    .chat-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .chat-msg { background: #f0fdfa; border-left: 4px solid #0d9488; padding: 12px 16px; border-radius: 0 12px 12px 0; }
+    .chat-msg span { font-weight: bold; color: #0f766e; display: block; margin-bottom: 4px; }
+    
+    .match-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .match-item { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; text-align: center; }
+    .match-item .emoji { font-size: 40px; margin-bottom: 8px; }
+    .match-item select { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: inherit; margin-top: 8px; outline: none; }
+
+    /* --- During Phase (Grammar) --- */
+    .grammar-box { background: #fffbeb; border: 2px solid #fcd34d; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+    .grammar-rule { font-size: 18px; text-align: center; margin-bottom: 16px; font-weight: bold; color: #334155; }
+    .g-aux { color: #0284c7; } /* Blue */
+    .g-sub { color: #1e293b; } /* Black */
+    .g-verb { color: #c026d3; } /* Purple/Pink */
+    
+    .qa-list { display: flex; flex-direction: column; gap: 12px; }
+    .qa-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 10px; }
+    .qa-item select { padding: 6px 12px; border-radius: 6px; border: 2px solid #cbd5e1; font-weight: bold; color: #0f766e; outline: none; }
+
+    /* --- Post Phase (Unscramble) --- */
+    .unscramble-area { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 12px; padding: 20px; min-height: 80px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+    .word-bank { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .word-btn { background: #fff; border: 2px solid #0d9488; color: #0f766e; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 2px 0 #0d9488; transition: transform 0.1s, box-shadow 0.1s; }
+    .word-btn:active { transform: translateY(2px); box-shadow: 0 0 0 #0d9488; }
+    .word-btn.in-answer { background: #0d9488; color: #fff; }
+  </style>
+</head>
+<body>
+  <div id="userbar"></div>
+  <div class="page">
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-left">
+          <a class="back-btn" href="../../estudiante.html">←</a>
+          <div class="icon-box" style="background:#ede9fe;color:#7c3aed">❓</div>
+          <div>
+            <h1>Questions with He/She/It</h1>
+            <p>📘 English · <span class="tt" data-es="Unidad">Unit</span> 3 · <span class="tt" data-es="Lección">Lesson</span> 5 (Class 1)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <b>📌 <span class="tt" data-es="Instrucciones">Instructions</span>:</b>
+        <span class="tt" data-es="Esta clase tiene 3 partes">This class has 3 phases</span> —
+        <b>1️⃣ Pre</b>, <b>2️⃣ During</b>, <b>3️⃣ Post</b>.
+        <span class="tt" data-es="Completa cada parte para desbloquear la siguiente. Tu progreso se guardará.">Complete each phase to unlock the next one. Your progress will be saved.</span>
+      </div>
+
+      <div class="phase-tabs">
+        <button class="phase-tab active" id="tab-pre" onclick="showPhase('pre')">1️⃣ Pre</button>
+        <button class="phase-tab locked" id="tab-during" onclick="showPhase('during')">2️⃣ During</button>
+        <button class="phase-tab locked" id="tab-post" onclick="showPhase('post')">3️⃣ Post</button>
+      </div>
+
+      <!-- ============ PRE ============ -->
+      <div id="phase-pre" class="phase">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">1️⃣ Pre: <span class="tt" data-es="¡Práctica de Lectura!">Reading Practice!</span> 📖</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Lee lo que dice cada persona. Luego, asocia su nombre con la actividad correcta abajo.">Read what each person says. Then, match their name to the correct activity below.</span>
+          </p>
+
+          <div class="chat-container">
+            <div class="chat-msg"><span>1. Sofía</span> "I prefer staying home. I love sitting on my couch and viewing my favorite programs."</div>
+            <div class="chat-msg"><span>2. Fátima</span> "I am very active. I love running on the field and scoring goals with my team!"</div>
+            <div class="chat-msg"><span>3. Ceci</span> "The water is my favorite place. I go to the pool for four hours every Saturday."</div>
+            <div class="chat-msg"><span>4. Ricardo</span> "I have a new mountain bicycle. I use it on weekdays at the park."</div>
+            <div class="chat-msg"><span>5. José</span> "I don't play sports. I love fast food. I always have it for lunch."</div>
+          </div>
+
+          <div class="match-grid">
+            <div class="match-item">
+              <div class="emoji">🚴</div>
+              <b>Ride a bike</b>
+              <select id="match-bike">
+                <option value="">-- Who? --</option>
+                <option value="1">Sofía</option><option value="2">Fátima</option><option value="3">Ceci</option><option value="4">Ricardo</option><option value="5">José</option>
+              </select>
+            </div>
+            <div class="match-item">
+              <div class="emoji">📺</div>
+              <b>Watch TV</b>
+              <select id="match-tv">
+                <option value="">-- Who? --</option>
+                <option value="1">Sofía</option><option value="2">Fátima</option><option value="3">Ceci</option><option value="4">Ricardo</option><option value="5">José</option>
+              </select>
+            </div>
+            <div class="match-item">
+              <div class="emoji">🏊‍♀️</div>
+              <b>Swim</b>
+              <select id="match-swim">
+                <option value="">-- Who? --</option>
+                <option value="1">Sofía</option><option value="2">Fátima</option><option value="3">Ceci</option><option value="4">Ricardo</option><option value="5">José</option>
+              </select>
+            </div>
+            <div class="match-item">
+              <div class="emoji">⚽</div>
+              <b>Play soccer</b>
+              <select id="match-soccer">
+                <option value="">-- Who? --</option>
+                <option value="1">Sofía</option><option value="2">Fátima</option><option value="3">Ceci</option><option value="4">Ricardo</option><option value="5">José</option>
+              </select>
+            </div>
+            <div class="match-item">
+              <div class="emoji">🍔</div>
+              <b>Eat hamburgers</b>
+              <select id="match-eat">
+                <option value="">-- Who? --</option>
+                <option value="1">Sofía</option><option value="2">Fátima</option><option value="3">Ceci</option><option value="4">Ricardo</option><option value="5">José</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="text-align:center;">
+            <button class="btn btn-primary" id="btn-pre-check" onclick="validatePre()">✅ <span class="tt" data-es="Comprobar respuestas">Check answers</span></button>
+          </div>
+          <p id="pre-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ DURING ============ -->
+      <div id="phase-during" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">2️⃣ During: <span class="tt" data-es="Preguntas en Presente Simple">Simple Present Questions</span> 🧠</h2>
+          
+          <div class="alert alert-warn" style="margin-bottom:16px;">
+            <b>📓 <span class="tt" data-es="Trabajo en el cuaderno:">Notebook work:</span></b>
+            <span class="tt" data-es="Copia este cuadro de gramática en tu cuaderno. ¡Usa colores si puedes!">Please copy this grammar box in your notebook. Use colors if you can!</span>
+          </div>
+
+          <div class="grammar-box">
+            <div class="grammar-rule">
+              <span class="g-aux">Does</span> + <span class="g-sub">He / She / It</span> + <span class="g-verb">Verb (base form)</span> + Complement?
+            </div>
+            <p style="text-align:center; margin-bottom:16px; color:#4b5563;">
+              <i><span class="tt" data-es="Nota: ¡El verbo principal NO cambia (no lleva 's') porque 'Does' ya hace el trabajo!">Note: The main verb must <b>NOT</b> change because "Does" is already doing the work!</span></i>
+            </p>
+            
+            <div style="background:#fff; border-radius:8px; padding:12px; margin-bottom:16px;">
+              <span class="g-aux">Does</span> <span class="g-sub">Sofía</span> <span class="g-verb">watch</span> her favorite programs?<br>
+              <span class="g-aux">Does</span> <span class="g-sub">Ricardo</span> <span class="g-verb">ride</span> his bike on weekdays?
+            </div>
+
+            <h4 style="color:#b45309; text-align:center; margin-bottom:8px;">Short Answers</h4>
+            <div style="display:flex; justify-content:space-around; background:#fff; border-radius:8px; padding:12px; font-weight:bold;">
+              <div>✅ Yes, she <span class="g-aux">does</span>.</div>
+              <div>❌ No, she <span class="g-aux">doesn't</span>.</div>
+            </div>
+          </div>
+
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Responde estas preguntas basándote en la información de la sección anterior (Pre).">Answer these questions based on the information from the previous section (Pre).</span>
+          </p>
+
+          <div class="qa-list">
+            <div class="qa-item">
+              <span><b>1.</b> Does Fátima play soccer?</span>
+              <select id="qa-1">
+                <option value="">- Select -</option>
+                <option value="Y">Yes, she does.</option>
+                <option value="N">No, she doesn't.</option>
+              </select>
+            </div>
+            <div class="qa-item">
+              <span><b>2.</b> Does Ricardo play tennis?</span>
+              <select id="qa-2">
+                <option value="">- Select -</option>
+                <option value="Y">Yes, he does.</option>
+                <option value="N">No, he doesn't.</option>
+              </select>
+            </div>
+            <div class="qa-item">
+              <span><b>3.</b> Does José eat hamburgers?</span>
+              <select id="qa-3">
+                <option value="">- Select -</option>
+                <option value="Y">Yes, he does.</option>
+                <option value="N">No, he doesn't.</option>
+              </select>
+            </div>
+            <div class="qa-item">
+              <span><b>4.</b> Does Ceci watch TV?</span>
+              <select id="qa-4">
+                <option value="">- Select -</option>
+                <option value="Y">Yes, she does.</option>
+                <option value="N">No, she doesn't.</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="text-align:center; margin-top:24px;">
+            <button class="btn btn-primary" onclick="validateDuring()">✅ <span class="tt" data-es="Comprobar respuestas">Check answers</span></button>
+          </div>
+          <p id="during-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ POST ============ -->
+      <div id="phase-post" class="phase hidden">
+        <div class="section-card">
+          <h2 style="margin-bottom:8px; color:#0f766e">3️⃣ Post: <span class="tt" data-es="¡Mini Pizarras: Ordénalas!">Mini Boards: Unscramble Them!</span> 🧩</h2>
+          <p style="color:#6b7280;margin-bottom:16px">
+            <span class="tt" data-es="Toca las palabras en el orden correcto para formar la pregunta.">Tap the words in the correct order to form the question.</span>
+          </p>
+
+          <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:#b45309;" id="sentence-counter">Question 1 of 3</div>
+
+          <div class="unscramble-area" id="answer-area">
+            <!-- Selected words go here -->
+          </div>
+
+          <div class="word-bank" id="word-bank">
+            <!-- Available words go here -->
+          </div>
+
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-amber" onclick="clearSentence()">🧹 <span class="tt" data-es="Limpiar">Clear</span></button>
+            <button class="btn btn-primary" onclick="checkSentence()">✅ <span class="tt" data-es="Comprobar">Check</span></button>
+          </div>
+          <p id="post-msg" style="text-align:center; font-weight:700; margin-top:12px; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <!-- ============ FINISH ============ -->
+      <div id="phase-finish" class="phase hidden text-center">
+        <div class="section-card" style="background:#f0fdf4; border-color:#059669;">
+          <div style="font-size:64px; margin-bottom:12px;">🏆</div>
+          <h2 style="color:#059669; margin-bottom:8px;"><span class="tt" data-es="¡Excelente trabajo!">Excellent job!</span></h2>
+          <p style="color:#4b5563; margin-bottom:20px;">
+            <span class="tt" data-es="Has aprendido a formular y responder preguntas en presente simple con he, she e it.">You learned how to make and answer simple present questions with he, she, and it!</span>
+          </p>
+          <button class="btn btn-outline" onclick="resetProgress()">🔄 <span class="tt" data-es="Reiniciar lección">Restart lesson</span></button>
+          <a href="../../estudiante.html" class="btn btn-primary" style="margin-left:8px;">🏠 <span class="tt" data-es="Volver al inicio">Back home</span></a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <footer class="footer">EduNova · English · Simple Present Questions</footer>
+
+  <script src="../../config.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/userbar.js"></script>
+  <script>
+    const ACTIVITY_ID = '8ingu3l5c1';
+    const LOCAL_KEY = 'edunova_' + ACTIVITY_ID + '_progress';
+    const u = requireLogin();
+    if(u) { renderUserBar(document.getElementById('userbar')); }
+
+    let progress = parseInt(localStorage.getItem(LOCAL_KEY) || '0');
+
+    // --- Data for Phases ---
+    // Pre answers mapping based on text. 4:Ricardo, 1:Sofia, 3:Ceci, 2:Fatima, 5:Jose
+    const preAnswers = { 'match-bike': '4', 'match-tv': '1', 'match-swim': '3', 'match-soccer': '2', 'match-eat': '5' };
+    
+    // During answers. 1:Fatima soccer(Y), 2:Ricardo tennis(N-bike), 3:Jose hamburgers(Y), 4:Ceci TV(N-swim)
+    const duringAnswers = { 'qa-1': 'Y', 'qa-2': 'N', 'qa-3': 'Y', 'qa-4': 'N' };
+
+    // Post Phase Unscramble Data
+    const sentences = [
+      { parts: ['Does', 'Celia', 'read manga', 'in the afternoon?'], scrambled: ['read manga', 'Does', 'in the afternoon?', 'Celia'] },
+      { parts: ['Does', 'your brother', 'play', 'tennis?'], scrambled: ['play', 'your brother', 'tennis?', 'Does'] },
+      { parts: ['Does', 'he', 'watch TV', 'at night?'], scrambled: ['at night?', 'Does', 'watch TV', 'he'] }
+    ];
+    let currentS = 0;
+    let selectedWords = [];
+
+    // --- Initialization ---
+    function init() {
+      applyProgress();
+      if(progress < 3) loadSentence();
+    }
+
+    function applyProgress() {
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active', 'done'));
+      
+      if (progress >= 1) {
+        document.getElementById('tab-pre').classList.add('done');
+        document.getElementById('tab-during').classList.remove('locked');
+      }
+      if (progress >= 2) {
+        document.getElementById('tab-during').classList.add('done');
+        document.getElementById('tab-post').classList.remove('locked');
+      }
+      if (progress >= 3) {
+        document.getElementById('tab-post').classList.add('done');
+        document.getElementById('phase-finish').classList.remove('hidden');
+        document.getElementById('phase-pre').classList.add('hidden');
+        document.getElementById('phase-during').classList.add('hidden');
+        document.getElementById('phase-post').classList.add('hidden');
+        return; 
+      }
+
+      if (progress === 0) showPhase('pre');
+      else if (progress === 1) showPhase('during');
+      else if (progress === 2) showPhase('post');
+    }
+
+    window.showPhase = function(phase) {
+      if (progress === 3) return; 
+      document.querySelectorAll('.phase-tab').forEach(t => {
+        if (!t.classList.contains('done')) t.classList.remove('active');
+      });
+      document.querySelectorAll('.phase').forEach(p => {
+        if (p.id !== 'phase-finish') p.classList.add('hidden');
+      });
+      document.getElementById('phase-' + phase).classList.remove('hidden');
+      const tab = document.getElementById('tab-' + phase);
+      if(tab) tab.classList.add('active');
+    };
+
+    // --- PRE PHASE LOGIC ---
+    window.validatePre = function() {
+      let correct = true;
+      for (const [id, val] of Object.entries(preAnswers)) {
+        const el = document.getElementById(id);
+        if (el.value !== val) {
+          el.style.borderColor = '#e11d48';
+          correct = false;
+        } else {
+          el.style.borderColor = '#059669';
+        }
+      }
+      
+      const msg = document.getElementById('pre-msg');
+      if (correct) {
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Excelente! Has asociado a todos correctamente.">Excellent! You matched everyone correctly.</span>';
+        msg.style.color = '#059669';
+        progress = Math.max(progress, 1);
+        localStorage.setItem(LOCAL_KEY, progress);
+        setTimeout(() => { applyProgress(); showPhase('during'); }, 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Algunos no coinciden. Revisa el texto y vuelve a intentar.">Some do not match. Check the text and try again.</span>';
+        msg.style.color = '#e11d48';
+      }
+    };
+
+    // --- DURING PHASE LOGIC ---
+    window.validateDuring = function() {
+      let correct = true;
+      for (const [id, val] of Object.entries(duringAnswers)) {
+        const el = document.getElementById(id);
+        if (el.value !== val) {
+          el.style.borderColor = '#e11d48';
+          correct = false;
+        } else {
+          el.style.borderColor = '#059669';
+        }
+      }
+
+      const msg = document.getElementById('during-msg');
+      if (correct) {
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Perfecto! Manejas muy bien las respuestas cortas.">Perfect! You handle short answers very well.</span>';
+        msg.style.color = '#059669';
+        progress = Math.max(progress, 2);
+        localStorage.setItem(LOCAL_KEY, progress);
+        setTimeout(() => { applyProgress(); showPhase('post'); }, 1500);
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="Revisa tus respuestas. Recuerda la información de la primera parte.">Check your answers. Remember the info from the first part.</span>';
+        msg.style.color = '#e11d48';
+      }
+    };
+
+    // --- POST PHASE LOGIC (Unscramble) ---
+    function loadSentence() {
+      const data = sentences[currentS];
+      document.getElementById('sentence-counter').innerText = `Question ${currentS + 1} of ${sentences.length}`;
+      
+      const bank = document.getElementById('word-bank');
+      const ansArea = document.getElementById('answer-area');
+      bank.innerHTML = '';
+      ansArea.innerHTML = '';
+      selectedWords = [];
+      document.getElementById('post-msg').innerText = '';
+
+      data.scrambled.forEach((word, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'word-btn';
+        btn.innerText = word;
+        btn.onclick = () => selectWord(word, btn);
+        bank.appendChild(btn);
+      });
+    }
+
+    window.selectWord = function(word, btn) {
+      if (btn.classList.contains('in-answer')) return; // Already selected
+      
+      btn.classList.add('in-answer');
+      btn.style.opacity = '0.5';
+      
+      selectedWords.push(word);
+      renderAnswer();
+    };
+
+    window.removeWord = function(index) {
+      const wordToRemove = selectedWords[index];
+      selectedWords.splice(index, 1);
+      
+      // Find the corresponding button in the bank and reset it
+      const bankBtns = document.getElementById('word-bank').querySelectorAll('.word-btn');
+      for(let btn of bankBtns) {
+        if(btn.innerText === wordToRemove && btn.classList.contains('in-answer')) {
+          btn.classList.remove('in-answer');
+          btn.style.opacity = '1';
+          break; // Only reset one in case of duplicate words
+        }
+      }
+      renderAnswer();
+    };
+
+    function renderAnswer() {
+      const ansArea = document.getElementById('answer-area');
+      ansArea.innerHTML = '';
+      selectedWords.forEach((word, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'word-btn in-answer';
+        btn.innerText = word;
+        btn.onclick = () => removeWord(idx);
+        ansArea.appendChild(btn);
+      });
+    }
+
+    window.clearSentence = function() {
+      selectedWords = [];
+      const bankBtns = document.getElementById('word-bank').querySelectorAll('.word-btn');
+      bankBtns.forEach(btn => {
+        btn.classList.remove('in-answer');
+        btn.style.opacity = '1';
+      });
+      renderAnswer();
+      document.getElementById('post-msg').innerText = '';
+    };
+
+    window.checkSentence = function() {
+      const expected = sentences[currentS].parts.join(' ');
+      const userAns = selectedWords.join(' ');
+      const msg = document.getElementById('post-msg');
+
+      if (userAns === expected) {
+        msg.innerHTML = '✅ <span class="tt" data-es="¡Correcto!">Correct!</span>';
+        msg.style.color = '#059669';
+        
+        setTimeout(() => {
+          currentS++;
+          if (currentS < sentences.length) {
+            loadSentence();
+          } else {
+            // Finish completely
+            progress = 3;
+            localStorage.setItem(LOCAL_KEY, progress);
+            applyProgress();
+          }
+        }, 1200);
+
+      } else {
+        msg.innerHTML = '❌ <span class="tt" data-es="El orden no es correcto. Intenta de nuevo.">The order is not correct. Try again.</span>';
+        msg.style.color = '#e11d48';
+      }
+    };
+
+    window.resetProgress = function() {
+      localStorage.removeItem(LOCAL_KEY);
+      location.reload(); 
+    };
+
+    init();
+  </script>
+</body>
+</html>
